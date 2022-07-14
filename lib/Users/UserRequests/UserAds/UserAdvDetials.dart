@@ -643,7 +643,7 @@ class _UserAdvDetialsState extends State<UserAdvDetials>
                                       });
                                       successfullyDialog(
                                           context,
-                                          'تم رفض سعر الاعلان',
+                                          'تم الغاء طلب الاعلان',
                                           "assets/lottie/SuccessfulCheck.json",
                                           'حسناً', () {
                                         Navigator.pop(context);
@@ -654,7 +654,7 @@ class _UserAdvDetialsState extends State<UserAdvDetials>
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(snackBar(
                                               context,
-                                              'تم رفض الطلب مسبقا',
+                                              'تم الغاء طلب الاعلان مسبقا',
                                               red,
                                               error));
                                     }
@@ -676,7 +676,7 @@ class _UserAdvDetialsState extends State<UserAdvDetials>
                                     });
                                     successfullyDialog(
                                         context,
-                                        'تم رفض سعر الاعلان',
+                                        'تم الغاء طلب الاعلان',
                                         "assets/lottie/SuccessfulCheck.json",
                                         'حسناً', () {
                                       Navigator.pop(context);
@@ -685,7 +685,7 @@ class _UserAdvDetialsState extends State<UserAdvDetials>
                                   } else {
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                        snackBar(context, 'تم رفض الطلب مسبقا',
+                                        snackBar(context, 'تم الغاء طلب الاعلان مسبقا',
                                             red, error));
                                   }
                                 });

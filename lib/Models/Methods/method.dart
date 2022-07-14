@@ -1356,7 +1356,7 @@ Widget noData(context) {
 successfullyDialog(context,String massage,String lottie,String bottomName,action) {
   return showDialog(
      barrierDismissible: false,
-      //barrierColor: Colors.transparent,
+      barrierColor: Colors.black87,
       context: context,
       builder: (context) {
         return AlertDialog(

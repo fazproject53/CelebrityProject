@@ -472,7 +472,7 @@ class _UserAdvSpaceDetailsState extends State<UserAdvSpaceDetails> {
                                             });
                                             successfullyDialog(
                                                 context,
-                                                'تم رفض سعر الاعلان',
+                                                'تم الغاء طلب الاعلان',
                                                 "assets/lottie/SuccessfulCheck.json",
                                                 'حسناً', () {
                                               Navigator.pop(context);
@@ -483,7 +483,7 @@ class _UserAdvSpaceDetailsState extends State<UserAdvSpaceDetails> {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(snackBar(
                                                     context,
-                                                    'تم رفض الطلب مسبقا',
+                                                    'تم الغاء طلب الاعلان مسبقا',
                                                     red,
                                                     error));
                                           }
@@ -500,9 +500,17 @@ class _UserAdvSpaceDetailsState extends State<UserAdvSpaceDetails> {
                                       result.then((value) {
                                         if (value == true) {
                                           Navigator.pop(context);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar(context,
-                                                  'تم رفض الطلب', green, done));
+                                          setState(() {
+                                            clickUserAdvSpace = true;
+                                          });
+                                          successfullyDialog(
+                                              context,
+                                              'تم الغاء طلب الاعلان',
+                                              "assets/lottie/SuccessfulCheck.json",
+                                              'حسناً', () {
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          });
                                         } else {
                                           Navigator.pop(context);
                                           setState(() {
@@ -510,7 +518,7 @@ class _UserAdvSpaceDetailsState extends State<UserAdvSpaceDetails> {
                                           });
                                           successfullyDialog(
                                               context,
-                                              'تم رفض سعر الاعلان',
+                                              'تم الغاء طلب الاعلان مسبقا',
                                               "assets/lottie/SuccessfulCheck.json",
                                               'حسناً', () {
                                             Navigator.pop(context);
