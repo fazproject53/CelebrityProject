@@ -1,0 +1,13 @@
+<svg id="icon_faceboock" data-name="icon/ faceboock" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="21" viewBox="0 0 22 21">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#0ab3d0"/>
+      <stop offset="1" stop-color="#e468ca"/>
+    </linearGradient>
+  </defs>
+  <g id="Rectangle_6815" data-name="Rectangle 6815" fill="rgba(10,179,208,0)" stroke="#9583cc" stroke-width="1">
+    <rect width="22" height="21" rx="4" stroke="none"/>
+    <rect x="0.5" y="0.5" width="21" height="20" rx="3.5" fill="none"/>
+  </g>
+  <path id="fa" d="M25.279,11.181H22.794V9.551a.664.664,0,0,1,.691-.755h1.754V6.105L22.824,6.1a3.059,3.059,0,0,0-3.291,3.291v1.794H17.982v2.773h1.551V21.8h3.261V13.954h2.2Z" transform="translate(-10.925 -3.156)" fill="url(#linear-gradient)"/>
+</svg>

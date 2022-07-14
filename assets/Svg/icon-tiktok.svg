@@ -1,0 +1,13 @@
+<svg id="tiktok" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="21" viewBox="0 0 22 21">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#0ab3d0"/>
+      <stop offset="1" stop-color="#e468ca"/>
+    </linearGradient>
+  </defs>
+  <g id="Rectangle_6815" data-name="Rectangle 6815" fill="rgba(10,179,208,0)" stroke="#9583cc" stroke-width="1">
+    <rect width="22" height="21" rx="4" stroke="none"/>
+    <rect x="0.5" y="0.5" width="21" height="20" rx="3.5" fill="none"/>
+  </g>
+  <path id="Icon_simple-tiktok" data-name="Icon simple-tiktok" d="M9.534.013C10.392,0,11.242.007,12.093,0a4.076,4.076,0,0,0,1.145,2.729A4.615,4.615,0,0,0,16.012,3.9V6.537A7,7,0,0,1,13.264,5.9a8.085,8.085,0,0,1-1.06-.609c-.007,1.911.007,3.821-.013,5.726a5,5,0,0,1-.883,2.578A4.875,4.875,0,0,1,7.44,15.7a4.771,4.771,0,0,1-2.67-.674,4.934,4.934,0,0,1-2.388-3.736c-.013-.327-.02-.654-.007-.975A4.926,4.926,0,0,1,8.088,5.941c.013.968-.026,1.937-.026,2.905A2.245,2.245,0,0,0,5.2,10.234,2.6,2.6,0,0,0,5.1,11.288a2.227,2.227,0,0,0,2.29,1.878,2.2,2.2,0,0,0,1.813-1.054,1.51,1.51,0,0,0,.268-.694c.065-1.171.039-2.336.046-3.507.007-2.637-.007-5.268.013-7.9Z" transform="translate(1.631 3)" fill="url(#linear-gradient)"/>
+</svg>

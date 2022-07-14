@@ -1,0 +1,17 @@
+<svg id="icon_insta" data-name="icon/ insta" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="21" height="21" viewBox="0 0 21 21">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#0ab3d0"/>
+      <stop offset="1" stop-color="#e468ca"/>
+    </linearGradient>
+  </defs>
+  <g id="Rectangle_6814" data-name="Rectangle 6814" fill="rgba(10,179,208,0)" stroke="#9583cc" stroke-width="1">
+    <rect width="21" height="21" rx="4" stroke="none"/>
+    <rect x="0.5" y="0.5" width="20" height="20" rx="3.5" fill="none"/>
+  </g>
+  <g id="inst" transform="translate(2.997 2.84)">
+    <path id="Path_10562" data-name="Path 10562" d="M19.352,16.7A3.952,3.952,0,1,0,23.3,20.652,3.96,3.96,0,0,0,19.352,16.7Zm0,6.484a2.532,2.532,0,1,1,2.532-2.532A2.543,2.543,0,0,1,19.352,23.184Z" transform="translate(-11.695 -13.025)" fill="url(#linear-gradient)"/>
+    <ellipse id="Ellipse_294" data-name="Ellipse 294" cx="0.895" cy="0.895" rx="0.895" ry="0.895" transform="translate(10.869 2.686)" fill="url(#linear-gradient)"/>
+    <path id="Path_10563" data-name="Path 10563" d="M17.481,6.066A4.4,4.4,0,0,0,14.238,4.8H7.877A4.23,4.23,0,0,0,3.4,9.277v6.33a4.443,4.443,0,0,0,1.3,3.3,4.506,4.506,0,0,0,3.211,1.2h6.3a4.559,4.559,0,0,0,3.242-1.2,4.421,4.421,0,0,0,1.266-3.273V9.277A4.427,4.427,0,0,0,17.481,6.066Zm-.124,9.572a3.017,3.017,0,0,1-.9,2.254,3.192,3.192,0,0,1-2.254.8h-6.3a3.192,3.192,0,0,1-2.254-.8,3.1,3.1,0,0,1-.834-2.285V9.277a3.078,3.078,0,0,1,.834-2.254,3.14,3.14,0,0,1,2.254-.8h6.361a3.078,3.078,0,0,1,2.254.834,3.186,3.186,0,0,1,.834,2.223v6.361Z" transform="translate(-3.4 -4.8)" fill="url(#linear-gradient)"/>
+  </g>
+</svg>

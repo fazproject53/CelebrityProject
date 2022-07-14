@@ -1,0 +1,22 @@
+Target dependency graph (8 targets)
+FMDB in Pods, no dependencies
+Flutter in Pods, no dependencies
+image_picker in Pods, depends on:
+Flutter in Pods (explicit)
+path_provider_ios in Pods, depends on:
+Flutter in Pods (explicit)
+shared_preferences_ios in Pods, depends on:
+Flutter in Pods (explicit)
+sqflite in Pods, depends on:
+FMDB in Pods (explicit)
+Flutter in Pods (explicit)
+video_player_avfoundation in Pods, depends on:
+Flutter in Pods (explicit)
+Pods-Runner in Pods, depends on:
+FMDB in Pods (explicit)
+Flutter in Pods (explicit)
+image_picker in Pods (explicit)
+path_provider_ios in Pods (explicit)
+shared_preferences_ios in Pods (explicit)
+sqflite in Pods (explicit)
+video_player_avfoundation in Pods (explicit)
