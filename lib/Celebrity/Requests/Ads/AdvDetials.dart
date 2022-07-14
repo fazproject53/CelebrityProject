@@ -2,16 +2,13 @@ import 'dart:convert';
 import 'package:celepraty/Celebrity/Requests/Ads/AdvertisinApi.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
-import 'package:celepraty/Users/Exploer/viewDataImage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../Account/UserForm.dart';
 import '../../chat/chat_Screen.dart';
 import '../DownloadImages.dart';
-import 'Advertisments.dart';
+
 bool clickAdv=false;
 class AdvDetials extends StatefulWidget {
   final int? i;
@@ -204,74 +201,51 @@ class _AdvDetialsState extends State<AdvDetials>
                 visible: isReject,
                 child: widget.state == 3 || widget.state == 5
                     ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.r),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.quiz,
-                                    color: pink,
-                                    size: 25.r,
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  text(
-                                    context,
-                                    'سبب الرفض',
-                                    17,
-                                    black,
-                                    //fontWeight: FontWeight.bold,
-                                    align: TextAlign.right,
-                                  ),
-                                ],
-                              ),
-                              //-------------------------------
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 36.r),
-                                child: text(
-                                  context,
-                                  widget.rejectResonName!,
-                                  15,
-                                  deepBlack,
-                                  //fontWeight: FontWeight.bold,
-                                  align: TextAlign.right,
-                                ),
-                              ),
-                            ],
+                  padding: EdgeInsets.symmetric(horizontal: 20.r),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.quiz,
+                              color: pink,
+                              size: 25.r,
+                            ),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                            text(
+                              context,
+                              'سبب الرفض',
+                              18,
+                              black,
+                              //fontWeight: FontWeight.bold,
+                              align: TextAlign.right,
+                            ),
+                          ],
+                        ),
+                        //-------------------------------
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 30.w),
+                          child: text(
+                            context,
+                            widget.rejectResonName!,
+                            16.5,
+                            deepBlack,
+                            //fontWeight: FontWeight.bold,
+                            align: TextAlign.right,
                           ),
                         ),
-                      )
+                      ],
+                    ),
+                  ),
+                )
                     :
 //price field-------------------------------------------------------------------------------
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.r),
-                        child: SingleChildScrollView(
-                          child: Form(
-                            key: priceKey,
-                            child: textField2(
-                              context,
-                              money,
-                              widget.price! > 0
-                                  ? "سعر الاعلان"
-                                  : 'أدخل سعر الاعلان',
-                              14,
-                              false,
-                              price!,
-                              empty,
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              isEdit: widget.price! > 0 ? false : true,
-                            ),
-                          ),
-                        ),
-                      )),
+                const SizedBox()),
 
 //accept buttom-----------------------------------------------------
 

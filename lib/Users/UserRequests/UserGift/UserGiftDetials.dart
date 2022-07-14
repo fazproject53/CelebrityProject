@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import '../../../Account/UserForm.dart';
 import '../UserAds/UserAdsOrdersApi.dart';
 
+bool clickUserGift = false;
+
 class UserGiftDetials extends StatefulWidget {
   final int? i;
   final String? description;
@@ -323,58 +325,56 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
 
             const Spacer(),
 
-//price field-----------------------------------------------------
+//reject reson -----------------------------------------------------
             Visibility(
                 visible: isReject,
                 child: widget.state == 3 || widget.state == 5
                     ? Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.r),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.quiz,
-                                    color: pink,
-                                    size: 30.r,
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  text(
-                                    context,
-                                    'سبب الرفض',
-                                    17,
-                                    black,
-                                    //fontWeight: FontWeight.bold,
-                                    align: TextAlign.right,
-                                  ),
-                                ],
-                              ),
-//-------------------------------
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 36.r),
-                                child: text(
-                                  context,
-                                  widget.rejectResonName!,
-                                  15,
-                                  deepBlack,
-                                  //fontWeight: FontWeight.bold,
-                                  align: TextAlign.right,
-                                ),
-                              ),
-                            ],
+                  padding: EdgeInsets.symmetric(horizontal: 20.r),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.quiz,
+                              color: pink,
+                              size: 25.r,
+                            ),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                            text(
+                              context,
+                              'سبب الرفض',
+                              18,
+                              black,
+                              //fontWeight: FontWeight.bold,
+                              align: TextAlign.right,
+                            ),
+                          ],
+                        ),
+                        //-------------------------------
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 30.w),
+                          child: text(
+                            context,
+                            widget.rejectResonName!,
+                            16.5,
+                            deepBlack,
+                            //fontWeight: FontWeight.bold,
+                            align: TextAlign.right,
                           ),
                         ),
-                      )
+                      ],
+                    ),
+                  ),
+                )
                     :
 //price field-------------------------------------------------------------------------------
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.r),
-                      )),
+                const SizedBox()),
 
 //accept buttom-----------------------------------------------------
 
@@ -435,12 +435,17 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
                                         result.then((value) {
                                           if (value == true) {
                                             Navigator.pop(context);
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(snackBar(
-                                                    context,
-                                                    'تم قبول الطلب',
-                                                    green,
-                                                    done));
+                                            setState(() {
+                                              clickUserGift = true;
+                                            });
+                                            successfullyDialog(
+                                                context,
+                                                'تم قبول سعر الاعلان',
+                                                "assets/lottie/SuccessfulCheck.json",
+                                                'حسناً', () {
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            });
                                           } else {
                                             Navigator.pop(context);
                                             ScaffoldMessenger.of(context)
@@ -567,7 +572,7 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
                           child: text(
                             context,
                             'سبب الرفض',
-                            17,
+                            18,
                             black,
                             //fontWeight: FontWeight.bold,
                             align: TextAlign.right,
@@ -615,9 +620,17 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
                                   result.then((value) {
                                     if (value == true) {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(context,
-                                              'تم رفض الطلب', green, done));
+                                      setState(() {
+                                        clickUserGift = true;
+                                      });
+                                      successfullyDialog(
+                                          context,
+                                          'تم رفض سعر الاعلان',
+                                          "assets/lottie/SuccessfulCheck.json",
+                                          'حسناً', () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      });
                                     } else {
                                       Navigator.pop(context);
                                       ScaffoldMessenger.of(context)
@@ -640,9 +653,17 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
                                 result.then((value) {
                                   if (value == true) {
                                     Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        snackBar(context, 'تم رفض الطلب', green,
-                                            done));
+                                    setState(() {
+                                      clickUserGift = true;
+                                    });
+                                    successfullyDialog(
+                                        context,
+                                        'تم رفض سعر الاعلان',
+                                        "assets/lottie/SuccessfulCheck.json",
+                                        'حسناً', () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
                                   } else {
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -713,7 +734,7 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
                             onTap: () {
                               setState(() {
                                 resonReject = rejectResonsList[i];
-                                resonRejectId = i;
+                                resonRejectId = i+1;
                                 isReject = false;
                               });
                               Navigator.pop(context);

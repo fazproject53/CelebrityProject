@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import '../../../Account/UserForm.dart';
 import '../../chat/chat_Screen.dart';
 import '../Ads/AdvertisinApi.dart';
 bool clickGift = false;
@@ -62,7 +61,6 @@ class _GiftDetialsState extends State<GiftDetials> {
 
   @override
   Widget build(BuildContext context) {
-    bool isScreenWide = MediaQuery.of(context).size.width >= 900;
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
@@ -421,146 +419,55 @@ class _GiftDetialsState extends State<GiftDetials> {
                       ]))
                   :
 //confirm reject---------------------------------------------------------------
-                  Padding(
-                      padding: EdgeInsets.all(8.0.h),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4.0.w),
-                            child: text(
-                              context,
-                              'سبب الرفض',
-                              18,
-                              deepgrey!,
-                              fontWeight: FontWeight.bold,
-                              align: TextAlign.right,
-                            ),
-                          ),
-                          SizedBox(height: 15.h),
-//-------------------------------------------------------------------------
-                          resonReject == 'أخرى'
-                              ? Form(
-                                  key: resonKey,
-                                  child: textField2(
-                                    context,
-                                    Icons.unpublished,
-                                    '',
-                                    14,
-                                    false,
-                                    reson,
-                                    empty,
+                  Visibility(
+                      visible: isReject,
+                      child: widget.state == 3 || widget.state == 5
+                          ? Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.r),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.quiz,
+                                    color: pink,
+                                    size: 25.r,
                                   ),
-                                )
-                              : Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 8.0.w),
-                                  child: text(
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  text(
                                     context,
-                                    '$resonReject',
+                                    'سبب الرفض',
                                     18,
-                                    deepBlack,
+                                    black,
                                     //fontWeight: FontWeight.bold,
                                     align: TextAlign.right,
                                   ),
+                                ],
+                              ),
+                              //-------------------------------
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 30.w),
+                                child: text(
+                                  context,
+                                  widget.rejectResonName!,
+                                  16.5,
+                                  deepBlack,
+                                  //fontWeight: FontWeight.bold,
+                                  align: TextAlign.right,
                                 ),
-                          SizedBox(
-                              height: MediaQuery.of(context).size.height / 8),
-                          //--------------------------------
-                          //const Spacer(),
-                          gradientContainer(
-                            double.infinity,
-                            buttoms(
-                              context,
-                              "تاكيد",
-                              15,
-                              white,
-                              () {
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                if (resonReject == 'أخرى') {
-                                  if (resonKey.currentState?.validate() ==
-                                      true) {
-                                    loadingDialogue(context);
-                                    Future<bool> result =
-                                        rejectAdvertisingOrder(widget.token!,
-                                            widget.orderId!, reson.text, 0);
-                                    result.then((value) {
-                                      if (value == true) {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          clickGift = true;
-                                        });
-                                        successfullyDialog(
-                                            context,
-                                            'تم رفض الطلب بنجاح',
-                                            "assets/lottie/SuccessfulCheck.json",
-                                            'حسناً', () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        });
-                                      } else {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          clickGift = true;
-                                        });
-                                        successfullyDialog(
-                                            context,
-                                            'تم رفض الطلب بنجاح',
-                                            "assets/lottie/SuccessfulCheck.json",
-                                            'حسناً', () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        });
-                                      }
-                                    });
-                                  }
-                                } else {
-                                  loadingDialogue(context);
-                                  Future<bool> result = rejectAdvertisingOrder(
-                                      widget.token!,
-                                      widget.orderId!,
-                                      resonReject!,
-                                      resonRejectId!);
-                                  result.then((value) {
-                                    if (value == true) {
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        clickGift = true;
-                                      });
-                                      successfullyDialog(
-                                          context,
-                                          'تم رفض الطلب بنجاح',
-                                          "assets/lottie/SuccessfulCheck.json",
-                                          'حسناً', () {
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      });
-                                    } else {
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        clickGift = true;
-                                      });
-                                      successfullyDialog(
-                                          context,
-                                          'تم رفض الطلب بنجاح',
-                                          "assets/lottie/SuccessfulCheck.json",
-                                          'حسناً', () {
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      });
-                                    }
-                                  });
-                                }
-                              },
-                              evaluation: 0,
-                            ),
-                            height: 50,
-                            color: Colors.transparent,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      )
+                          :
+//price field-------------------------------------------------------------------------------
+                      const SizedBox()),
             ])));
   }
 

@@ -181,7 +181,7 @@ class _AdSpaceDetailsState extends State<AdSpaceDetails> {
                                   text(
                                     context,
                                     'سبب الرفض',
-                                    17,
+                                    18,
                                     black,
                                     //fontWeight: FontWeight.bold,
                                     align: TextAlign.right,
@@ -190,11 +190,11 @@ class _AdSpaceDetailsState extends State<AdSpaceDetails> {
                               ),
                               //-------------------------------
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 36.r),
+                                padding: EdgeInsets.symmetric(horizontal: 30.w),
                                 child: text(
                                   context,
                                   widget.rejectResonName!,
-                                  15,
+                                  16.5,
                                   deepBlack,
                                   //fontWeight: FontWeight.bold,
                                   align: TextAlign.right,
@@ -205,13 +205,8 @@ class _AdSpaceDetailsState extends State<AdSpaceDetails> {
                         ),
                       )
                           :
-//p-------------------------------------------------------------------------------
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.r),
-                        child: const SingleChildScrollView(
-
-                        ),
-                      )),
+//price field-------------------------------------------------------------------------------
+                      const SizedBox()),
 //Accept and Reject bottom----------------------------------------------------------------------------
                   isReject
                       ? Container(

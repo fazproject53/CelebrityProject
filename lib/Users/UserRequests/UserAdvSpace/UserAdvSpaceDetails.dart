@@ -163,52 +163,51 @@ class _UserAdvSpaceDetailsState extends State<UserAdvSpaceDetails> {
                       visible: isReject,
                       child: widget.state == 3 || widget.state == 5
                           ? Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.r),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.quiz,
-                                          color: pink,
-                                          size: 25.r,
-                                        ),
-                                        SizedBox(
-                                          width: 5.w,
-                                        ),
-                                        text(
-                                          context,
-                                          'سبب الرفض',
-                                          18,
-                                          black,
-                                          //fontWeight: FontWeight.bold,
-                                          align: TextAlign.right,
-                                        ),
-                                      ],
-                                    ),
-                                    //-------------------------------
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 30.w),
-                                      child: text(
-                                        context,
-                                        widget.rejectResonName!,
-                                        16.5,
-                                        deepBlack,
-                                        //fontWeight: FontWeight.bold,
-                                        align: TextAlign.right,
-                                      ),
-                                    ),
-                                  ],
+                        padding: EdgeInsets.symmetric(horizontal: 20.r),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.quiz,
+                                    color: pink,
+                                    size: 25.r,
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  text(
+                                    context,
+                                    'سبب الرفض',
+                                    18,
+                                    black,
+                                    //fontWeight: FontWeight.bold,
+                                    align: TextAlign.right,
+                                  ),
+                                ],
+                              ),
+                              //-------------------------------
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 30.w),
+                                child: text(
+                                  context,
+                                  widget.rejectResonName!,
+                                  16.5,
+                                  deepBlack,
+                                  //fontWeight: FontWeight.bold,
+                                  align: TextAlign.right,
                                 ),
                               ),
-                            )
+                            ],
+                          ),
+                        ),
+                      )
                           :
 //price field-------------------------------------------------------------------------------
-                          const SizedBox()),
+                      const SizedBox()),
 //accept buttom-----------------------------------------------------
 
                   isReject
@@ -586,7 +585,7 @@ class _UserAdvSpaceDetailsState extends State<UserAdvSpaceDetails> {
                             onTap: () {
                               setState(() {
                                 resonReject = rejectResonsList[i];
-                                resonRejectId = i;
+                                resonRejectId = i+1;
                                 isReject = false;
                               });
                               Navigator.pop(context);
