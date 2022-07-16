@@ -1,22 +1,35 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 String forgetToken = '';
 //CreatePassword---------------------------------------------------------------------------
-Future<bool> getCreatePassword(String username) async {
+ getCreatePassword(String username) async {
   Map<String, dynamic> data = {"username": username};
   String url = "https://mobile.celebrityads.net/api/password/create";
-  final respons = await http.post(Uri.parse(url), body: data);
-  if (respons.statusCode == 200) {
-    var state = jsonDecode(respons.body)?["success"];
-    print('CreatePassword respons: $state');
-    if (state == true) {
-      return true;
+  try {
+    final respons = await http.post(Uri.parse(url), body: data);
+    if (respons.statusCode == 200) {
+      var state = jsonDecode(respons.body)?["success"];
+      print('CreatePassword respons: $state');
+      if (state == true) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      throw Exception('Failed to load Create Password');
     }
-  } else {
-    throw Exception('Failed to load Create Password');
+  }catch (e) {
+    if (e is SocketException) {
+      return 'SocketException';
+    } else if(e is TimeoutException) {
+      return 'TimeoutException';
+    } else {
+      return 'serverExeption';
+
+    }
   }
 }
 

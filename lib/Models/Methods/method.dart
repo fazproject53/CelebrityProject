@@ -30,9 +30,11 @@ Widget text(
   return Text(
     key,
     textAlign: align,
-    softWrap: true,
+    //softWrap: false,
     style: TextStyle(
       color: color,
+     //overflow: TextOverflow.ellipsis,
+
       fontFamily: family,
       fontSize: fontSize.sp,
       letterSpacing: space.sp,
@@ -1288,7 +1290,7 @@ loadingDialogue(context) {
 }
 loadingRequestDialogue(context) {
   return showDialog(
-   // barrierDismissible: false,
+    barrierDismissible: false,
     barrierColor: Colors.transparent,
       context: context,
       builder: (context) {
@@ -1352,6 +1354,33 @@ Widget noData(context) {
     ),
   );
 }
+//showErrorMassage----------------------------------------------------------------------
+showMassage(context,String titleText,String messageText,{IconData? done}) {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.BOTTOM,
+    backgroundColor: white,
+    margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+    padding: const EdgeInsets.all(10),
+    flushbarStyle: FlushbarStyle.FLOATING,
+    borderRadius: BorderRadius.circular(5.r),
+    forwardAnimationCurve: Curves.linearToEaseOut,
+    reverseAnimationCurve: Curves.easeInOutCubicEmphasized,
+    duration: const Duration(seconds: 6),
+    leftBarIndicatorColor: done==null?red:green,
+    onTap: (bar) {
+      bar.dismiss();
+    },
+    icon: Icon(
+      done ?? error,
+      color: done==null?red:green,
+      size: 30,
+    ),
+    titleText: text(context, titleText, 16, done==null?red!:green),
+    messageText: text(context, messageText, 14, black,
+        fontWeight: FontWeight.w200),
+  ).show(context);
+}
+//----------------------------------------------------------------------
 
 successfullyDialog(context,String massage,String lottie,String bottomName,action) {
   return showDialog(
@@ -1394,6 +1423,7 @@ successfullyDialog(context,String massage,String lottie,String bottomName,action
 SnackBar snackBar(context, String title, Color? color, IconData? icon) {
   return SnackBar(
       backgroundColor: color ?? white,
+
       elevation: 20,
       content: Row(
         children: [

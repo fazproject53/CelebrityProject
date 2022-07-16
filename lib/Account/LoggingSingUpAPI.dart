@@ -111,7 +111,14 @@ class DatabaseHelper {
         //--------------------------------------------------------
       }
     } catch (e) {
-      print(e.toString());
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
     }
     return "";
   }
@@ -122,7 +129,7 @@ class DatabaseHelper {
       String email, String countryId, String categoryId) async {
     var userType;
 
-    // try {
+    try {
     Map<String, dynamic> data = {
       "username": username,
       "password": password,
@@ -160,9 +167,16 @@ class DatabaseHelper {
       return "email found";
       //--------------------------------------------------------
     }
-    // } catch (e) {
-    //   print(e.toString());
-    // }
+    } catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
+    }
     return "";
   }
 

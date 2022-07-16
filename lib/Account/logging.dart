@@ -165,30 +165,19 @@ class _LoggingState extends State<Logging> {
                                     } else if (result ==
                                         "Invalid Credentials") {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(
-                                              context,
-                                              'خطأ في كلمة المرور او اسم المستخدم',
-                                              red,
-                                              error));
+                                      showMassage(context, 'بيانات غير صحيحة',
+                                          'خطأ في كلمة المرور او اسم المستخدم');
                                     } else if (result == "SocketException") {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(
-                                              context,
-                                              'لايوجد اتصال بالانترنت ',
-                                              red,
-                                              error));
+                                      showMassage(context, 'مشكلة في الانترنت',
+                                          ' لايوجد اتصال بالانترنت في الوقت الحالي ');
                                     } else if (result == "TimeoutException") {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(context,
-                                              'TimeoutException', red, error));
+                                      showMassage(context, 'مشكلة في الخادم', 'TimeoutException');
                                     } else {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(context,
-                                              'serverExeption', red, error));
+                                      showMassage(context, 'مشكلة في الخادم',
+                                          'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا ');
                                     }
 //if user not select remember me----------------------------------------------------------------------------
                                   } else {
@@ -211,7 +200,7 @@ class _LoggingState extends State<Logging> {
 
                                       Navigator.pop(context);
                                       setState(() {
-                                        currentuser = "famous";
+                                        currentuser = "celebrity";
                                       });
                                       DatabaseHelper.removeRememberUserEmail();
                                       print('remove celebrity email');
@@ -223,27 +212,18 @@ class _LoggingState extends State<Logging> {
                                     } else if (result ==
                                         "Invalid Credentials") {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(
-                                              context,
-                                              'خطأ في كلمة المرور او اسم المستخدم',
-                                              red,
-                                              error));
+                                      showMassage(context, 'بيانات غير صحيحة',
+                                          'خطأ في كلمة المرور او اسم المستخدم');
                                     } else {
                                       Navigator.pop(context);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(snackBar(
-                                              context,
-                                              'تاكد من ملء جميع الحقول',
-                                              red,
-                                              error));
+                                      showMassage(context, 'حقول فارغة او غير صحيحة',
+                                          'تاكد من تعبئة كل الحقول بصورة صحيحة');
                                     }
                                   }
                                 });
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    snackBar(context, 'تاكد من تعبئة كل الحقول',
-                                        red, error));
+                                // showMassage(context, 'حقول فارغة او غير صحيحة',
+                                //     'تاكد من تعبئة كل الحقول بصورة صحيحة',done: done);
                               }
                             }),
                             color: Colors.transparent),
