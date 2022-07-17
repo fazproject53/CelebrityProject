@@ -41,7 +41,7 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
     });
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
-          scrollController.offset &&
+              scrollController.offset &&
           hasMore == false) {
         print('getNew Data');
         getGiftingOrders(token);
@@ -55,61 +55,71 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
       onRefresh: refreshRequest,
       child: isConnectAdvertisingOrder == false
           ? Center(
-        child: internetConnection(context, reload: () {
-          setState(() {
-            refreshRequest();
-            isConnectAdvertisingOrder = true;
-          });
-        }),
-      ): Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: empty?noData(context):ListView.builder(
-              controller: scrollController,
-              itemCount: oldAdvertisingOrder.length + 1,
-              itemBuilder: (context, i) {
-               if(oldAdvertisingOrder.length > i){
-                 return InkWell(
-                     onTap: () {
-                       goToPagePushRefresh(
-                           context,
-                           GiftDetials(
-                             i: i,
-                             price: oldAdvertisingOrder[i].price,
-                             description: oldAdvertisingOrder[i].description,
-                             advTitle: oldAdvertisingOrder[i].occasion?.name,
-                             advType:oldAdvertisingOrder[i].giftType?.name,
-                             orderId: oldAdvertisingOrder[i].id,
-                             token: token,
-                             state: oldAdvertisingOrder[i].status?.id,
-                             rejectResonName: oldAdvertisingOrder[i].rejectReson?.name!,
-                             rejectResonId: oldAdvertisingOrder[i].rejectReson?.id,
-                             from: oldAdvertisingOrder[i].from!,
-                             to: oldAdvertisingOrder[i].to!,
-                           ),then: (value) {
-                         if (clickGift) {
-                           setState(() {
-                             refreshRequest();
-                             clickGift = false;
-                           });
-                         }
-                       });
-                     },
-                     child: Column(
-                       children: [
-                         getData(
-                             i, oldAdvertisingOrder),
-                       ],
-                     ));
-               }else{
-                 return isLoading &&
-                     pageCount >= page &&
-                     oldAdvertisingOrder.isNotEmpty
-                     ? lodeOneData()
-                     : const SizedBox();
-               }
-              })),
+              child: internetConnection(context, reload: () {
+                setState(() {
+                  refreshRequest();
+                  isConnectAdvertisingOrder = true;
+                });
+              }),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: empty
+                  ? noData(context)
+                  : ListView.builder(
+                      controller: scrollController,
+                      itemCount: oldAdvertisingOrder.length + 1,
+                      itemBuilder: (context, i) {
+                        if (oldAdvertisingOrder.length > i) {
+                          return InkWell(
+                              onTap: () {
+                                goToPagePushRefresh(
+                                    context,
+                                    GiftDetials(
+                                      i: i,
+                                      price: oldAdvertisingOrder[i].price,
+                                      description:
+                                          oldAdvertisingOrder[i].description,
+                                      advTitle:
+                                          oldAdvertisingOrder[i].occasion?.name,
+                                      advType:
+                                          oldAdvertisingOrder[i].giftType?.name,
+                                      orderId: oldAdvertisingOrder[i].id,
+                                      token: token,
+                                      state: oldAdvertisingOrder[i].status?.id,
+                                      rejectResonName: oldAdvertisingOrder[i]
+                                          .rejectReson
+                                          ?.name!,
+                                      rejectResonId: oldAdvertisingOrder[i]
+                                          .rejectReson
+                                          ?.id,
+                                      from: oldAdvertisingOrder[i].from!,
+                                      to: oldAdvertisingOrder[i].to!,
+                                    ), then: (value) {
+                                  if (clickGift) {
+                                    setState(() {
+                                      refreshRequest();
+                                      clickGift = false;
+                                    });
+                                  }
+                                });
+                              },
+                              child: Column(
+                                children: [
+                                  getData(i, oldAdvertisingOrder),
+                                ],
+                              ));
+                        } else {
+                          return isLoading &&
+                                  pageCount >= page &&
+                                  oldAdvertisingOrder.isNotEmpty
+                              ? lodeOneData()
+                              : const SizedBox();
+                        }
+                      })),
     );
   }
+
   //----------------------------------------------------------------------
   Future refreshRequest() async {
     setState(() {
@@ -170,8 +180,8 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
         });
         return advertising;
       } else {
-       // throw Exception('ggg');
-        return Future.error('حدثت مشكله في السيرفر');
+        // throw Exception('ggg');
+        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
       if (page == 1) {
@@ -181,12 +191,11 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
         setState(() {
           isConnectAdvertisingOrder = false;
         });
-        return Future.error('SocketException');
+        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return Future.error('TimeoutException');
+        return 'TimeoutException';
       } else {
-        //throw Exception('ggg');
-        return Future.error('حدثت مشكله في السيرفر');
+        return 'حدثت مشكله في السيرفر';
       }
     }
   } //refreshRequest-----------------------------------------------------------------
@@ -211,7 +220,6 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
                       Radius.circular(10.h),
                     ),
                   ),
-
                   child: Stack(
                     children: [
 // image------------------------------------------------------------------------------
@@ -299,7 +307,7 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
                               alignment: Alignment.bottomLeft,
                               child: Padding(
                                 padding:
-                                EdgeInsets.only(right: 16.w, bottom: 10.h),
+                                    EdgeInsets.only(right: 16.w, bottom: 10.h),
                                 child: text(
                                   context,
                                   giftOrders[i].date!,
@@ -315,8 +323,6 @@ class _GiftState extends State<Gift> with AutomaticKeepAliveClientMixin {
                     ],
                   )),
             ),
-
-
 
 //details-------------------------------------------------------------------------------
           ],

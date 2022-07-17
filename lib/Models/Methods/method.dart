@@ -323,7 +323,7 @@ Widget textField(context, icons, String key, double fontSize, bool hintPass,
         ),),
         prefixIcon: Icon(icons, color: purple.withOpacity(0.6), size: 25.sp),
         labelText: key,
-        errorStyle: TextStyle(color: Colors.red, fontSize: 12.0.sp),
+        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
   );
 }
@@ -349,14 +349,24 @@ Widget textField3(context, icons, String key, double fontSize, bool hintPass,
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle:
-            TextStyle(color: deepBlack, fontSize:fontSize.sp),
-        fillColor: ligthtBlack,
-        labelStyle: TextStyle(color: deepBlack, fontSize: 12.0.sp),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-        prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
+        hintStyle: TextStyle(
+            color: Colors.white, fontSize: fontSize.sp),
+        fillColor: Colors.white12,
+        labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
+          color: purple.withOpacity(0.6),
+          width: 1.0,
+        ),),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
+          color: purple.withOpacity(0.6),
+          width: 1.0,
+        ),) ,
+        enabledBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
+          color: Colors.grey.withOpacity(0.8),
+          width: 1.0,
+        ),),prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
         labelText: key,
-        errorStyle: TextStyle(color: Colors.red, fontSize: 10.0.sp),
+        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
   );
 }
@@ -1382,10 +1392,10 @@ showMassage(context,String titleText,String messageText,{IconData? done}) {
 }
 //----------------------------------------------------------------------
 
-successfullyDialog(context,String massage,String lottie,String bottomName,action) {
+successfullyDialog(context,String massage,String lottie,String bottomName,action,{double? height}) {
   return showDialog(
      barrierDismissible: false,
-      barrierColor: Colors.black87,
+      barrierColor: Colors.black.withOpacity(0.70),
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -1395,17 +1405,19 @@ successfullyDialog(context,String massage,String lottie,String bottomName,action
           contentPadding: EdgeInsets.only(top: 30.h),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
-            height: 200.h,
+            height: height??200.h,
             child: Column(
 
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                text(context, massage, 18, black),
-                Lottie.asset(
-                    lottie,
-                    fit: BoxFit.cover,
-                    //height: 90.h
+               text(context, massage, 18, black,align: TextAlign.center),
+                Expanded(
+                  child: Lottie.asset(
+                      lottie,
+                      fit: BoxFit.cover,
+                      //height: 90.h
+                  ),
                 ),
               ],
             ),

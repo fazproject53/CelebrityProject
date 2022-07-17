@@ -298,7 +298,7 @@ class _UserAdSpaceState extends State<UserAdSpace>
         });
         return advertising;
       } else {
-        return Future.error('حدثت مشكله في السيرفر');
+        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
       if (page == 1) {
@@ -308,11 +308,11 @@ class _UserAdSpaceState extends State<UserAdSpace>
         setState(() {
           isConnectAdvertisingOrder = false;
         });
-        return Future.error('تحقق من اتصالك بالانترنت');
+        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return Future.error('TimeoutException');
+        return 'TimeoutException';
       } else {
-        return Future.error('حدثت مشكله في السيرفر');
+        return 'حدثت مشكله في السيرفر';
       }
     }
   } //refreshRequest-----------------------------------------------------------------

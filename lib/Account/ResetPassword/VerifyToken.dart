@@ -1,25 +1,35 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'Reset.dart';
 
-Future<bool> getVerifyToken(String token) async {
+getVerifyToken(String token) async {
   String url = "https://mobile.celebrityads.net/api/password/find/$token";
-  final respons = await http.get(Uri.parse(url));
-  if (respons.statusCode == 200) {
-    final body = respons.body;
-    VerifyToken verifyToken = VerifyToken.fromJson(jsonDecode(body));
-    if (verifyToken.success == true) {
-      var token = verifyToken.data?.passowrdReset?.token;
-      print('00000000000000000000000000000000000000');
-      print(token);
-      print('00000000000000000000000000000000000000');
-      return true;
+  try {
+    final respons = await http.get(Uri.parse(url));
+    if (respons.statusCode == 200) {
+      final body = respons.body;
+      VerifyToken verifyToken = VerifyToken.fromJson(jsonDecode(body));
+      if (verifyToken.success == true) {
+        var token = verifyToken.data?.passowrdReset?.token;
+        print('00000000000000000000000000000000000000');
+        print(token);
+        print('00000000000000000000000000000000000000');
+        return true;
+      }
     } else {
-      return false;
+      return 'serverException';
     }
-  } else {
-    throw Exception('Failed to Verify Token');
+  } catch (e) {
+    if (e is SocketException) {
+      return 'SocketException';
+    } else if (e is TimeoutException) {
+      return 'TimeoutException';
+    } else {
+      return 'serverException';
+    }
   }
 }
 
@@ -33,13 +43,13 @@ class VerifyToken {
 
   VerifyToken.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
     message =
-    json['message'] != null ?  Message.fromJson(json['message']) : null;
+        json['message'] != null ? Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
       data['data'] = this.data!.toJson();

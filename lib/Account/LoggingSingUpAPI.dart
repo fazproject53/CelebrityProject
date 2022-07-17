@@ -61,7 +61,7 @@ class DatabaseHelper {
       } else if(e is TimeoutException) {
         return 'TimeoutException';
       } else {
-        return 'serverExeption';
+        return 'serverException';
 
       }
     }
@@ -130,43 +130,43 @@ class DatabaseHelper {
     var userType;
 
     try {
-    Map<String, dynamic> data = {
-      "username": username,
-      "password": password,
-      "email": email,
-      'country_id': countryId,
-      'category_id': categoryId
-    };
-    String url = "$serverUrl/celebrity/register";
-    final respons = await http.post(Uri.parse(url), body: data);
-    var message = jsonDecode(respons.body)?["message"]?["en"];
-    int? status = jsonDecode(respons.body)?["data"]?["status"];
-    print('user register respons: $message');
-    //print('status register respons: $status');
+      Map<String, dynamic> data = {
+        "username": username,
+        "password": password,
+        "email": email,
+        'country_id': countryId,
+        'category_id': categoryId
+      };
+      String url = "$serverUrl/celebrity/register";
+      final respons = await http.post(Uri.parse(url), body: data);
+      var message = jsonDecode(respons.body)?["message"]?["en"];
+      int? status = jsonDecode(respons.body)?["data"]?["status"];
+      print('user register respons: $message');
+      //print('status register respons: $status');
 
-    //--------------------------------------------------------
-    if (status == 200) {
-      token = jsonDecode(respons.body)['data']['token'];
-      userType = jsonDecode(respons.body)['data']?['celebrity']?['type'];
-      _saveToken(token);
-      saveRememberUserEmail(email);
-      // print('respons body: ${jsonDecode(respons.body)}');
-      // print(userType);
-      return '$userType';
-    } else if (message['email']?[0] == "The email has already been taken." &&
-        message['username']?[0] == "The username has already been taken.") {
-      // print("email username found");
-      return "email and username found";
       //--------------------------------------------------------
-    } else if (message['username']?[0] ==
-        "The username has already been taken.") {
-      //print("username found");
-      return "username found";
-    } else if (message['email']?[0] == "The email has already been taken.") {
-      //print("email found");
-      return "email found";
-      //--------------------------------------------------------
-    }
+      if (status == 200) {
+        token = jsonDecode(respons.body)['data']['token'];
+        userType = jsonDecode(respons.body)['data']?['celebrity']?['type'];
+        _saveToken(token);
+        saveRememberUserEmail(email);
+        // print('respons body: ${jsonDecode(respons.body)}');
+        // print(userType);
+        return '$userType';
+      } else if (message['email']?[0] == "The email has already been taken." &&
+          message['username']?[0] == "The username has already been taken.") {
+        // print("email username found");
+        return "email and username found";
+        //--------------------------------------------------------
+      } else if (message['username']?[0] ==
+          "The username has already been taken.") {
+        //print("username found");
+        return "username found";
+      } else if (message['email']?[0] == "The email has already been taken.") {
+        //print("email found");
+        return "email found";
+        //--------------------------------------------------------
+      }
     } catch (e) {
       if (e is SocketException) {
         return 'SocketException';
