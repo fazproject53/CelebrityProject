@@ -10,14 +10,10 @@ import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
 import '../../../Account/LoggingSingUpAPI.dart';
 import '../activity_screen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../activity_screen.dart';
 
 class addVideo extends StatefulWidget {
   _addVideoState createState() => _addVideoState();

@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 import '../../Account/LoggingSingUpAPI.dart';
@@ -60,10 +61,10 @@ class _InvoiceState extends State<Invoice> {
                 children: [
                   SizedBox(height: 30.h,),
                   Padding(
-                    padding: EdgeInsets.only(right: 8.0.w),
-                    child: text(context, 'الطلبات المالية السابقة', 17, black),
+                    padding: EdgeInsets.only(right: 20.0.w),
+                    child: text(context, 'الطلبات المالية ', 20, black),
                   ),
-                  SizedBox(height: 30.h,),
+                  SizedBox(height: 20.h,),
     FutureBuilder<InvoiceModel>(
     future: invoices,
     builder: (context, snapshot) {
@@ -79,8 +80,13 @@ class _InvoiceState extends State<Invoice> {
     } else if (snapshot.hasData) {
       print(snapshot.data!.data!.billings!.length);
     return snapshot.data!.data!.billings!.isEmpty?  Padding(
-      padding:  EdgeInsets.only(top: getSize(context).height/4),
-      child: Center(child: text(context, 'لا يوجد فواتير لعرضهم حاليا', 18, black),),
+      padding:  EdgeInsets.only(top: getSize(context).height/7),
+      child: Center(child: Column(
+        children: [
+          LottieBuilder.asset('assets/lottie/invoicesempty.json', height: 200.h),
+          text(context, 'لا يوجد فواتير لعرضهم حاليا', 20, black),
+        ],
+      ),),
     ):
                   ListView.builder(
                     shrinkWrap: true,

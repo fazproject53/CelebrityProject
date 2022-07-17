@@ -4,13 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:celepraty/Celebrity/Activity/news/addNews.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../Account/LoggingSingUpAPI.dart';
 import '../../../Account/logging.dart';
-import '../../setting/profileInformation.dart';
+
 
 class news extends StatefulWidget {
   _newsState createState() => _newsState();

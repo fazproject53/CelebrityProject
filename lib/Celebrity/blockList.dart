@@ -5,6 +5,7 @@ import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:celepraty/Account/logging.dart' as login;
+import 'package:lottie/lottie.dart';
 
 import '../Account/LoggingSingUpAPI.dart';
 class blockList extends StatefulWidget {
@@ -34,7 +35,30 @@ class _blockListState extends State<blockList> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: drowAppBar( 'قائمة الحظر', context),
-        body: Stack(
+        body:  FutureBuilder(
+            future: blockedUsers,
+            builder: ((context, AsyncSnapshot<Block> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: mainLoad(context));
+              } else if (snapshot.connectionState ==
+                  ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Center(child: Text(snapshot.error.toString()));
+                  //---------------------------------------------------------------------------
+                } else if (snapshot.hasData) {
+                  return snapshot.data!.data!.blackList!.isEmpty? Padding(
+                    padding:  EdgeInsets.only(top: getSize(context).height/4),
+                    child: Center(child: Column(
+                      children: [
+                        Padding(
+                          padding:  EdgeInsets.only(left:50.0.w, right: 50.w),
+                          child: LottieBuilder.asset('assets/lottie/peace.json'),
+                        ),
+                        text(context, 'لايوجد متابعين محظورين', 20, black),
+                      ],
+                    )),
+                  ) :Stack(
           children: [
             Container(
               height: 300.h,
@@ -53,19 +77,7 @@ class _blockListState extends State<blockList> {
                       bottomLeft: Radius.circular(30.r),
                       bottomRight: Radius.circular(30.r))),
             ),
-            FutureBuilder(
-                future: blockedUsers,
-                builder: ((context, AsyncSnapshot<Block> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center();
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.active ||
-                      snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Center(child: Text(snapshot.error.toString()));
-                      //---------------------------------------------------------------------------
-                    } else if (snapshot.hasData) {
-                      return snapshot.data!.data!.blackList!.isEmpty? Center(child: text(context, 'لايوجد متابعين محظورين', 20, black)) :
+
                        paddingg(
                         10,
                         10,
@@ -176,7 +188,8 @@ class _blockListState extends State<blockList> {
                             );
                           },
                         ),
-                      );
+                      ),
+              ]);
                     } else {
                       return const Center(
                           child: Text('لايوجد لينك لعرضهم حاليا'));
@@ -186,10 +199,10 @@ class _blockListState extends State<blockList> {
                         child: Text('State: ${snapshot.connectionState}'));
                   }
                 })),
-          ],
+
         ),
-      ),
-    );
+      );
+
   }
 }
 
