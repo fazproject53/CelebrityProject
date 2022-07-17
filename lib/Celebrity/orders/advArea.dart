@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:celepraty/MainScreen/main_screen_navigation.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart' as Path;
 import 'package:celepraty/Models/Methods/classes/GradientIcon.dart';
@@ -17,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:async/async.dart';
 
 import '../../Account/LoggingSingUpAPI.dart';
+import '../../Users/UserRequests/UserReguistMainPage.dart';
 import '../Pricing/ModelPricing.dart';
 import '../celebrityHomePage.dart';
 
@@ -209,14 +211,39 @@ class _advAreaState extends State<advArea>{
                     builder: (BuildContext context) {
 
                         addAdAreaOrder().then((value) => {
-                        Navigator.of(context).pop(),
-                          ScaffoldMessenger.of(
-                              context)
-                              .showSnackBar(
-                              SnackBar(
-                                duration:  Duration(seconds: 1),
-                                content: Text(value),
-                              ))});
+    goTopageReplacement(context, UserRequestMainPage()),
+    Flushbar(
+    flushbarPosition:
+    FlushbarPosition.TOP,
+    backgroundColor: white,
+    margin:
+    const EdgeInsets.all(5),
+    flushbarStyle:
+    FlushbarStyle.FLOATING,
+    borderRadius:
+    BorderRadius.circular(
+    15.r),
+    duration: const Duration(
+    seconds: 5),
+    icon: Padding(
+    padding: const EdgeInsets.only(left: 18.0),
+    child: Icon(
+    done,
+    color: green,
+    size: 25.sp,
+    ),
+    ),
+    titleText: text(context, 'تم التعديل بنجاح', 14, purple),
+    messageText: text(
+    context,
+    value,
+    14,
+    black,
+    fontWeight:
+    FontWeight.w200),
+    ).show(context)
+
+    });
                       return
                         Align(
                           alignment: Alignment.center,

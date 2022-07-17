@@ -6,13 +6,16 @@ import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 
 import '../../Account/LoggingSingUpAPI.dart';
 import '../../MainScreen/main_screen_navigation.dart';
+import '../../Users/UserRequests/UserReguistMainPage.dart';
 import '../Pricing/ModelPricing.dart';
+import '../Requests/ReguistMainPage.dart';
 
 
 
@@ -176,6 +179,7 @@ class _gifttingFormState extends State<gifttingForm>{
                                     if (snapshot.connectionState == ConnectionState.waiting) {
                                       return  paddingg(15, 15, 12,
                                         DropdownBelow(
+                                          dropdownColor: lightGrey.withOpacity(0.10),
                                           itemWidth: 380.w,
                                           ///text style inside the menu
                                           itemTextstyle: TextStyle(
@@ -195,12 +199,13 @@ class _gifttingFormState extends State<gifttingForm>{
                                           boxWidth: 500.w,
                                           boxHeight: 40.h,
                                           boxDecoration: BoxDecoration(
-                                              color: textFieldBlack2.withOpacity(0.70),
+                                              border:  Border.all(color: newGrey, width: 0.5),
+                                              color: lightGrey.withOpacity(0.10),
                                               borderRadius: BorderRadius.circular(8.r)),
                                           ///Icons
                                           icon: const Icon(
                                             Icons.arrow_drop_down,
-                                            color: Colors.white54,
+                                            color: Colors.grey,
                                           ),
                                           hint:  Text(
                                             ocassion,
@@ -228,12 +233,13 @@ class _gifttingFormState extends State<gifttingForm>{
                                         return   paddingg(15, 15, 12,
                                           Container(
                                             child: DropdownBelow(
+                                              dropdownColor:white,
                                               itemWidth: 370.w,
                                               ///text style inside the menu
                                               itemTextstyle: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
-                                                color: white,
+                                                color: black,
                                                 fontFamily: 'Cairo',),
                                               ///hint style
                                               boxTextstyle: TextStyle(
@@ -244,16 +250,17 @@ class _gifttingFormState extends State<gifttingForm>{
                                               ///box style
                                               boxPadding:
                                               EdgeInsets.fromLTRB(13.w, 12.h, 13.w, 12.h),
-                                              dropdownColor: newGrey,
+
                                               boxWidth: 500.w,
                                               boxHeight: 45.h,
                                               boxDecoration: BoxDecoration(
-                                                  color: textFieldBlack2.withOpacity(0.70),
+                                                  border:  Border.all(color: newGrey, width: 0.5),
+                                                  color: lightGrey.withOpacity(0.10),
                                                   borderRadius: BorderRadius.circular(8.r)),
                                               ///Icons
                                               icon: const Icon(
                                                 Icons.arrow_drop_down,
-                                                color: Colors.white54,
+                                                color: Colors.grey,
                                               ),
                                               hint:  Text(
                                                 ocassion,
@@ -302,12 +309,13 @@ class _gifttingFormState extends State<gifttingForm>{
                                           boxWidth: 500.w,
                                           boxHeight: 45.h,
                                           boxDecoration: BoxDecoration(
-                                              color: textFieldBlack2.withOpacity(0.70),
+                                              border:  Border.all(color: newGrey, width: 0.5),
+                                              color: lightGrey.withOpacity(0.10),
                                               borderRadius: BorderRadius.circular(8.r)),
                                           ///Icons
                                           icon: const Icon(
                                             Icons.arrow_drop_down,
-                                            color: Colors.white54,
+                                            color: Colors.grey,
                                           ),
                                           hint:  Text(
                                             type,
@@ -339,7 +347,7 @@ class _gifttingFormState extends State<gifttingForm>{
                                             itemTextstyle: TextStyle(
                                               fontSize: 12.sp,
                                               fontWeight: FontWeight.w400,
-                                              color: white,
+                                              color: black,
                                               fontFamily: 'Cairo',),
                                             ///hint style
                                             boxTextstyle: TextStyle(
@@ -350,16 +358,17 @@ class _gifttingFormState extends State<gifttingForm>{
                                             ///box style
                                             boxPadding:
                                             EdgeInsets.fromLTRB(13.w, 12.h, 13.w, 12.h),
-                                            dropdownColor: newGrey,
+                                            dropdownColor: white,
                                             boxWidth: 450.w,
                                             boxHeight: 45.h,
                                             boxDecoration: BoxDecoration(
-                                                color: textFieldBlack2.withOpacity(0.70),
+                                                border:  Border.all(color: newGrey, width: 0.5),
+                                                color: lightGrey.withOpacity(0.10),
                                                 borderRadius: BorderRadius.circular(8.r)),
                                             ///Icons
                                             icon: const Icon(
                                               Icons.arrow_drop_down,
-                                              color: Colors.white54,
+                                              color: Colors.grey,
                                             ),
                                             hint:  Text(
                                               type,
@@ -477,15 +486,37 @@ class _gifttingFormState extends State<gifttingForm>{
                                       FocusManager.instance.primaryFocus
                                           ?.unfocus();
                                       addGift().then((value) =>  {
-                                      Navigator.of(context).pop(),
-                                          ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                      SnackBar(
-                                      duration:  Duration(seconds: 1),
-                                      content: Text(
-                                      value),
-
-                                      )),
+                                     goTopageReplacement(context, UserRequestMainPage()),
+                                      Flushbar(
+                                      flushbarPosition:
+                                      FlushbarPosition.TOP,
+                                      backgroundColor: white,
+                                      margin:
+                                      const EdgeInsets.all(5),
+                                      flushbarStyle:
+                                      FlushbarStyle.FLOATING,
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                      15.r),
+                                      duration: const Duration(
+                                      seconds: 5),
+                                      icon: Padding(
+                                      padding: const EdgeInsets.only(left: 18.0),
+                                      child: Icon(
+                                      done,
+                                      color: green,
+                                      size: 25.sp,
+                                      ),
+                                      ),
+                                      titleText: text(context, 'تم التعديل بنجاح', 14, purple),
+                                      messageText: text(
+                                      context,
+                                      value,
+                                      14,
+                                      black,
+                                      fontWeight:
+                                      FontWeight.w200),
+                                      ).show(context)
 
                                       });
                                           // == First dialog closed

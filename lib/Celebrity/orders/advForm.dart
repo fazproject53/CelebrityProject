@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:celepraty/Celebrity/orders/gifttingForm.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -21,6 +22,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 import '../../MainScreen/main_screen_navigation.dart';
 import '../../Users/Exploer/viewData.dart';
+import '../../Users/UserRequests/UserReguistMainPage.dart';
 import '../Pricing/ModelPricing.dart';
 import '../celebrityHomePage.dart';
 import 'AdvFormResponse.dart';
@@ -201,12 +203,13 @@ class _advFormState extends State<advForm>{
                                       boxWidth: 500.w,
                                       boxHeight: 40.h,
                                       boxDecoration: BoxDecoration(
-                                          color: textFieldBlack2.withOpacity(0.70),
+                                          border:  Border.all(color: newGrey, width: 0.5),
+                                          color: lightGrey.withOpacity(0.10),
                                           borderRadius: BorderRadius.circular(8.r)),
                                       ///Icons
                                       icon: const Icon(
                                         Icons.arrow_drop_down,
-                                        color: Colors.white54,
+                                        color: Colors.grey,
                                       ),
                                       hint:  Text(
                                         platform,
@@ -252,12 +255,13 @@ class _advFormState extends State<advForm>{
                                         boxWidth: 500.w,
                                         boxHeight: 40.h,
                                         boxDecoration: BoxDecoration(
-                                            color: textFieldBlack2.withOpacity(0.70),
+                                            border:  Border.all(color: newGrey, width: 0.5),
+                                            color: lightGrey.withOpacity(0.10),
                                             borderRadius: BorderRadius.circular(8.r)),
                                         ///Icons
                                         icon: const Icon(
                                           Icons.arrow_drop_down,
-                                          color: Colors.white54,
+                                          color: Colors.grey,
                                         ),
                                         hint:  Text(
                                           platform,
@@ -672,14 +676,39 @@ class _advFormState extends State<advForm>{
                               FocusManager.instance.primaryFocus
                                   ?.unfocus();
                               addAdOrder().then((value) => {
-                              Navigator.of(context).pop(),
-                              print(value),
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(
-                              SnackBar(
-                              duration:  Duration(seconds: 1),
-                              content: Text(value != null? value : 'تم ارسال الطلب',),
-                              ))});
+    goTopageReplacement(context, UserRequestMainPage()),
+    Flushbar(
+    flushbarPosition:
+    FlushbarPosition.TOP,
+    backgroundColor: white,
+    margin:
+    const EdgeInsets.all(5),
+    flushbarStyle:
+    FlushbarStyle.FLOATING,
+    borderRadius:
+    BorderRadius.circular(
+    15.r),
+    duration: const Duration(
+    seconds: 5),
+    icon: Padding(
+    padding: const EdgeInsets.only(left: 18.0),
+    child: Icon(
+    done,
+    color: green,
+    size: 25.sp,
+    ),
+    ),
+    titleText: text(context, 'تم التعديل بنجاح', 14, purple),
+    messageText: text(
+    context,
+    value!,
+    14,
+    black,
+    fontWeight:
+    FontWeight.w200),
+    ).show(context)
+
+    });
                                    // == First dialog closed
 
                             return

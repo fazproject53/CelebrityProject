@@ -8,6 +8,7 @@ import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -217,22 +218,42 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       FocusManager.instance.primaryFocus
           ?.unfocus();
       addAdOrder().then((value) => {
-        Navigator.of(context).pop(),
+        goTopageReplacement(context, UserRequestMainPage()),
       print(value),
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-      SnackBar(
-      duration:  Duration(seconds: 1),
-      content: Text(value != null? value : 'تم ارسال الطلب',),
-      )),
-      
-      }).whenComplete(() => { Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                UserRequestMainPage()),
-      ),});
+        Flushbar(
+          flushbarPosition:
+          FlushbarPosition.TOP,
+          backgroundColor: white,
+          margin:
+          const EdgeInsets.all(5),
+          flushbarStyle:
+          FlushbarStyle.FLOATING,
+          borderRadius:
+          BorderRadius.circular(
+              15.r),
+          duration: const Duration(
+              seconds: 5),
+          icon: Padding(
+            padding: const EdgeInsets.only(left: 18.0),
+            child: Icon(
+              done,
+              color: green,
+              size: 25.sp,
+            ),
+          ),
+          titleText: text(context, 'تم التعديل بنجاح', 14, purple),
+          messageText: text(
+              context,
+              value,
+              14,
+              black,
+              fontWeight:
+              FontWeight.w200),
+        ).show(context),
 
+
+
+      });
         // == First dialog closed
     return
     Align(
@@ -277,9 +298,16 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                 },
                 currentStep: current,
                 onStepTapped: (value) => setState(() {
-                  selectedIndex.isNotEmpty || current == 0?
-                  current = value : current;
-
+                  current == 0
+                      ? null
+                      : setState(() {
+                    current -= 1;
+                    selectedIndex.clear();
+                    file =null;
+                    date = DateTime.now();
+                    checkit2 = false;
+                    _selectedTest4 = null;
+                  });
                 }),
                 controlsBuilder: (context, controls) {
                   return Row(
@@ -288,18 +316,18 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                         onPressed: controls.onStepContinue,
                         child: (current != getSteps().length - 1 &&
                                 current != getSteps().length - 3)
-                            ? const Text('متابعة')
-                            : current != getSteps().length - 3 && file != null && date.day != DateTime.now().day && _selectedTest4 != null
-                                ? const Text('تاكيد')
+                            ? text(context, 'متابعة', 15, purple)
+                            : current != getSteps().length - 3 && file != null && date.day != DateTime.now().day && _selectedTest4 != null && checkit2
+                                ? text(context, 'تاكيد', 15, purple)
                                 : checkit == true &&
                                         current != getSteps().length - 1
-                                    ? const Text('متابعة')
+                                    ?text(context, 'متابعة', 15, purple)
                                     : const Text(''),
                       ),
                       TextButton(
                         onPressed: controls.onStepCancel,
                         child: current != getSteps().length - 3
-                            ? const Text('رجوع')
+                            ? text(context, 'رجوع', 15, purple)
                             : const Text(''),
                       ),
                     ],
@@ -389,7 +417,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
   Future<Filter> fetchCelebrity(int country, int category, int budget,int status, int gender ) async {
     final response = await http.get(Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/search?country_id=$country&category_id=$category&account_status_id=$status&gender_id=$gender&budget_id=$budget'));
+        'https://mobile.celebrityads.net/api/celebrity/search?country_id=$country&category_id=&account_status_id=&gender_id=&budget_id=$budget'));
     if (response.statusCode == 200) {
       final body = response.body;
      Filter filter =Filter.fromJson(jsonDecode(body));
@@ -527,7 +555,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
                             ///hint style
                             boxTextstyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w400,
                                 color: black,
                                 fontFamily: 'Cairo'),
@@ -616,7 +644,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
                             ///hint style
                             boxTextstyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w400,
                                 color: black,
                                 fontFamily: 'Cairo'),
@@ -706,7 +734,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
                   ///hint style
                   boxTextstyle: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w400,
                       color: black,
                       fontFamily: 'Cairo'),
@@ -920,7 +948,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
           return Center(child: Text(snapshot.error.toString()));
           //---------------------------------------------------------------------------
         } else if (snapshot.hasData) {
-          return snapshot.data!.data!.isEmpty?  Center(child: Column(
+          return  snapshot.data!.data == null?  Center(child: Column(
             children: [
               SizedBox(height: 30.h,),
               Text('لا يوجد نتائج'),
@@ -1837,8 +1865,8 @@ class CategoryFilter {
 }
 
 class Message {
-  String? en;
-  String? ar;
+  var en;
+  var ar;
 
   Message({this.en, this.ar});
 

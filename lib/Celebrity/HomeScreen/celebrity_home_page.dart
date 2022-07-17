@@ -12,6 +12,7 @@ import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../MainScreen/main_screen_navigation.dart';
 import '../../ModelAPI/CelebrityScreenAPI.dart';
 import '../../Models/Methods/classes/GradientIcon.dart';
 import '../../celebrity/HomeScreen/celebrity_home_page.dart';
@@ -658,7 +659,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                             height: 10.h,
                           ),
 
-                          padding(
+                          currentuser == 'user'?  padding(
                             15,
                             15,
                             gradientContainerNoborder(
@@ -674,7 +675,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                           snapshot.data!.data!.celebrity!.name!
                                               .toString()));
                                 })),
-                          ),
+                          ):SizedBox(),
                           SizedBox(
                             height: 20.h,
                           ),

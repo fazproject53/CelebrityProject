@@ -1,3 +1,4 @@
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
@@ -151,11 +152,38 @@ class _userProfileState extends State<userProfile>
                                     updateImageUser(userToken)
                                         .whenComplete(() => {
                                           if(userImage != null){
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "تم تعديل الصورة بنجاح"),
-                                              ))}
+                                            Flushbar(
+                                              flushbarPosition:
+                                              FlushbarPosition.TOP,
+                                              backgroundColor: white,
+                                              margin:
+                                              const EdgeInsets.all(5),
+                                              flushbarStyle:
+                                              FlushbarStyle.FLOATING,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  15.r),
+                                              duration: const Duration(
+                                                  seconds: 5),
+                                              icon: Padding(
+                                                padding: const EdgeInsets.only(left: 18.0),
+                                                child: Icon(
+                                                  done,
+                                                  color: green,
+                                                  size: 25.sp,
+                                                ),
+                                              ),
+                                              titleText: text(context,
+                                                  'تم التعديل بنجاح', 14, purple),
+                                              messageText: text(
+                                                  context,
+                                                  'نم تغيير الصورة بنجاح',
+                                                  14,
+                                                  black,
+                                                  fontWeight:
+                                                  FontWeight.w200),
+                                            ).show(context)
+                                          }
                                             })});
                             },
                           ),
