@@ -2,17 +2,14 @@ import 'dart:collection';
 import 'dart:convert';
 import 'package:celepraty/Account/LoggingSingUpAPI.dart';
 import 'package:celepraty/Celebrity/celebrityHomePage.dart';
-import 'package:celepraty/Celebrity/setting/celebratyProfile.dart';
-import 'package:celepraty/Users/Setting/userProfile.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
-
 import '../../Account/logging.dart';
 import '../../MainScreen/main_screen_navigation.dart';
 
@@ -22,12 +19,13 @@ class profileInformaion extends StatefulWidget {
 
 class _profileInformaionState extends State<profileInformaion>
 // with AutomaticKeepAliveClientMixin
-{
+    {
   Future<CelebrityInformation>? celebrities;
   Future<CityL>? cities;
   Future<CountryL>? countries;
   Future<CategoryL>? categories;
   bool countryChanged = false;
+  bool? citychosen;
   String? userToken;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -86,6 +84,7 @@ class _profileInformaionState extends State<profileInformaion>
     setState(() {
       _selectedTest = selectedTest;
       city = selectedTest['keyword'];
+      citychosen = true;
     });
   }
 
@@ -196,7 +195,7 @@ class _profileInformaionState extends State<profileInformaion>
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: mainLoad(context));
                     } else if (snapshot.connectionState ==
-                            ConnectionState.active ||
+                        ConnectionState.active ||
                         snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
                         return Text(snapshot.error.toString());
@@ -204,87 +203,89 @@ class _profileInformaionState extends State<profileInformaion>
                       } else if (snapshot.hasData) {
                         snapshot.data != null
                             ? {
-                                helper == 0
-                                    ? {
-                                        name.text = snapshot
-                                            .data!.data!.celebrity!.name!,
-                                        email.text = snapshot
-                                            .data!.data!.celebrity!.email!,
-                                        password.text = "********",
-                                        desc.text = snapshot.data!.data!
-                                            .celebrity!.description!,
-                                        snapshot.data!.data!.celebrity!
-                                                    .phonenumber! !=
-                                                ""
-                                            ? {
-                                                number = snapshot
-                                                        .data!
-                                                        .data!
-                                                        .celebrity!
-                                                        .phonenumber!
-                                                        .length -
-                                                    9,
-                                                phone.text = snapshot
-                                                    .data!
-                                                    .data!
-                                                    .celebrity!
-                                                    .phonenumber!
-                                                    .substring(number!),
-                                              }
-                                            : phone.text = snapshot.data!.data!
-                                                .celebrity!.phonenumber!,
-                                        snapshot.data!.data!.celebrity!
-                                                    .gender !=
-                                                null
-                                            ? {
-                                                gender = snapshot.data!.data!
-                                                    .celebrity!.gender!.name!,
-                                                genderChosen = true
-                                              }
-                                            : gender,
-                                        pageLink.text = snapshot
-                                            .data!.data!.celebrity!.pageUrl!,
-                                        snapchat.text = snapshot
-                                            .data!.data!.celebrity!.snapchat!
-                                            .toString(),
-                                        tiktok.text = snapshot
-                                            .data!.data!.celebrity!.tiktok!
-                                            .toString(),
-                                        youtube.text = snapshot
-                                            .data!.data!.celebrity!.youtube!
-                                            .toString(),
-                                        instagram.text = snapshot
-                                            .data!.data!.celebrity!.instagram!
-                                            .toString(),
-                                        facebook.text = snapshot
-                                            .data!.data!.celebrity!.facebook!
-                                            .toString(),
-                                        twitter.text = snapshot
-                                            .data!.data!.celebrity!.twitter!
-                                            .toString(),
-                                        snapshot.data!.data!.celebrity!
-                                                    .category !=
-                                                null
-                                            ? category = snapshot.data!.data!
-                                                .celebrity!.category!.name!
-                                            : '',
-                                        snapshot.data!.data!.celebrity!
-                                                    .country !=
-                                                null
-                                            ? country = snapshot.data!.data!
-                                                .celebrity!.country!.name!
-                                            : '',
-                                        snapshot.data!.data!.celebrity!.city !=
-                                                null
-                                            ? city = snapshot.data!.data!
-                                                .celebrity!.city!.name
-                                                .toString()
-                                            : null,
+                          helper == 0
+                              ? {
+                            name.text = snapshot
+                                .data!.data!.celebrity!.name!,
+                            email.text = snapshot
+                                .data!.data!.celebrity!.email!,
+                            password.text = "********",
+                            desc.text = snapshot.data!.data!
+                                .celebrity!.description!,
+                            snapshot.data!.data!.celebrity!
+                                .phonenumber! !=
+                                ""
+                                ? {
+                              number = snapshot
+                                  .data!
+                                  .data!
+                                  .celebrity!
+                                  .phonenumber!
+                                  .length -
+                                  9,
+                              phone.text = snapshot
+                                  .data!
+                                  .data!
+                                  .celebrity!
+                                  .phonenumber!
+                                  .substring(number!),
+                            }
+                                : phone.text = snapshot.data!.data!
+                                .celebrity!.phonenumber!,
+                            snapshot.data!.data!.celebrity!
+                                .gender !=
+                                null
+                                ? {
+                              gender = snapshot.data!.data!
+                                  .celebrity!.gender!.name!,
+                              genderChosen = true
+                            }
+                                : gender,
+                            pageLink.text = snapshot
+                                .data!.data!.celebrity!.pageUrl!,
+                            snapchat.text = snapshot
+                                .data!.data!.celebrity!.snapchat!
+                                .toString(),
+                            tiktok.text = snapshot
+                                .data!.data!.celebrity!.tiktok!
+                                .toString(),
+                            youtube.text = snapshot
+                                .data!.data!.celebrity!.youtube!
+                                .toString(),
+                            instagram.text = snapshot
+                                .data!.data!.celebrity!.instagram!
+                                .toString(),
+                            facebook.text = snapshot
+                                .data!.data!.celebrity!.facebook!
+                                .toString(),
+                            twitter.text = snapshot
+                                .data!.data!.celebrity!.twitter!
+                                .toString(),
+                            snapshot.data!.data!.celebrity!
+                                .category !=
+                                null
+                                ? category = snapshot.data!.data!
+                                .celebrity!.category!.name!
+                                : '',
+                            snapshot.data!.data!.celebrity!
+                                .country !=
+                                null
+                                ? country = snapshot.data!.data!
+                                .celebrity!.country!.name!
+                                : '',
+                            snapshot.data!.data!.celebrity!.city !=
+                                null
+                                ? {city = snapshot.data!.data!
+                                .celebrity!.city!.name
+                                .toString(),
+                              citychosen = true
+                            }
+                                : null,
 
-                                        helper = 1,
-                                      }
-                                    : null
-                              }
+                            helper = 1,
+                          }
+                              : null
+                        }
                             : null;
 
                         return Column(
@@ -319,12 +320,12 @@ class _profileInformaionState extends State<profileInformaion>
                                 12,
                                 textFieldNoIcon(
                                     context, 'الاسم', 14, false, name,
-                                    (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'حقل اجباري';
-                                  }
-                                  return null;
-                                }, false),
+                                        (String? value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'حقل اجباري';
+                                      }
+                                      return null;
+                                    }, false),
                               ),
                               paddingg(
                                 15,
@@ -332,22 +333,22 @@ class _profileInformaionState extends State<profileInformaion>
                                 12,
                                 textFieldDesc(context, 'الوصف الخاص بالمشهور',
                                     14, false, desc, (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                  } else {
-                                    return value.length > 150
-                                        ? 'يجب ان لا يزيد الوصف عن 150 حرف'
-                                        : null;
-                                  }
-                                  return null;
-                                }, counter: (context,
+                                      if (value == null || value.isEmpty) {
+                                      } else {
+                                        return value.length > 150
+                                            ? 'يجب ان لا يزيد الوصف عن 150 حرف'
+                                            : null;
+                                      }
+                                      return null;
+                                    }, counter: (context,
                                         {required currentLength,
-                                        required isFocused,
-                                        maxLength}) {
-                                  return Container(
-                                      child: Text('${maxLength!}' +
-                                          '/' +
-                                          '${currentLength}'));
-                                }, maxLenth: 200),
+                                          required isFocused,
+                                          maxLength}) {
+                                      return Container(
+                                          child: Text('${maxLength!}' +
+                                              '/' +
+                                              '${currentLength}'));
+                                    }, maxLenth: 200),
                               ),
                               paddingg(
                                 15,
@@ -355,199 +356,169 @@ class _profileInformaionState extends State<profileInformaion>
                                 12,
                                 textFieldNoIcon(context, 'البريد الالكتروني',
                                     14, false, email, (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                  } else {
-                                    return value.contains('@') &&
+                                      if (value == null || value.isEmpty) {
+                                      } else {
+                                        return value.contains('@') &&
                                             value.contains('.com')
-                                        ? null
-                                        : 'صيغة البريد الالكتروني غير صحيحة ';
-                                  }
-                                  return null;
-                                }, false),
+                                            ? null
+                                            : 'صيغة البريد الالكتروني غير صحيحة ';
+                                      }
+                                      return null;
+                                    }, false),
                               ),
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                textFieldNoIcon(context, 'كلمة المرور',
-                                    14, true, password, (String? value) {
-                                  if (value == null || value.isEmpty) {}
-                                  return null;
-                                }, false, child: IconButton(onPressed: (){setState(() {
-                                      editPassword = !editPassword;
-                                    });}, icon:  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Icon(Icons.edit, color: black),
-                                    ))),
+                              Container(
+                                height: 65.h,
+                                child: paddingg(
+                                  15,
+                                  15,
+                                  12,
+                                  textFieldNoIcon(context, 'كلمة المرور',
+                                      14, true, password, (String? value) {
+                                        if (value == null || value.isEmpty) {}
+                                        return null;
+                                      }, false, child: IconButton(onPressed: (){setState(() {
+                                        editPassword = !editPassword;
+                                      });}, icon:  Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Icon(Icons.edit, color: black),
+                                      ))),
+                                ),
                               ),
 
                               editPassword
                                   ? Form(
-                                      key: _formKey2,
-                                      child: Column(
-                                        children: [
-                                          paddingg(
-                                            15,
-                                            15,
-                                            12,
-                                            textFieldNoIcon(
-                                                context,
-                                                'كلمة المرور الحالية',
-                                                14,
-                                                true,
-                                                currentPassword,
-                                                (String? value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {}
-                                              return null;
-                                            }, false),
-                                          ),
-                                          paddingg(
-                                            15,
-                                            15,
-                                            12,
-                                            textFieldNoIcon(
-                                                context,
-                                                'كلمة المرور الجديدة',
-                                                14,
-                                                true,
-                                                newPassword, (String? value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'حقل اجباري';
-                                              }
-                                              return null;
-                                            }, false),
-                                          ),
-                                          paddingg(
-                                            15,
-                                            15,
-                                            12,
-                                            textFieldNoIcon(
-                                                context,
-                                                'تاكيد كلمة المرور ',
-                                                14,
-                                                true,
-                                                confirmPassword,
-                                                (String? value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'حقل اجباري';
-                                              }
-                                              return noMatch
-                                                  ? 'كلمة المرور وتاكيد كلمة المرور غير متطابقين'
-                                                  : null;
-                                            }, false),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : const SizedBox(
-                                      height: 0,
-                                    ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 7,
-                                    child: paddingg(
+                                key: _formKey2,
+                                child: Column(
+                                  children: [
+                                    paddingg(
                                       15,
                                       15,
                                       12,
-                                      textFieldNoIcon(context, 'رقم الجوال', 14,
-                                          false, phone, (String? value) {
-                                        RegExp regExp = RegExp(
-                                            r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                                        if (value != null) {
-                                          if (value.isNotEmpty) {
-                                            if (value.length != 9) {
-                                              return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
-                                            }
-                                            if (value.startsWith('0')) {
-                                              return 'رقم الجوال يجب ان لا يبدا ب 0 ';
-                                            }
-                                            // if(!regExp.hasMatch(value)){
-                                            //   return "رقم الجوال غير صالح";
-                                            // }
-                                          }
-                                        }
-
-                                        return null;
-                                      }, false, child:Container(
-                                          width: 60.w,
-                                          child: CountryCodePicker(
-                                            padding: EdgeInsets.all(0),
-                                            onChanged: print,
-                                            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                            initialSelection: country == 'السعودية'
-                                                ? 'SA'
-                                                : country == 'فلسطين'
-                                                ? 'PS'
-                                                : country == 'الاردن'
-                                                ? 'JO'
-                                                : country == 'الامارات'
-                                                ? 'AE'
-                                                : 'SA',
-                                            countryFilter: const [
-                                              'SA',
-                                              'BH',
-                                              'KW',
-                                              'OM',
-                                              'AE',
-                                              'KW',
-                                              'QA',
-                                            ],
-                                            showFlagDialog: true,
-                                            showFlag: false,
-                                            // optional. Shows only country name and flag
-                                            showCountryOnly: false,
-                                            textStyle: TextStyle(
-                                                color: black, fontSize: 15.sp),
-                                            // optional. Shows only country name and flag when popup is closed.
-                                            showOnlyCountryWhenClosed: false,
-                                            // optional. aligns the flag and the Text left
-                                            alignLeft: true,
-                                          ),
-                                        ), ),
+                                      textFieldNoIcon(
+                                          context,
+                                          'كلمة المرور الحالية',
+                                          14,
+                                          true,
+                                          currentPassword,
+                                              (String? value) {
+                                            if (value == null ||
+                                                value.isEmpty) {}
+                                            return null;
+                                          }, false),
                                     ),
-                                  ),
-                                  // Expanded(
-                                  //   flex: 2,
-                                  //   child: Container(
-                                  //     child: CountryCodePicker(
-                                  //       padding: EdgeInsets.all(0),
-                                  //       onChanged: print,
-                                  //       // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                  //       initialSelection: country == 'السعودية'
-                                  //           ? 'SA'
-                                  //           : country == 'فلسطين'
-                                  //               ? 'PS'
-                                  //               : country == 'الاردن'
-                                  //                   ? 'JO'
-                                  //                   : country == 'الامارات'
-                                  //                       ? 'AE'
-                                  //                       : 'SA',
-                                  //       countryFilter: const [
-                                  //         'SA',
-                                  //         'BH',
-                                  //         'KW',
-                                  //         'OM',
-                                  //         'AE',
-                                  //         'KW',
-                                  //         'QA',
-                                  //       ],
-                                  //       showFlag: true,
-                                  //       // optional. Shows only country name and flag
-                                  //       showCountryOnly: false,
-                                  //       textStyle: TextStyle(
-                                  //           color: black, fontSize: 0.sp),
-                                  //       // optional. Shows only country name and flag when popup is closed.
-                                  //       showOnlyCountryWhenClosed: false,
-                                  //       // optional. aligns the flag and the Text left
-                                  //       alignLeft: true,
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                ],
+                                    paddingg(
+                                      15,
+                                      15,
+                                      12,
+                                      textFieldNoIcon(
+                                          context,
+                                          'كلمة المرور الجديدة',
+                                          14,
+                                          true,
+                                          newPassword, (String? value) {
+                                        if (value == null ||
+                                            value.isEmpty) {
+                                          return 'حقل اجباري';
+                                        }
+                                        return null;
+                                      }, false),
+                                    ),
+                                    paddingg(
+                                      15,
+                                      15,
+                                      12,
+                                      textFieldNoIcon(
+                                          context,
+                                          'تاكيد كلمة المرور ',
+                                          14,
+                                          true,
+                                          confirmPassword,
+                                              (String? value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'حقل اجباري';
+                                            }
+                                            return noMatch
+                                                ? 'كلمة المرور وتاكيد كلمة المرور غير متطابقين'
+                                                : null;
+                                          }, false),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  : const SizedBox(
+                                height: 0,
+                              ),
+                              Container(
+                                height: 65.h,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 7,
+                                      child: paddingg(
+                                        15,
+                                        15,
+                                        12,
+                                        textFieldNoIcon(context, 'رقم الجوال', 14,
+                                          false, phone, (String? value) {
+                                            RegExp regExp = RegExp(
+                                                r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                                            if (value != null) {
+                                              if (value.isNotEmpty) {
+                                                if (value.length != 9) {
+                                                  return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
+                                                }
+                                                if (value.startsWith('0')) {
+                                                  return 'رقم الجوال يجب ان لا يبدا ب 0 ';
+                                                }
+                                                // if(!regExp.hasMatch(value)){
+                                                //   return "رقم الجوال غير صالح";
+                                                // }
+                                              }
+                                            }
+
+                                            return null;
+                                          }, false, child:Container(
+                                            width: 60.w,
+                                            child: CountryCodePicker(
+                                              padding: EdgeInsets.all(0),
+                                              onChanged: print,
+                                              // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                              initialSelection: country == 'السعودية'
+                                                  ? 'SA'
+                                                  : country == 'فلسطين'
+                                                  ? 'PS'
+                                                  : country == 'الاردن'
+                                                  ? 'JO'
+                                                  : country == 'الامارات'
+                                                  ? 'AE'
+                                                  : 'SA',
+                                              countryFilter: const [
+                                                'SA',
+                                                'BH',
+                                                'KW',
+                                                'OM',
+                                                'AE',
+                                                'KW',
+                                                'QA',
+                                              ],
+                                              showFlagDialog: true,
+                                              showFlag: false,
+                                              // optional. Shows only country name and flag
+                                              showCountryOnly: false,
+                                              textStyle: TextStyle(
+                                                  color: black, fontSize: 15.sp),
+                                              // optional. Shows only country name and flag when popup is closed.
+                                              showOnlyCountryWhenClosed: false,
+                                              // optional. aligns the flag and the Text left
+                                              alignLeft: true,
+                                            ),
+                                          ), ),
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
                               ),
 
                               // ===========dropdown lists ==================
@@ -602,14 +573,14 @@ class _profileInformaionState extends State<profileInformaion>
                               genderChosen == true
                                   ? SizedBox()
                                   : paddingg(
-                                      10,
-                                      20,
-                                      3,
-                                      text(
-                                          context,
-                                          'تحديد نوع الجنس اجباري لتحديث المعلومات',
-                                          14,
-                                          red!)),
+                                  10,
+                                  20,
+                                  3,
+                                  text(
+                                      context,
+                                      'تحديد نوع الجنس اجباري لتحديث المعلومات',
+                                      14,
+                                      red!)),
                               FutureBuilder(
                                   future: countries,
                                   builder: ((context,
@@ -618,7 +589,7 @@ class _profileInformaionState extends State<profileInformaion>
                                         ConnectionState.waiting) {
                                       return Center();
                                     } else if (snapshot.connectionState ==
-                                            ConnectionState.active ||
+                                        ConnectionState.active ||
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
@@ -629,26 +600,26 @@ class _profileInformaionState extends State<profileInformaion>
                                       } else if (snapshot.hasData) {
                                         _dropdownTestItems3.isEmpty
                                             ? {
-                                                countrylist.add({
-                                                  'no': 0,
-                                                  'keyword': 'الدولة'
-                                                }),
-                                                for (int i = 0;
-                                                    i <
-                                                        snapshot
-                                                            .data!.data!.length;
-                                                    i++)
-                                                  {
-                                                    countrylist.add({
-                                                      'no': i,
-                                                      'keyword':
-                                                          '${snapshot.data!.data![i].name!}'
-                                                    }),
-                                                  },
-                                                _dropdownTestItems3 =
-                                                    buildDropdownTestItems(
-                                                        countrylist)
-                                              }
+                                          countrylist.add({
+                                            'no': 0,
+                                            'keyword': 'الدولة'
+                                          }),
+                                          for (int i = 0;
+                                          i <
+                                              snapshot
+                                                  .data!.data!.length;
+                                          i++)
+                                            {
+                                              countrylist.add({
+                                                'no': i,
+                                                'keyword':
+                                                '${snapshot.data!.data![i].name!}'
+                                              }),
+                                            },
+                                          _dropdownTestItems3 =
+                                              buildDropdownTestItems(
+                                                  countrylist)
+                                        }
                                             : null;
 
                                         return paddingg(
@@ -683,7 +654,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 border:  Border.all(color: newGrey, width: 0.5),
                                                 color: lightGrey.withOpacity(0.10),
                                                 borderRadius:
-                                                    BorderRadius.circular(8.r)),
+                                                BorderRadius.circular(8.r)),
 
                                             ///Icons
                                             icon: const Icon(
@@ -711,7 +682,7 @@ class _profileInformaionState extends State<profileInformaion>
                                     }
                                   })),
 
-                             FutureBuilder(
+                              FutureBuilder(
                                   future: cities,
                                   builder: ((context,
                                       AsyncSnapshot<CityL> snapshot) {
@@ -719,7 +690,7 @@ class _profileInformaionState extends State<profileInformaion>
                                         ConnectionState.waiting) {
                                       return Center();
                                     } else if (snapshot.connectionState ==
-                                            ConnectionState.active ||
+                                        ConnectionState.active ||
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
@@ -750,7 +721,7 @@ class _profileInformaionState extends State<profileInformaion>
                                           _dropdownTestItems =
                                               buildDropdownTestItems(
                                                   citilist)
-                                              }
+                                        }
                                             : null;
 
                                         return paddingg(
@@ -785,7 +756,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 border:  Border.all(color: newGrey, width: 0.5),
                                                 color:  lightGrey.withOpacity(0.10),
                                                 borderRadius:
-                                                    BorderRadius.circular(8.r)),
+                                                BorderRadius.circular(8.r)),
 
                                             ///Icons
                                             icon: const Icon(
@@ -813,6 +784,13 @@ class _profileInformaionState extends State<profileInformaion>
                                     }
                                   })),
 
+                              citychosen != null?
+                              citychosen == false ?  Padding(
+                                padding: const EdgeInsets.only(right: 18.0),
+                                child: text(context, 'الرجاء تحديد المدينة', 14, red!),
+                              ): SizedBox()
+                                  :
+                              SizedBox(),
                               FutureBuilder(
                                   future: categories,
                                   builder: ((context,
@@ -821,7 +799,7 @@ class _profileInformaionState extends State<profileInformaion>
                                         ConnectionState.waiting) {
                                       return Center();
                                     } else if (snapshot.connectionState ==
-                                            ConnectionState.active ||
+                                        ConnectionState.active ||
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
@@ -832,26 +810,26 @@ class _profileInformaionState extends State<profileInformaion>
                                       } else if (snapshot.hasData) {
                                         _dropdownTestItems2.isEmpty
                                             ? {
-                                                categorylist.add({
-                                                  'no': 0,
-                                                  'keyword': 'التصنيف'
-                                                }),
-                                                for (int i = 0;
-                                                    i <
-                                                        snapshot
-                                                            .data!.data!.length;
-                                                    i++)
-                                                  {
-                                                    categorylist.add({
-                                                      'no': i,
-                                                      'keyword':
-                                                          '${snapshot.data!.data![i].name}'
-                                                    }),
-                                                  },
-                                                _dropdownTestItems2 =
-                                                    buildDropdownTestItems(
-                                                        categorylist)
-                                              }
+                                          categorylist.add({
+                                            'no': 0,
+                                            'keyword': 'التصنيف'
+                                          }),
+                                          for (int i = 0;
+                                          i <
+                                              snapshot
+                                                  .data!.data!.length;
+                                          i++)
+                                            {
+                                              categorylist.add({
+                                                'no': i,
+                                                'keyword':
+                                                '${snapshot.data!.data![i].name}'
+                                              }),
+                                            },
+                                          _dropdownTestItems2 =
+                                              buildDropdownTestItems(
+                                                  categorylist)
+                                        }
                                             : null;
 
                                         return paddingg(
@@ -886,7 +864,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 color:  lightGrey.withOpacity(0.10),
 
                                                 borderRadius:
-                                                    BorderRadius.circular(8.r)),
+                                                BorderRadius.circular(8.r)),
 
                                             ///Icons
                                             icon: const Icon(
@@ -922,10 +900,10 @@ class _profileInformaionState extends State<profileInformaion>
                                 12,
                                 textFieldNoIcon(
                                     context, 'رابط الصفحة', 14, false, pageLink,
-                                    (String? value) {
-                                  if (value == null || value.isEmpty) {}
-                                  return null;
-                                }, false),
+                                        (String? value) {
+                                      if (value == null || value.isEmpty) {}
+                                      return null;
+                                    }, false),
                               ),
 
                               //===================================== اضافة روابط الصفحات =======================================================
@@ -937,7 +915,7 @@ class _profileInformaionState extends State<profileInformaion>
                                   14,
                                   false,
                                   snapchat,
-                                  (String? value) {},
+                                      (String? value) {},
                                 ),
                                 gradientContainerWithHeight(
                                   getSize(context).width / 4,
@@ -953,6 +931,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 : setState(() {
                                               genderChosen = true;
                                             });
+
                                             _formKey.currentState!.validate() &&
                                                 _formKey2.currentState == null &&
                                                 genderChosen == true
@@ -1005,7 +984,7 @@ class _profileInformaionState extends State<profileInformaion>
                                   14,
                                   false,
                                   tiktok,
-                                  (String? value) {},
+                                      (String? value) {},
                                 ),
                                 gradientContainerWithHeight(
                                   getSize(context).width / 4,
@@ -1046,18 +1025,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                   content:
                                                   Text(value.message!.ar!),
                                                 ))
-                                                //   setState(() {
-                                                //     helper = 0;
-                                                //     celebrities =
-                                                //         fetchCelebrities();
-                                                //   }),
-                                                //   ScaffoldMessenger.of(
-                                                //           context)
-                                                //       .showSnackBar(
-                                                //           const SnackBar(
-                                                //     content: Text(
-                                                //         "تم تعديل المعلومات بنجاح"),
-                                                //   ))
+
                                               })
                                                   : null;
                                             },
@@ -1075,7 +1043,7 @@ class _profileInformaionState extends State<profileInformaion>
                                   14,
                                   false,
                                   youtube,
-                                  (String? value) {},
+                                      (String? value) {},
                                 ),
                                 gradientContainerWithHeight(
                                   getSize(context).width / 4,
@@ -1116,18 +1084,6 @@ class _profileInformaionState extends State<profileInformaion>
                                                   content:
                                                   Text(value.message!.ar!),
                                                 ))
-                                                //   setState(() {
-                                                //     helper = 0;
-                                                //     celebrities =
-                                                //         fetchCelebrities();
-                                                //   }),
-                                                //   ScaffoldMessenger.of(
-                                                //           context)
-                                                //       .showSnackBar(
-                                                //           const SnackBar(
-                                                //     content: Text(
-                                                //         "تم تعديل المعلومات بنجاح"),
-                                                //   ))
                                               })
                                                   : null;
                                             },
@@ -1145,7 +1101,7 @@ class _profileInformaionState extends State<profileInformaion>
                                   14,
                                   false,
                                   instagram,
-                                  (String? value) {},
+                                      (String? value) {},
                                 ),
                                 gradientContainerWithHeight(
                                   getSize(context).width / 4,
@@ -1215,7 +1171,7 @@ class _profileInformaionState extends State<profileInformaion>
                                   14,
                                   false,
                                   twitter,
-                                  (String? value) {},
+                                      (String? value) {},
                                 ),
                                 gradientContainerWithHeight(
                                   getSize(context).width / 4,
@@ -1285,7 +1241,7 @@ class _profileInformaionState extends State<profileInformaion>
                                   14,
                                   false,
                                   facebook,
-                                  (String? value) {},
+                                      (String? value) {},
                                 ),
                                 gradientContainerWithHeight(
                                   getSize(context).width / 4,
@@ -1326,18 +1282,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                   content:
                                                   Text(value.message!.ar!),
                                                 ))
-                                                //   setState(() {
-                                                //     helper = 0;
-                                                //     celebrities =
-                                                //         fetchCelebrities();
-                                                //   }),
-                                                //   ScaffoldMessenger.of(
-                                                //           context)
-                                                //       .showSnackBar(
-                                                //           const SnackBar(
-                                                //     content: Text(
-                                                //         "تم تعديل المعلومات بنجاح"),
-                                                //   ))
+
                                               })
                                                   : null;
                                             },
@@ -1360,94 +1305,131 @@ class _profileInformaionState extends State<profileInformaion>
                                     getSize(context).width,
                                     buttoms(context, 'حفظ', 20, white, () {
 
-                                      (currentPassword.text != null &&
-                                                  newPassword.text != null) ||
-                                              (currentPassword
-                                                      .text.isNotEmpty &&
-                                                  newPassword.text.isNotEmpty)
-                                          ? {
-                                              _formKey2.currentState == null
-                                                  ? null
-                                                  : _formKey2.currentState!
-                                                          .validate()
-                                                      ? {
-                                                          newPassword.text ==
-                                                                  confirmPassword
-                                                                      .text
-                                                              ? {
-                                                                  changePassword().then((value) =>
-                                                                      ScaffoldMessenger.of(
-                                                                              context)
-                                                                          .showSnackBar(
-                                                                              SnackBar(
-                                                                        content:
-                                                                            Text('${value.message!.ar}'),
-                                                                      ))),
-                                                                  updateInformation()
-                                                                      .whenComplete(() =>
-                                                                          fetchCelebrities(
-                                                                              userToken!)),
+                                      if (currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)
+                                      {
+                                        _formKey2.currentState == null
+                                            ? null
+                                            : _formKey2.currentState!
+                                            .validate()
+                                            ? {
+                                          newPassword.text ==
+                                              confirmPassword
+                                                  .text
+                                              ? {
+                                            changePassword().then((value) =>
+                                            {
+                                              Flushbar(
+                                                flushbarPosition:
+                                                FlushbarPosition.TOP,
+                                                backgroundColor: white,
+                                                margin:
+                                                const EdgeInsets.all(5),
+                                                flushbarStyle:
+                                                FlushbarStyle.FLOATING,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    15.r),
+                                                duration: const Duration(
+                                                    seconds: 5),
+                                                icon: Padding(
+                                                  padding: const EdgeInsets.only(left: 18.0),
+                                                  child: Icon(
+                                                    value.success == false?error: done,
+                                                    color: value.success == false? red!: green,
+                                                    size: 25.sp,
+                                                  ),
+                                                ),
+                                                titleText: text(context,
+                                                    value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+                                                messageText: text(
+                                                    context,
+                                                    value.message!.ar!,
+                                                    14,
+                                                    black,
+                                                    fontWeight:
+                                                    FontWeight.w200),
+                                              ).show(context),
 
-                                                                }
-                                                              : setState(() {
-                                                                  noMatch =
-                                                                      true;
-                                                                })
-                                                        }
-                                                      : null,
-                                            }
-                                          : null;
-                                      _selectedTest4 == null &&
-                                              gender == 'الجنس'
-                                          ? setState(() {
-                                              genderChosen = false;
+                                              updateInformation()
+                                                  .whenComplete(() =>
+                                                  fetchCelebrities(
+                                                      userToken!)),
                                             })
-                                          : setState(() {
-                                              genderChosen = true;
-                                            });
-                                      _formKey.currentState!.validate() &&
-                                              _formKey2.currentState == null &&
-                                              genderChosen == true
-                                          ?
-                                     { loadingDialogue(context),
-                                      updateInformation().then((value) =>
-                                              {
-                                                Navigator.pop(context),
-                                                countryChanged
-                                                    ? setState(() {
-                                                        helper = 0;
-                                                        countryChanged = false;
-                                                        celebrities =
-                                                            fetchCelebrities(
-                                                                userToken!);
-                                                      })
-                                                    : Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MainScreen()),
-                                                      ),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text(value.message!.ar!),
-                                                )),
-                                           //   goToPagePushRefresh(context, celebratyProfile, {})
 
-                                                //   setState(() {
-                                                //     helper = 0;
-                                                //     celebrities =
-                                                //         fetchCelebrities();
-                                                //   }),
-                                                //   ScaffoldMessenger.of(
-                                                //           context)
-                                                //       .showSnackBar(
-                                                //           const SnackBar(
-                                                //     content: Text(
-                                                //         "تم تعديل المعلومات بنجاح"),
-                                                //   ))
-                                              })}
-                                          : null;
+                                          }
+                                              : setState(() {
+                                            noMatch =
+                                            true;
+                                          })
+                                        }
+                                            : null;
+                                      }
+                                      else{
+                                        _selectedTest4 == null &&
+                                            gender == 'الجنس'
+                                            ? setState(() {
+                                          genderChosen = false;
+                                        })
+                                            : setState(() {
+                                          genderChosen = true;
+                                        });
+                                        _formKey.currentState!.validate() &&
+                                            _formKey2.currentState == null &&
+                                            genderChosen == true && citychosen == true
+                                            ?
+                                        { loadingDialogue(context),
+                                          updateInformation().then((value) =>
+                                          {
+                                            Navigator.pop(context),
+                                            countryChanged
+                                                ? setState(() {
+                                              helper = 0;
+                                              countryChanged = false;
+                                              celebrities =
+                                                  fetchCelebrities(
+                                                      userToken!);
+                                            })
+                                                : Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MainScreen()),
+                                            ),
+                                            Flushbar(
+                                              flushbarPosition:
+                                              FlushbarPosition.TOP,
+                                              backgroundColor: white,
+                                              margin:
+                                              const EdgeInsets.all(5),
+                                              flushbarStyle:
+                                              FlushbarStyle.FLOATING,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  15.r),
+                                              duration: const Duration(
+                                                  seconds: 5),
+                                              icon: Padding(
+                                                padding: const EdgeInsets.only(left: 18.0),
+                                                child: Icon(
+                                                  value.success == false?error: done,
+                                                  color: value.success == false? red!: green,
+                                                  size: 25.sp,
+                                                ),
+                                              ),
+                                              titleText: text(context,
+                                                  value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+                                              messageText: text(
+                                                  context,
+                                                  value.message!.ar!,
+                                                  14,
+                                                  black,
+                                                  fontWeight:
+                                                  FontWeight.w200),
+                                            ).show(context)
+                                          })}
+                                            : setState(() {
+                                          city == 'المدينة'?citychosen = false: null;
+                                        },);}
                                     })),
                               ),
                               const SizedBox(
@@ -1498,10 +1480,10 @@ class _profileInformaionState extends State<profileInformaion>
         'password': password.text,
         'phonenumber': phone.text,
         'country_id':
-            _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
+        _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
         'city_id': _selectedTest == null ? 1 : _selectedTest['no'],
         'category_id':
-            _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
+        _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
         'snapchat': snapchat.text,
         'tiktok': tiktok.text,
         'youtube': youtube.text,
@@ -1663,7 +1645,7 @@ class CelebrityInformation {
     success = json['success'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
     message =
-        json['message'] != null ? new Message.fromJson(json['message']) : null;
+    json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -1724,23 +1706,23 @@ class Celebrity {
 
   Celebrity(
       {this.id,
-      this.username,
-      this.name,
-      this.image,
-      this.email,
-      this.phonenumber,
-      this.country,
-      this.city,
-      this.description,
-      this.gender,
-      this.pageUrl,
-      this.snapchat,
-      this.tiktok,
-      this.youtube,
-      this.instagram,
-      this.twitter,
-      this.facebook,
-      this.category});
+        this.username,
+        this.name,
+        this.image,
+        this.email,
+        this.phonenumber,
+        this.country,
+        this.city,
+        this.description,
+        this.gender,
+        this.pageUrl,
+        this.snapchat,
+        this.tiktok,
+        this.youtube,
+        this.instagram,
+        this.twitter,
+        this.facebook,
+        this.category});
 
   Celebrity.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -1750,10 +1732,10 @@ class Celebrity {
     email = json['email'];
     phonenumber = json['phonenumber'];
     country =
-        json['country'] != null ? new Country.fromJson(json['country']) : null;
+    json['country'] != null ? new Country.fromJson(json['country']) : null;
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
     gender =
-        json['gender'] != null ? new Gender.fromJson(json['gender']) : null;
+    json['gender'] != null ? new Gender.fromJson(json['gender']) : null;
     description = json['description'];
     pageUrl = json['page_url'];
     snapchat = json['snapchat'];
@@ -1962,7 +1944,7 @@ class CityL {
       });
     }
     message =
-        json['message'] != null ? new Message.fromJson(json['message']) : null;
+    json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -2035,7 +2017,7 @@ class CategoryL {
       });
     }
     message =
-        json['message'] != null ? new Message.fromJson(json['message']) : null;
+    json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {

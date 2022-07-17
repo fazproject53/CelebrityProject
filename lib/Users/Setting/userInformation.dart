@@ -10,6 +10,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 import '../../Celebrity/setting/profileInformation.dart';
 import 'userProfile.dart';
@@ -37,6 +38,7 @@ class _userInformationState extends State<userInformation> {
   bool noMatch =false;
   bool editPassword = false;
 
+  bool citychosen = false;
   Map<int, String> getid = HashMap();
   Map<int, String> cid = HashMap();
 
@@ -66,6 +68,7 @@ class _userInformationState extends State<userInformation> {
     setState(() {
       city = selectedTest['keyword'];
       _selectedTest = selectedTest;
+      citychosen = true;
       // cid.forEach((key, value) {
       //   if(value == selectedTest['keyword']){
       //     cityi = key;
@@ -157,30 +160,30 @@ class _userInformationState extends State<userInformation> {
                 } else if (snapshot.hasData) {
                   int number;
                   helper ==0?{
-                  name.text = snapshot.data!.data!.user!.name!,
-                  email.text = snapshot.data!.data!.user!.email!,
+                    name.text = snapshot.data!.data!.user!.name!,
+                    email.text = snapshot.data!.data!.user!.email!,
                     snapshot.data!.data!.user!.phonenumber! != ""?{
-                  number =
-                      snapshot.data!.data!.user!.phonenumber!.length - 9,
-                  phone.text =
-                      snapshot.data!.data!.user!.phonenumber!.substring(number),}:
+                      number =
+                          snapshot.data!.data!.user!.phonenumber!.length - 9,
+                      phone.text =
+                          snapshot.data!.data!.user!.phonenumber!.substring(number),}:
                     phone.text =
                     snapshot.data!.data!.user!.phonenumber!,
-                  password.text = "********",
-                  country = snapshot.data!.data!.user!.country != null
-                      ? snapshot.data!.data!.user!.country!.name!
-                      : '',
-                  city = snapshot.data!.data!.user!.city != null
-                      ? snapshot.data!.data!.user!.city!.name.toString()
-                      : 'المدينة',
-                  print('the length is = '+ getid.length.toString() + Logging.theUser!.country!),
-                  getid.forEach((key, value) {
-                    print(value);
-                    if(value == Logging.theUser!.country){
-                      print(key.toString()+ 'country id inside future');
-                      cities = fetCities(key+1);
-                    }
-                  }),
+                    password.text = "********",
+                    country = snapshot.data!.data!.user!.country != null
+                        ? snapshot.data!.data!.user!.country!.name!
+                        : '',
+                    city = snapshot.data!.data!.user!.city != null
+                        ? snapshot.data!.data!.user!.city!.name.toString()
+                        : 'المدينة',
+                    print('the length is = '+ getid.length.toString() + Logging.theUser!.country!),
+                    getid.forEach((key, value) {
+                      print(value);
+                      if(value == Logging.theUser!.country){
+                        print(key.toString()+ 'country id inside future');
+                        cities = fetCities(key+1);
+                      }
+                    }),
                     helper =1,
                   }:null;
 
@@ -224,10 +227,12 @@ class _userInformationState extends State<userInformation> {
                                 12,
                                 textFieldNoIcon(
                                     context, 'الاسم', 14, false, name,
-                                    (String? value) {
-                                  if (value == null || value.isEmpty) {}
-                                  return null;
-                                }, false),
+                                        (String? value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "حقل اجباري";
+                                      }
+
+                                    }, false),
                               ),
                               paddingg(
                                 15,
@@ -235,34 +240,34 @@ class _userInformationState extends State<userInformation> {
                                 12,
                                 textFieldNoIcon(context, 'البريد الالكتروني',
                                     14, false, email, (String? value) {
-                                  if (value == null || value.isEmpty) {}
-                                  return null;
-                                }, false),
+                                      if (value == null || value.isEmpty) {}
+                                      return null;
+                                    }, false),
                               ),
                               paddingg(
                                 15,
                                 15,
                                 12,
                                 textFieldNoIcon(context, 'رقم الجوال', 14,
-                                    false, phone, (String? value) {
-                                  RegExp regExp = new RegExp(
-                                      r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                                  if (value != null) {
-                                    if (value.isNotEmpty) {
-                                      if (value.length != 9) {
-                                        return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
+                                  false, phone, (String? value) {
+                                    RegExp regExp = new RegExp(
+                                        r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                                    if (value != null) {
+                                      if (value.isNotEmpty) {
+                                        if (value.length != 9) {
+                                          return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
+                                        }
+                                        if (value.startsWith('0')) {
+                                          return 'رقم الجوال يجب ان لا يبدا ب 0 ';
+                                        }
+                                        // if(!regExp.hasMatch(value)){
+                                        //   return "رقم الجوال غير صالح";
+                                        // }
                                       }
-                                      if (value.startsWith('0')) {
-                                        return 'رقم الجوال يجب ان لا يبدا ب 0 ';
-                                      }
-                                      // if(!regExp.hasMatch(value)){
-                                      //   return "رقم الجوال غير صالح";
-                                      // }
                                     }
-                                  }
 
-                                  return null;
-                                }, false, child: Container(
+                                    return null;
+                                  }, false, child: Container(
                                     width: 60.w,
                                     height: 32.h,
                                     child: CountryCodePicker(
@@ -306,9 +311,9 @@ class _userInformationState extends State<userInformation> {
                                 12,
                                 textFieldPassword(context, 'كلمة المرور', 14,
                                     hidden, password, (String? value) {
-                                  if (value == null || value.isEmpty) {}
-                                  return null;
-                                }, false, child: IconButton(icon: Icon(Icons.edit, color:  black,),onPressed: (){ setState(() {
+                                      if (value == null || value.isEmpty) {}
+                                      return null;
+                                    }, false, child: IconButton(icon: Icon(Icons.edit, color:  black,),onPressed: (){ setState(() {
                                       editPassword = !editPassword;
                                     });},)),
                               ),
@@ -337,11 +342,11 @@ class _userInformationState extends State<userInformation> {
                                       15,
                                       12,
                                       textFieldNoIcon(
-                                          context,
-                                          'كلمة المرور الحالية',
-                                          14,
-                                          true,
-                                          currentPassword, (String? value) {
+                                        context,
+                                        'كلمة المرور الحالية',
+                                        14,
+                                        true,
+                                        currentPassword, (String? value) {
                                         if (value == null ||
                                             value.isEmpty) {}
                                         return null;
@@ -389,7 +394,7 @@ class _userInformationState extends State<userInformation> {
                               ),
                               //===========dropdown lists ==================
 
-                                FutureBuilder(
+                              FutureBuilder(
                                   future: countries,
                                   builder: ((context,
                                       AsyncSnapshot<CountryL> snapshot) {
@@ -397,7 +402,7 @@ class _userInformationState extends State<userInformation> {
                                         ConnectionState.waiting) {
                                       return Center();
                                     } else if (snapshot.connectionState ==
-                                            ConnectionState.active ||
+                                        ConnectionState.active ||
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
@@ -465,7 +470,7 @@ class _userInformationState extends State<userInformation> {
                                                 border:  Border.all(color: newGrey, width: 0.5),
                                                 color: lightGrey.withOpacity(0.10),
                                                 borderRadius:
-                                                    BorderRadius.circular(8.r)),
+                                                BorderRadius.circular(8.r)),
 
                                             ///Icons
                                             icon: const Icon(
@@ -493,7 +498,7 @@ class _userInformationState extends State<userInformation> {
                                     }
                                   })),
 
-                                FutureBuilder(
+                              FutureBuilder(
                                   future: cities,
                                   builder: ((context,
                                       AsyncSnapshot<CityL> snapshot) {
@@ -502,7 +507,7 @@ class _userInformationState extends State<userInformation> {
                                         ConnectionState.waiting) {
                                       return Center();
                                     } else if (snapshot.connectionState ==
-                                            ConnectionState.active ||
+                                        ConnectionState.active ||
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
@@ -514,22 +519,22 @@ class _userInformationState extends State<userInformation> {
                                         _dropdownTestItems.isEmpty
                                             ? {
 
-                                                for (int i = 0;
-                                                    i <
-                                                        snapshot
-                                                            .data!.data!.length;
-                                                    i++)
-                                                  {
-                                                    citilist.add({
-                                                      'no': snapshot.data!.data![i].id!,
-                                                      'keyword':
-                                                          '${snapshot.data!.data![i].name!}'
-                                                    }),
-                                                  },
-                                                _dropdownTestItems =
-                                                    buildDropdownTestItems(
-                                                        citilist)
-                                              }
+                                          for (int i = 0;
+                                          i <
+                                              snapshot
+                                                  .data!.data!.length;
+                                          i++)
+                                            {
+                                              citilist.add({
+                                                'no': snapshot.data!.data![i].id!,
+                                                'keyword':
+                                                '${snapshot.data!.data![i].name!}'
+                                              }),
+                                            },
+                                          _dropdownTestItems =
+                                              buildDropdownTestItems(
+                                                  citilist)
+                                        }
                                             : null;
                                         return paddingg(
                                           15,
@@ -563,7 +568,7 @@ class _userInformationState extends State<userInformation> {
                                                 border:  Border.all(color: newGrey, width: 0.5),
                                                 color: lightGrey.withOpacity(0.10),
                                                 borderRadius:
-                                                    BorderRadius.circular(8.r)),
+                                                BorderRadius.circular(8.r)),
 
                                             ///Icons
                                             icon: const Icon(
@@ -579,6 +584,7 @@ class _userInformationState extends State<userInformation> {
                                             onChanged: onChangeDropdownTests,
                                           ),
                                         );
+
                                       } else {
                                         return const Center(
                                             child: Text(
@@ -586,11 +592,14 @@ class _userInformationState extends State<userInformation> {
                                       }
                                     } else {
                                       return Center();
-                                       //   child: Text(
-                                             // 'State: ${snapshot.connectionState}'));
+                                      //   child: Text(
+                                      // 'State: ${snapshot.connectionState}'));
                                     }
                                   })),
-
+                              citychosen && _selectedTest == null?  Padding(
+                                padding: const EdgeInsets.only(right: 18.0),
+                                child: text(context, 'الرجاء تحديد المدينة', 14, red!),
+                              ): SizedBox(),
                               //=========== end dropdown ==================================
 
                               //===================== button ================================
@@ -604,61 +613,111 @@ class _userInformationState extends State<userInformation> {
                                 gradientContainerNoborder(
                                     getSize(context).width,
                                     buttoms(context, 'حفظ', 20, white, () {
-                                      (currentPassword.text != null && newPassword.text != null ) ||  ( currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)?{
-                                      _formKey2.currentState ==null?null:
-                                      _formKey2.currentState!.validate()? {
-                                      newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => ScaffoldMessenger.of(
-                                      context)
-                                          .showSnackBar(
-                                       SnackBar(
-                                      content: Text(value.message!.ar!),
-                                      )))  , updateUserInformation(userToken).whenComplete(() => fetchUsers(userToken))}: setState((){noMatch = true;})}:null,}:null;
+                                      if (( currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)){
+                                        _formKey2.currentState ==null?null:
+                                        _formKey2.currentState!.validate()? {
+                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => Flushbar(
+                                            flushbarPosition:
+                                            FlushbarPosition.TOP,
+                                            backgroundColor: white,
+                                            margin:
+                                            const EdgeInsets.all(5),
+                                            flushbarStyle:
+                                            FlushbarStyle.FLOATING,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                15.r),
+                                            duration: const Duration(
+                                                seconds: 5),
+                                            icon: Padding(
+                                              padding: const EdgeInsets.only(left: 18.0),
+                                              child: Icon(
+                                                value.success == false?error: done,
+                                                color: value.success == false? red!: green,
+                                                size: 25.sp,
+                                              ),
+                                            ),
+                                            titleText: text(context,
+                                                value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+                                            messageText: text(
+                                                context,
+                                                value.message!.ar!,
+                                                14,
+                                                black,
+                                                fontWeight:
+                                                FontWeight.w200),
+                                          ).show(context),)  , updateUserInformation(userToken).whenComplete(() => fetchUsers(userToken))}: setState((){noMatch = true;})}:null;}
+                                      else{
+                                        _formKey.currentState!.validate() &&  _formKey2.currentState == null && citychosen?
 
-                                      _formKey.currentState!.validate() &&  _formKey2.currentState == null?
-
-                                     {
-                                      loadingDialogue(context),
-                                       updateUserInformation(userToken)
-                                          .then((value) {
+                                        {
+                                          loadingDialogue(context),
+                                          updateUserInformation(userToken)
+                                              .then((value) {
                                             Navigator.pop(context);
-                                        countryChanged || cityChanged
-                                            ? setState(() {
-                                          helper = 0;
-                                          countryChanged =
-                                          false;
-                                          cityChanged =
-                                          false;
-                                          getUser = fetchUsers(userToken);})
-                                            : Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                  MainScreen()),
-                                        );
-                                        ScaffoldMessenger.of(
-                                            context)
-                                            .showSnackBar(
-                                             SnackBar(
-                                              content: Text(
-                                                 value.message!.ar!),
-                                            ));
+                                            countryChanged || cityChanged
+                                                ? setState(() {
+                                              helper = 0;
+                                              countryChanged =
+                                              false;
+                                              cityChanged =
+                                              false;
+                                              getUser = fetchUsers(userToken);})
+                                                : Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (context) =>
+                                                      MainScreen()),
+                                            );
+                                            Flushbar(
+                                              flushbarPosition:
+                                              FlushbarPosition.TOP,
+                                              backgroundColor: white,
+                                              margin:
+                                              const EdgeInsets.all(5),
+                                              flushbarStyle:
+                                              FlushbarStyle.FLOATING,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  15.r),
+                                              duration: const Duration(
+                                                  seconds: 5),
+                                              icon: Padding(
+                                                padding: const EdgeInsets.only(left: 18.0),
+                                                child: Icon(
+                                                  value.success == false?error: done,
+                                                  color: value.success == false? red!: green,
+                                                  size: 25.sp,
+                                                ),
+                                              ),
+                                              titleText: text(context,
+                                                  value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+                                              messageText: text(
+                                                  context,
+                                                  value.message!.ar!,
+                                                  14,
+                                                  black,
+                                                  fontWeight:
+                                                  FontWeight.w200),
+                                            ).show(context);
 
-                                        //   setState(() {
-                                        //     helper = 0;
-                                        //     celebrities =
-                                        //         fetchCelebrities();
-                                        //   }),
-                                        //   ScaffoldMessenger.of(
-                                        //           context)
-                                        //       .showSnackBar(
-                                        //           const SnackBar(
-                                        //     content: Text(
-                                        //         "تم تعديل المعلومات بنجاح"),
-                                        //   ))
+                                            //   setState(() {
+                                            //     helper = 0;
+                                            //     celebrities =
+                                            //         fetchCelebrities();
+                                            //   }),
+                                            //   ScaffoldMessenger.of(
+                                            //           context)
+                                            //       .showSnackBar(
+                                            //           const SnackBar(
+                                            //     content: Text(
+                                            //         "تم تعديل المعلومات بنجاح"),
+                                            //   ))
 
-                                      })}
-                                      : null;
+                                          })}: setState(() {
+                                          citychosen==false? citychosen = true: null;
+                                        },);};
                                     })),
                               ),
                               const SizedBox(
@@ -722,22 +781,22 @@ class _userInformationState extends State<userInformation> {
   }
 
   Widget textFieldPassword(
-    context,
-    String keyy,
-    double fontSize,
-    bool hintPass,
-    TextEditingController mycontroller,
-    myvali,
-    isOptional,
-  {
-    IconButton? child
-  }) {
+      context,
+      String keyy,
+      double fontSize,
+      bool hintPass,
+      TextEditingController mycontroller,
+      myvali,
+      isOptional,
+      {
+        IconButton? child
+      }) {
     return TextFormField(
       obscureText: hintPass ? true : false,
       validator: myvali,
       controller: mycontroller,
       style:
-          TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+      TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderRadius:BorderRadius.circular(8.r),
@@ -757,7 +816,7 @@ class _userInformationState extends State<userInformation> {
           labelStyle: TextStyle(color: white, fontSize: fontSize.sp),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
           focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1)),
+          OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1)),
           // suffixIcon: hidden
           //     ? IconButton(
           //         onPressed: () {
@@ -799,10 +858,10 @@ class _userInformationState extends State<userInformation> {
         'email': email.text,
         'password': password.text,
         'phonenumber':
-            countrycode != null ? countrycode! + phone.text : phone.text,
+        countrycode != null ? countrycode! + phone.text : phone.text,
         'country_id':
-            _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
-        'city_id': _selectedTest == null ? 1 : _selectedTest['no'],
+        _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
+        'city_id': _selectedTest == null ? null : _selectedTest['no'],
       }),
     );
     if (response.statusCode == 200) {
@@ -844,20 +903,20 @@ class _userInformationState extends State<userInformation> {
     }
   }
   Widget textFieldPassword2(
-    context,
-    String key,
-    double fontSize,
-    bool hintPass,
-    TextEditingController mycontroller,
-    myvali,
-    isOptional,
-  ) {
+      context,
+      String key,
+      double fontSize,
+      bool hintPass,
+      TextEditingController mycontroller,
+      myvali,
+      isOptional,
+      ) {
     return TextFormField(
       obscureText: hintPass ? true : false,
       validator: myvali,
       controller: mycontroller,
       style:
-          TextStyle(color: white, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+      TextStyle(color: white, fontSize: fontSize.sp, fontFamily: 'Cairo'),
       decoration: InputDecoration(
           isDense: false,
           filled: true,
@@ -870,25 +929,25 @@ class _userInformationState extends State<userInformation> {
           labelStyle: TextStyle(color: white, fontSize: fontSize.sp),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
           focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: pink, width: 1)),
+          OutlineInputBorder(borderSide: BorderSide(color: pink, width: 1)),
           suffixIcon: hidden2
               ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      hidden2 = false;
-                    });
-                  },
-                  icon: Icon(
-                    hide,
-                    color: lightGrey,
-                  ))
+              onPressed: () {
+                setState(() {
+                  hidden2 = false;
+                });
+              },
+              icon: Icon(
+                hide,
+                color: lightGrey,
+              ))
               : IconButton(
-                  onPressed: () {
-                    setState(() {
-                      hidden2 = true;
-                    });
-                  },
-                  icon: Icon(show, color: lightGrey)),
+              onPressed: () {
+                setState(() {
+                  hidden2 = true;
+                });
+              },
+              icon: Icon(show, color: lightGrey)),
           hintText: key,
           contentPadding: EdgeInsets.all(10.h)),
     );

@@ -430,7 +430,7 @@ Widget textFieldNoIcon(context, String key, double fontSize, bool hintPass,
     TextEditingController mycontroller, myvali, isOptional,
     {List<TextInputFormatter>? inputFormatters, TextInputType? keyboardType, Widget? child}) {
   return Container(
-    height: 50.h,
+    // height: 50.h,
     child: TextFormField(
       obscureText: hintPass,
       validator: myvali,
@@ -451,14 +451,14 @@ Widget textFieldNoIcon(context, String key, double fontSize, bool hintPass,
           errorStyle: TextStyle(fontSize: 12.sp),
           helperText: isOptional ? 'اختياري' : null,
           helperStyle:
-              TextStyle(color: pink, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+          TextStyle(color: pink, fontSize: fontSize.sp, fontFamily: 'Cairo'),
           hintStyle:
-              TextStyle(color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+          TextStyle(color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
           fillColor: lightGrey.withOpacity(0.10),
           labelStyle: TextStyle(color: black, fontSize: fontSize.sp),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
           focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1.w)),
+          OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1.w)),
           suffix: child,
           hintText: key,
           contentPadding: EdgeInsets.all(10.h)),
