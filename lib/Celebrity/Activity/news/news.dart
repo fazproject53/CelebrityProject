@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../Account/LoggingSingUpAPI.dart';
+import '../../../Account/logging.dart';
 import '../../setting/profileInformation.dart';
 
 class news extends StatefulWidget {
@@ -125,8 +126,8 @@ String? userToken;
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(2.0),
-                                                        child: Image.asset(
-                                                          'assets/image/celebrityimg.png',
+                                                        child: Image.network(
+                                                          Logging.theUser!.image!,
                                                           fit: BoxFit.fill,
                                                           height: edit
                                                               ? 150.h

@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
 import '../../../Account/LoggingSingUpAPI.dart';
@@ -108,7 +110,58 @@ class _addVideoState extends State<addVideo> {
                     getSize(context).width,
                     buttoms(context, 'اضافة ', 15, white, () {
                       if(_formKey.currentState!.validate()){
-                        addvideo(userToken!).whenComplete(() => goTopageReplacement(context, ActivityScreen()));
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            FocusManager.instance.primaryFocus
+                                ?.unfocus();
+                            addvideo(userToken!).whenComplete(() => {goTopageReplacement(context, ActivityScreen()),
+                            Flushbar(
+                            flushbarPosition:
+                            FlushbarPosition.TOP,
+                            backgroundColor: white,
+                            margin:
+                            const EdgeInsets.all(5),
+                            flushbarStyle:
+                            FlushbarStyle.FLOATING,
+                            borderRadius:
+                            BorderRadius.circular(
+                            15.r),
+                            duration: const Duration(
+                            seconds: 5),
+                            icon: Padding(
+                            padding: const EdgeInsets.only(left: 18.0),
+                            child: Icon(
+                            done,
+                            color: green,
+                            size: 25.sp,
+                            ),
+                            ),
+                            titleText: text(context, 'تم بنجاح', 14, purple),
+                            messageText: text(
+                            context,
+                            'تم اضافة فيديو بنجاح',
+                            14,
+                            black,
+                            fontWeight:
+                            FontWeight.w200),
+                            ).show(context)
+
+                            });
+
+
+                            // == First dialog closed
+                            return
+                              Align(
+                                alignment: Alignment.center,
+                                child: Lottie.asset(
+                                  "assets/lottie/loding.json",
+                                  fit: BoxFit.cover,
+                                ),
+                              );},
+                        );
+
 
                       }
                     })),
