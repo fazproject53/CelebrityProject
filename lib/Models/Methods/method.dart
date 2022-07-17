@@ -33,7 +33,7 @@ Widget text(
     //softWrap: false,
     style: TextStyle(
       color: color,
-     //overflow: TextOverflow.ellipsis,
+      //overflow: TextOverflow.ellipsis,
 
       fontFamily: family,
       fontSize: fontSize.sp,
@@ -300,30 +300,38 @@ Widget textField(context, icons, String key, double fontSize, bool hintPass,
     inputFormatters: inputFormatters,
     keyboardType: keyboardType,
     controller: mycontroller,
-    style: TextStyle(color: Colors.white, fontSize:  fontSize.sp),
+    style: TextStyle(color: Colors.white, fontSize: fontSize.sp),
     decoration: InputDecoration(
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(
-            color: Colors.white, fontSize: fontSize.sp),
+        hintStyle: TextStyle(color: Colors.white, fontSize: fontSize.sp),
         fillColor: Colors.white12,
         labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: purple.withOpacity(0.6),
-          width: 1.0,
-        ),),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: purple.withOpacity(0.6),
-          width: 1.0,
-        ),) ,
-        enabledBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: Colors.grey.withOpacity(0.8),
-          width: 1.0,
-        ),),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: purple.withOpacity(0.6),
+            width: 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: purple.withOpacity(0.6),
+            width: 1.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: Colors.grey.withOpacity(0.8),
+            width: 1.0,
+          ),
+        ),
         prefixIcon: Icon(icons, color: purple.withOpacity(0.6), size: 25.sp),
         labelText: key,
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0.sp),
+        errorStyle: TextStyle(color: Colors.red, fontSize: 13.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
   );
 }
@@ -349,24 +357,33 @@ Widget textField3(context, icons, String key, double fontSize, bool hintPass,
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(
-            color: Colors.white, fontSize: fontSize.sp),
+        hintStyle: TextStyle(color: Colors.white, fontSize: fontSize.sp),
         fillColor: Colors.white12,
         labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: purple.withOpacity(0.6),
-          width: 1.0,
-        ),),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: purple.withOpacity(0.6),
-          width: 1.0,
-        ),) ,
-        enabledBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: Colors.grey.withOpacity(0.8),
-          width: 1.0,
-        ),),prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: purple.withOpacity(0.6),
+            width: 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: purple.withOpacity(0.6),
+            width: 1.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: Colors.grey.withOpacity(0.8),
+            width: 1.0,
+          ),
+        ),
+        prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
         labelText: key,
-        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0.sp),
+        errorStyle: TextStyle(color: Colors.red, fontSize: 13.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
   );
 }
@@ -390,7 +407,7 @@ Widget textField2(context, icons, String key, double fontSize, bool hintPass,
     inputFormatters: inputFormatters,
     keyboardType: keyboardType,
     controller: mycontroller,
-    style: TextStyle(color: deepgrey, fontSize:  fontSize.sp),
+    style: TextStyle(color: deepgrey, fontSize: fontSize.sp),
     decoration: InputDecoration(
         isDense: true,
         filled: true,
@@ -427,7 +444,11 @@ Widget singWithsButtom(
     height: 45.h,
     width: 45.w,
     decoration: BoxDecoration(
-        boxShadow: [BoxShadow(blurRadius: 3,)],
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 3,
+          )
+        ],
         color: backColor,
         image: DecorationImage(
             image: AssetImage(
@@ -440,7 +461,9 @@ Widget singWithsButtom(
 
 Widget textFieldNoIcon(context, String key, double fontSize, bool hintPass,
     TextEditingController mycontroller, myvali, isOptional,
-    {List<TextInputFormatter>? inputFormatters, TextInputType? keyboardType, Widget? child}) {
+    {List<TextInputFormatter>? inputFormatters,
+    TextInputType? keyboardType,
+    Widget? child}) {
   return Container(
     // height: 50.h,
     child: TextFormField(
@@ -450,27 +473,29 @@ Widget textFieldNoIcon(context, String key, double fontSize, bool hintPass,
       keyboardType: keyboardType,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: mycontroller,
-      style: TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+      style:
+          TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
-            borderRadius:BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8.r),
             borderSide: BorderSide(
               color: newGrey,
               width: 0.5,
-            ),),
+            ),
+          ),
           isDense: false,
           filled: true,
           errorStyle: TextStyle(fontSize: 12.sp),
           helperText: isOptional ? 'اختياري' : null,
-          helperStyle:
-          TextStyle(color: pink, fontSize: fontSize.sp, fontFamily: 'Cairo'),
-          hintStyle:
-          TextStyle(color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+          helperStyle: TextStyle(
+              color: pink, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+          hintStyle: TextStyle(
+              color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
           fillColor: lightGrey.withOpacity(0.10),
           labelStyle: TextStyle(color: black, fontSize: fontSize.sp),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
-          focusedBorder:
-          OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1.w)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: purple, width: 1.w)),
           suffix: child,
           hintText: key,
           contentPadding: EdgeInsets.all(10.h)),
@@ -718,24 +743,25 @@ Widget textFieldDesc(context, String key, double fontSize, bool hintPass,
           TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
-            borderRadius:BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8.r),
             borderSide: BorderSide(
               color: newGrey,
               width: 0.5,
-            ),),
+            ),
+          ),
           isDense: false,
           filled: true,
           hintStyle: TextStyle(
               color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
-          fillColor:  lightGrey.withOpacity(0.10),
+          fillColor: lightGrey.withOpacity(0.10),
           labelStyle: TextStyle(
             color: white,
             fontSize: fontSize.sp,
           ),
           alignLabelWithHint: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
-          focusedBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: purple, width: 1)),
           hintText: key,
           contentPadding: EdgeInsets.all(10.h)),
     ),
@@ -758,27 +784,27 @@ Widget textFieldNoIcon2(
     controller: mycontroller,
     style: TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
     decoration: InputDecoration(
-    enabledBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.only(
-      bottomRight: Radius.circular(10.0),
-      topRight: Radius.circular(10.0),
-    ),
-    borderSide: BorderSide(
-    color: newGrey,
-    width: 0.5,
-    ),),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(10.0),
+            topRight: Radius.circular(10.0),
+          ),
+          borderSide: BorderSide(
+            color: newGrey,
+            width: 0.5,
+          ),
+        ),
         isDense: false,
         filled: true,
         hintStyle:
             TextStyle(color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
-        fillColor:  lightGrey.withOpacity(0.10),
+        fillColor: lightGrey.withOpacity(0.10),
         labelStyle: TextStyle(color: black, fontSize: fontSize.sp),
         border: const OutlineInputBorder(
             borderRadius: BorderRadius.only(
           bottomRight: Radius.circular(10.0),
           topRight: Radius.circular(10.0),
         )),
-
         focusedBorder:
             OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1)),
         hintText: key,
@@ -1074,8 +1100,11 @@ drowAppBar(String title, BuildContext context,
   );
 }
 
-appBarNoIcon(String title, BuildContext context,
-    {color = deepwhite, }) {
+appBarNoIcon(
+  String title,
+  BuildContext context, {
+  color = deepwhite,
+}) {
   return AppBar(
     title: Text(
       title,
@@ -1223,8 +1252,7 @@ Widget drowMenu(
     validator: validator,
     hint: Text(
       inisValue,
-      style:
-          TextStyle(color: Colors.white, fontSize:  fontSize.sp),
+      style: TextStyle(color: Colors.white, fontSize: fontSize.sp),
     ),
     //dropdownColor: black,
     items: item
@@ -1233,8 +1261,7 @@ Widget drowMenu(
               value: type,
               child: Text(
                 type,
-                style: TextStyle(
-                    color: Colors.white, fontSize:  fontSize.sp),
+                style: TextStyle(color: Colors.white, fontSize: fontSize.sp),
                 textAlign: TextAlign.center,
               ),
             ))
@@ -1249,27 +1276,35 @@ Widget drowMenu(
         fillColor: Colors.white12,
         alignLabelWithHint: true,
         errorStyle: TextStyle(color: Colors.red, fontSize: 14.0.sp),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: purple.withOpacity(0.6),
-          width: 1.0,
-        ),),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: purple.withOpacity(0.6),
-          width: 1.0,
-        ),) ,
-        enabledBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
-          color: Colors.grey.withOpacity(0.8),
-          width: 1.0,
-        ),),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: purple.withOpacity(0.6),
+            width: 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: purple.withOpacity(0.6),
+            width: 1.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4.r),
+          borderSide: BorderSide(
+            color: Colors.grey.withOpacity(0.8),
+            width: 1.0,
+          ),
+        ),
         contentPadding: EdgeInsets.all(10.h)),
     onChanged: onChanged,
     dropdownMaxHeight: 140.h,
     dropdownWidth: 180.w,
-    dropdownDecoration:  BoxDecoration(
-      color:purple.withOpacity(0.6),
-      borderRadius: BorderRadius.all(Radius.circular(4.r))
-    ),
-    iconDisabledColor:purple.withOpacity(0.6) ,
+    dropdownDecoration: BoxDecoration(
+        color: purple.withOpacity(0.6),
+        borderRadius: BorderRadius.all(Radius.circular(4.r))),
+    iconDisabledColor: purple.withOpacity(0.6),
     iconEnabledColor: purple.withOpacity(0.6),
     scrollbarAlwaysShow: true,
   );
@@ -1298,10 +1333,11 @@ loadingDialogue(context) {
         );
       });
 }
+
 loadingRequestDialogue(context) {
   return showDialog(
-    barrierDismissible: false,
-    barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
       context: context,
       builder: (context) {
         return Center(
@@ -1315,11 +1351,8 @@ loadingRequestDialogue(context) {
               height: 150.h,
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Lottie.asset(
-                  "assets/lottie/grey.json",
-                  fit: BoxFit.contain,
-                  height: 90.h
-                ),
+                child: Lottie.asset("assets/lottie/grey.json",
+                    fit: BoxFit.contain, height: 90.h),
               ),
             ),
           ),
@@ -1353,6 +1386,7 @@ Widget lodeOneData() {
         )),
   );
 }
+
 //show no data----------------------------------------------------------------------
 Widget noData(context) {
   return Center(
@@ -1364,8 +1398,9 @@ Widget noData(context) {
     ),
   );
 }
+
 //showErrorMassage----------------------------------------------------------------------
-showMassage(context,String titleText,String messageText,{IconData? done}) {
+showMassage(context, String titleText, String messageText, {IconData? done}) {
   Flushbar(
     flushbarPosition: FlushbarPosition.BOTTOM,
     backgroundColor: white,
@@ -1376,25 +1411,27 @@ showMassage(context,String titleText,String messageText,{IconData? done}) {
     forwardAnimationCurve: Curves.linearToEaseOut,
     reverseAnimationCurve: Curves.easeInOutCubicEmphasized,
     duration: const Duration(seconds: 6),
-    leftBarIndicatorColor: done==null?red:green,
+    leftBarIndicatorColor: done == null ? red : green,
     onTap: (bar) {
       bar.dismiss();
     },
     icon: Icon(
       done ?? error,
-      color: done==null?red:green,
+      color: done == null ? red : green,
       size: 30,
     ),
-    titleText: text(context, titleText, 16, done==null?red!:green),
-    messageText: text(context, messageText, 14, black,
-        fontWeight: FontWeight.w200),
+    titleText: text(context, titleText, 16, done == null ? red! : green),
+    messageText:
+        text(context, messageText, 14, black, fontWeight: FontWeight.w200),
   ).show(context);
 }
 //----------------------------------------------------------------------
 
-successfullyDialog(context,String massage,String lottie,String bottomName,action,{double? height}) {
+successfullyDialog(
+    context, String massage, String lottie, String bottomName, action,
+    {double? height}) {
   return showDialog(
-     barrierDismissible: false,
+      barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.70),
       context: context,
       builder: (context) {
@@ -1405,37 +1442,38 @@ successfullyDialog(context,String massage,String lottie,String bottomName,action
           contentPadding: EdgeInsets.only(top: 30.h),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
-            height: height??200.h,
+            height: height ?? 200.h,
             child: Column(
-
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-               text(context, massage, 18, black,align: TextAlign.center),
+                text(context, massage, 18, black, align: TextAlign.center),
                 Expanded(
                   child: Lottie.asset(
-                      lottie,
-                      fit: BoxFit.cover,
-                      //height: 90.h
+                    lottie,
+                    fit: BoxFit.cover,
+                    //height: 90.h
                   ),
                 ),
               ],
             ),
           ),
-           actions: [
-             Padding(
-               padding:  EdgeInsets.only(bottom: 10.h),
-               child: Center(child: buttoms(context, bottomName, 18, Colors.grey, action,backgrounColor: white)),
-             )
-           ],
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.h),
+              child: Center(
+                  child: buttoms(context, bottomName, 18, Colors.grey, action,
+                      backgrounColor: white)),
+            )
+          ],
         );
       });
 }
+
 //snackBar------------------------------------------------------------------------------------
 SnackBar snackBar(context, String title, Color? color, IconData? icon) {
   return SnackBar(
       backgroundColor: color ?? white,
-
       elevation: 20,
       content: Row(
         children: [
@@ -1496,7 +1534,8 @@ Widget internetConnection(context, {reload}) {
       SizedBox(
         height: 10.h,
       ),
-      text(context, 'لايوجد اتصال بالانترنت', 20, black),
+      text(context, 'لايوجد اتصال بالانترنت في الوقت الحالي', 20, black,
+          align: TextAlign.center),
       SizedBox(
         height: 5.h,
       ),
@@ -1504,5 +1543,83 @@ Widget internetConnection(context, {reload}) {
           backgrounColor: grey!, horizontal: 20),
       Spacer(),
     ],
+  );
+}
+
+//check server Exception--------------------------------------------------------------------------
+Widget checkServerException(context, {reload}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Spacer(),
+      SizedBox(
+          height: MediaQuery.of(context).size.height / 5,
+          width: MediaQuery.of(context).size.height / 5,
+          child: Lottie.asset('assets/lottie/connection.json')),
+      SizedBox(
+        height: 10.h,
+      ),
+      text(context, 'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا',
+          20, black,
+          align: TextAlign.center),
+      SizedBox(
+        height: 5.h,
+      ),
+      buttoms(context, 'إعادة تحميل', 14, black, reload,
+          backgrounColor: grey!, horizontal: 20),
+      Spacer(),
+    ],
+  );
+}
+
+//check timeOut Exception--------------------------------------------------------------------------
+Widget checkTimeOutException(context, {reload}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Spacer(),
+      SizedBox(
+          height: MediaQuery.of(context).size.height / 5,
+          width: MediaQuery.of(context).size.height / 5,
+          child: Lottie.asset('assets/lottie/connection.json')),
+      SizedBox(
+        height: 10.h,
+      ),
+      text(context, 'TimeOutException', 20, black, align: TextAlign.center),
+      SizedBox(
+        height: 5.h,
+      ),
+      buttoms(context, 'إعادة تحميل', 14, black, reload,
+          backgrounColor: grey!, horizontal: 20),
+      Spacer(),
+    ],
+  );
+}
+
+//show waitingData-------------------------------------------------------------
+Widget waitingData(double height, double width) {
+  return SizedBox(
+    height: height.h,
+    width: width.w,
+    child: Shimmer(
+        enabled: true,
+        gradient: LinearGradient(
+          tileMode: TileMode.mirror,
+          // begin: Alignment(0.7, 2.0),
+          //end: Alignment(-0.69, -1.0),
+          colors: [mainGrey, Colors.white],
+          stops: const [0.1, 0.88],
+        ),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(5.h),
+            ),
+          ),
+        )),
   );
 }

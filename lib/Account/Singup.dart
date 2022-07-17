@@ -296,30 +296,23 @@ class _SingUpState extends State<SingUp> {
       databaseHelper
           .celebrityRegister(username, pass, email, country, catogary)
           .then((result) {
-        // Navigator.pop(context);
         if (result == "celebrity") {
           Navigator.pop(context);
           setState(() {
             currentuser = "celebrity";
           });
           goTopageReplacement(context, const MainScreen());
+          clearCelebrityTextField();
         } else if (result == "email and username found") {
           Navigator.pop(context);
           showMassage(context, 'بيانات مكررة',
               'البريد الالكتروني واسم المستخدم موجود مسبقا');
-
-          // ScaffoldMessenger.of(context).showSnackBar(snackBar(context,
-          //     'البريد الالكتروني واسم المستخدم موجود سابقا', red, error));
         } else if (result == "username found") {
           Navigator.pop(context);
           showMassage(context, 'بيانات مكررة', 'اسم المستخدم موجود مسبقا');
-
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //     snackBar(context, 'اسم المستخدم موجود سابقا', red, error));
         } else if (result == 'email found') {
           Navigator.pop(context);
-          showMassage(
-              context, 'بيانات مكررة', 'البريد الالكتروني موجود مسبقا');
+          showMassage(context, 'بيانات مكررة', 'البريد الالكتروني موجود مسبقا');
         } else if (result == "SocketException") {
           Navigator.pop(context);
           showMassage(context, 'مشكلة في الانترنت',
@@ -333,9 +326,6 @@ class _SingUpState extends State<SingUp> {
               'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا ');
         }
       });
-    } else {
-      // showErrorMassage(context, 'حقول فارغة او غير صحيحة',
-      //     'تاكد من تعبئة كل الحقول بصورة صحيحة');
     }
   }
 
@@ -359,6 +349,7 @@ class _SingUpState extends State<SingUp> {
             currentuser = "user";
           });
           goTopageReplacement(context, const MainScreen());
+          clearUserTextField();
         } else if (result == "email and username found") {
           Navigator.pop(context);
           showMassage(context, 'بيانات مكررة',
@@ -368,8 +359,7 @@ class _SingUpState extends State<SingUp> {
           showMassage(context, 'بيانات مكررة', 'اسم المستخدم موجود مسبقا');
         } else if (result == 'email found') {
           Navigator.pop(context);
-          showMassage(
-              context, 'بيانات مكررة', 'البريد الالكتروني موجود مسبقا');
+          showMassage(context, 'بيانات مكررة', 'البريد الالكتروني موجود مسبقا');
         } else {
           Navigator.pop(context);
           showMassage(context, 'مشكلة في الخادم',
@@ -414,6 +404,20 @@ class _SingUpState extends State<SingUp> {
             thickness: 1.3,
           )),
         ]));
+  }
+
+  void clearCelebrityTextField() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    userNameCeleController.clear();
+    emailCeleController.clear();
+    passCeleController.clear();
+  }
+
+  void clearUserTextField() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    userNameUserController.clear();
+    emailUserController.clear();
+    passUserController.clear();
   }
   //get Massage-----------------------------------------------------------------------
 

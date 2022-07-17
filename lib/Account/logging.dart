@@ -177,7 +177,7 @@ class _LoggingState extends State<Logging> {
                                     } else {
                                       Navigator.pop(context);
                                       showMassage(context, 'مشكلة في الخادم',
-                                          'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا ');
+                                          'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا');
                                     }
 //if user not select remember me----------------------------------------------------------------------------
                                   } else {
