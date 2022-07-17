@@ -30,9 +30,11 @@ Widget text(
   return Text(
     key,
     textAlign: align,
-    softWrap: true,
+    //softWrap: false,
     style: TextStyle(
       color: color,
+     //overflow: TextOverflow.ellipsis,
+
       fontFamily: family,
       fontSize: fontSize.sp,
       letterSpacing: space.sp,
@@ -321,7 +323,7 @@ Widget textField(context, icons, String key, double fontSize, bool hintPass,
         ),),
         prefixIcon: Icon(icons, color: purple.withOpacity(0.6), size: 25.sp),
         labelText: key,
-        errorStyle: TextStyle(color: Colors.red, fontSize: 12.0.sp),
+        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
   );
 }
@@ -347,14 +349,24 @@ Widget textField3(context, icons, String key, double fontSize, bool hintPass,
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle:
-            TextStyle(color: deepBlack, fontSize:fontSize.sp),
-        fillColor: ligthtBlack,
-        labelStyle: TextStyle(color: deepBlack, fontSize: 12.0.sp),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-        prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
+        hintStyle: TextStyle(
+            color: Colors.white, fontSize: fontSize.sp),
+        fillColor: Colors.white12,
+        labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
+          color: purple.withOpacity(0.6),
+          width: 1.0,
+        ),),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
+          color: purple.withOpacity(0.6),
+          width: 1.0,
+        ),) ,
+        enabledBorder:  OutlineInputBorder(borderRadius: BorderRadius.circular(4.r),borderSide: BorderSide(
+          color: Colors.grey.withOpacity(0.8),
+          width: 1.0,
+        ),),prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
         labelText: key,
-        errorStyle: TextStyle(color: Colors.red, fontSize: 10.0.sp),
+        errorStyle: TextStyle(color: Colors.red, fontSize: 15.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
   );
 }
@@ -1288,7 +1300,7 @@ loadingDialogue(context) {
 }
 loadingRequestDialogue(context) {
   return showDialog(
-   // barrierDismissible: false,
+    barrierDismissible: false,
     barrierColor: Colors.transparent,
       context: context,
       builder: (context) {
@@ -1352,11 +1364,38 @@ Widget noData(context) {
     ),
   );
 }
+//showErrorMassage----------------------------------------------------------------------
+showMassage(context,String titleText,String messageText,{IconData? done}) {
+  Flushbar(
+    flushbarPosition: FlushbarPosition.BOTTOM,
+    backgroundColor: white,
+    margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+    padding: const EdgeInsets.all(10),
+    flushbarStyle: FlushbarStyle.FLOATING,
+    borderRadius: BorderRadius.circular(5.r),
+    forwardAnimationCurve: Curves.linearToEaseOut,
+    reverseAnimationCurve: Curves.easeInOutCubicEmphasized,
+    duration: const Duration(seconds: 6),
+    leftBarIndicatorColor: done==null?red:green,
+    onTap: (bar) {
+      bar.dismiss();
+    },
+    icon: Icon(
+      done ?? error,
+      color: done==null?red:green,
+      size: 30,
+    ),
+    titleText: text(context, titleText, 16, done==null?red!:green),
+    messageText: text(context, messageText, 14, black,
+        fontWeight: FontWeight.w200),
+  ).show(context);
+}
+//----------------------------------------------------------------------
 
-successfullyDialog(context,String massage,String lottie,String bottomName,action) {
+successfullyDialog(context,String massage,String lottie,String bottomName,action,{double? height}) {
   return showDialog(
      barrierDismissible: false,
-      barrierColor: Colors.black87,
+      barrierColor: Colors.black.withOpacity(0.70),
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -1366,17 +1405,19 @@ successfullyDialog(context,String massage,String lottie,String bottomName,action
           contentPadding: EdgeInsets.only(top: 30.h),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
-            height: 200.h,
+            height: height??200.h,
             child: Column(
 
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                text(context, massage, 18, black),
-                Lottie.asset(
-                    lottie,
-                    fit: BoxFit.cover,
-                    //height: 90.h
+               text(context, massage, 18, black,align: TextAlign.center),
+                Expanded(
+                  child: Lottie.asset(
+                      lottie,
+                      fit: BoxFit.cover,
+                      //height: 90.h
+                  ),
                 ),
               ],
             ),
@@ -1394,6 +1435,7 @@ successfullyDialog(context,String massage,String lottie,String bottomName,action
 SnackBar snackBar(context, String title, Color? color, IconData? icon) {
   return SnackBar(
       backgroundColor: color ?? white,
+
       elevation: 20,
       content: Row(
         children: [

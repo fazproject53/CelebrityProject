@@ -301,8 +301,8 @@ class _AdSpaceState extends State<AdSpace> with AutomaticKeepAliveClientMixin {
         });
         return advertising;
       } else {
-        throw Exception('ggg');
-        return Future.error('حدثت مشكله في السيرفر');
+
+        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
       if (page == 1) {
@@ -312,12 +312,11 @@ class _AdSpaceState extends State<AdSpace> with AutomaticKeepAliveClientMixin {
         setState(() {
           isConnectAdvertisingOrder = false;
         });
-        return Future.error('SocketException');
+        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return Future.error('TimeoutException');
+        return 'TimeoutException';
       } else {
-        //throw Exception('ggg');
-        return Future.error('حدثت مشكله في السيرفر');
+        return 'حدثت مشكله في السيرفر';
       }
     }
   } //refreshRequest-----------------------------------------------------------------

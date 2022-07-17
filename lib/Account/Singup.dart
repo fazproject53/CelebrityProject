@@ -7,6 +7,7 @@ import 'package:celepraty/MainScreen/main_screen_navigation.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import '../ModelAPI/ModelsAPI.dart';
@@ -29,15 +30,17 @@ class _SingUpState extends State<SingUp> {
   void initState() {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
-    image1= Image.asset("assets/image/singup.jpg");
+    image1 = Image.asset("assets/image/singup.jpg");
     fetCelebrityCategories();
     fetCountries();
   }
+
   @override
   void didChangeDependencies() {
     precacheImage(image1.image, context);
     super.didChangeDependencies();
   }
+
 //getCountries--------------------------------------------------------------------
   fetCountries() async {
     String serverUrl = 'https://mobile.celebrityads.net/api';
@@ -95,10 +98,11 @@ class _SingUpState extends State<SingUp> {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-          color:Colors.black ,
+            color: Colors.black,
             image: DecorationImage(
-                image:  image1.image,
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.7), BlendMode.darken),
+                image: image1.image,
+                colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.7), BlendMode.darken),
                 fit: BoxFit.cover)),
         child:
 //==============================container===============================================================
@@ -115,8 +119,7 @@ class _SingUpState extends State<SingUp> {
                 width: 150.w,
               ),
 //استمتع يالتواصل--------------------------------------------------
-              text(context, "مرحبا بك في منصة المشاهير", 20,
-                 white),
+              text(context, "مرحبا بك في منصة المشاهير", 20, white),
 //انشاء حساب--------------------------------------------------
               text(context, "إنشئ حسابك الآن", 17, white),
               SizedBox(
@@ -147,7 +150,9 @@ class _SingUpState extends State<SingUp> {
                           },
                         ),
                         gradient: isChang! ? true : false,
-                        color: isChang == false ? Colors.transparent : Colors.white),
+                        color: isChang == false
+                            ? Colors.transparent
+                            : Colors.white),
                     SizedBox(
                       width: 21.w,
                     ),
@@ -254,14 +259,13 @@ class _SingUpState extends State<SingUp> {
                         children: [
                           Wrap(
                             children: [
-                              text(context, "هل لديك حساب بالفعل؟", 14,
-                                  white),
+                              text(context, "هل لديك حساب بالفعل؟", 14, white),
                               SizedBox(
                                 width: 7.w,
                               ),
                               InkWell(
-                                child: text(context, "تسجيل الدخول", 14,
-                                    Colors.grey),
+                                child: text(
+                                    context, "تسجيل الدخول", 14, Colors.grey),
                                 onTap: () {
                                   FocusManager.instance.primaryFocus?.unfocus();
                                   goTopageReplacement(context, Logging());
@@ -295,33 +299,43 @@ class _SingUpState extends State<SingUp> {
         // Navigator.pop(context);
         if (result == "celebrity") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'تمت انشاء حساب مشهور بنجاح', green, done));
           setState(() {
-            currentuser = "famous";
+            currentuser = "celebrity";
           });
           goTopageReplacement(context, const MainScreen());
         } else if (result == "email and username found") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(snackBar(context,
-              'البريد الالكتروني واسم المستخدم موجود سابقا', red, error));
+          showMassage(context, 'بيانات مكررة',
+              'البريد الالكتروني واسم المستخدم موجود مسبقا');
+
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar(context,
+          //     'البريد الالكتروني واسم المستخدم موجود سابقا', red, error));
         } else if (result == "username found") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'اسم المستخدم موجود سابقا', red, error));
+          showMassage(context, 'بيانات مكررة', 'اسم المستخدم موجود مسبقا');
+
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //     snackBar(context, 'اسم المستخدم موجود سابقا', red, error));
         } else if (result == 'email found') {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'البريد الالكتروني موجود سابقا', red, error));
+          showMassage(
+              context, 'بيانات مكررة', 'البريد الالكتروني موجود مسبقا');
+        } else if (result == "SocketException") {
+          Navigator.pop(context);
+          showMassage(context, 'مشكلة في الانترنت',
+              ' لايوجد اتصال بالانترنت في الوقت الحالي ');
+        } else if (result == "TimeoutException") {
+          Navigator.pop(context);
+          showMassage(context, 'مشكلة في الخادم', 'TimeoutException');
         } else {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'توجد مشكله في استرجاع البيانات', red, error));
+          showMassage(context, 'مشكلة في الخادم',
+              'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا ');
         }
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          snackBar(context, 'تاكد من تعبئة كل الحقول', red, error));
+      // showErrorMassage(context, 'حقول فارغة او غير صحيحة',
+      //     'تاكد من تعبئة كل الحقول بصورة صحيحة');
     }
   }
 
@@ -332,35 +346,39 @@ class _SingUpState extends State<SingUp> {
       databaseHelper
           .userRegister(username, pass, email, country)
           .then((result) {
-        if (result == "user") {
+        if (result == "SocketException") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'تمت انشاء حساب مستخدم بنجاح', green, done));
+          showMassage(context, 'مشكلة في الانترنت',
+              ' لايوجد اتصال بالانترنت في الوقت الحالي ');
+        } else if (result == "TimeoutException") {
+          Navigator.pop(context);
+          showMassage(context, 'مشكلة في الخادم', 'TimeoutException');
+        } else if (result == "user") {
+          Navigator.pop(context);
           setState(() {
             currentuser = "user";
           });
           goTopageReplacement(context, const MainScreen());
         } else if (result == "email and username found") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(snackBar(context,
-              'البريد الالكتروني واسم المستخدم موجود سابقا', red, error));
+          showMassage(context, 'بيانات مكررة',
+              'البريد الالكتروني واسم المستخدم موجود مسبقا');
         } else if (result == "username found") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'اسم المستخدم موجود سابقا', red, error));
+          showMassage(context, 'بيانات مكررة', 'اسم المستخدم موجود مسبقا');
         } else if (result == 'email found') {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'البريد الالكتروني موجود سابقا', red, error));
+          showMassage(
+              context, 'بيانات مكررة', 'البريد الالكتروني موجود مسبقا');
         } else {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-              snackBar(context, 'توجد مشكله في استرجاع البيانات', red, error));
+          showMassage(context, 'مشكلة في الخادم',
+              'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا ');
         }
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          snackBar(context, 'تاكد من تعبئة كل الحقول', red, error));
+      // showErrorMassage(context, 'حقول فارغة او غير صحيحة',
+      //     'تاكد من تعبئة كل الحقول بصورة صحيحة');
     }
   }
 
@@ -397,4 +415,6 @@ class _SingUpState extends State<SingUp> {
           )),
         ]));
   }
+  //get Massage-----------------------------------------------------------------------
+
 }

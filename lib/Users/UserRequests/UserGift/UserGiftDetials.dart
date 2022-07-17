@@ -96,6 +96,7 @@ class _UserGiftDetialsState extends State<UserGiftDetials>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: drowAppBar("تفاصيل طلبات الإهداءات", context),
           body: Column(children: [
 //image-----------------------------------------------------
