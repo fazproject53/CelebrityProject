@@ -81,7 +81,15 @@ String? userToken;
                             return Text(snapshot.error.toString());
                             //---------------------------------------------------------------------------
                           } else if (snapshot.hasData) {
-                            return paddingg(
+                            return snapshot.data!.data!.news!.isEmpty? Padding(
+                              padding: EdgeInsets.only(top:getSize(context).height/7),
+                              child: Center(child: Column(
+                                children: [
+                                 Image.asset('assets/image/news.png', height: 150.h, width: 180.w,),
+                                  text(context, 'لا توجد اخبار حاليا', 23, black),
+                                ],
+                              )),
+                            ): paddingg(
                               10,
                               10,
                               20,

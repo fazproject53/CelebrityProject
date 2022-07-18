@@ -94,7 +94,15 @@ class _StudioState extends State<Studio> {
                               //---------------------------------------------------------------------------
                             } else if (snapshot.hasData) {
 
-                              return Column(
+                              return snapshot.data!.data!.studio!.isEmpty? Padding(
+                                padding: EdgeInsets.only(top:getSize(context).height/7),
+                                child: Center(child: Column(
+                                  children: [
+                                    Image.asset('assets/image/studio.png', height: 150.h, width: 150.w,),
+                                    text(context, 'لا توجد وسائط حاليا', 23, black),
+                                  ],
+                                )),
+                              ): Column(
                                 children: [
                                   paddingg(
                                     10,
