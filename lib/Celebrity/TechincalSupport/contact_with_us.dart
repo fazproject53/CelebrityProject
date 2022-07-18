@@ -149,8 +149,7 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
                                         boxWidth: 500.w,
                                         boxHeight: 46.h,
                                         boxDecoration: BoxDecoration(
-                                          color:
-                                              textFieldBlack2.withOpacity(0.70),
+                                          color: lightGrey.withOpacity(0.10),
                                           borderRadius:
                                               BorderRadius.circular(8.r),
                                           border: Border.all(
