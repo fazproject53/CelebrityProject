@@ -1031,7 +1031,7 @@ class _profileInformaionState extends State<profileInformaion>
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                 content:
-                                                Text(value.message!.ar!),
+                                                Text(value),
                                               ))
                                               //   setState(() {
                                               //     helper = 0;
@@ -1103,7 +1103,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
                                                   content:
-                                                  Text(value.message!.ar!),
+                                                  Text(value),
                                                 ))
                                               })
                                                   : null;
@@ -1164,7 +1164,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
                                                   content:
-                                                  Text(value.message!.ar!),
+                                                  Text(value),
                                                 ))
                                               })
                                                   : null;
@@ -1225,7 +1225,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
                                                   content:
-                                                  Text(value.message!.ar!),
+                                                  Text(value),
                                                 ))
                                                 //   setState(() {
                                                 //     helper = 0;
@@ -1298,7 +1298,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
                                                   content:
-                                                  Text(value.message!.ar!),
+                                                  Text(value),
                                                 ))
                                                 //   setState(() {
                                                 //     helper = 0;
@@ -1371,7 +1371,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
                                                   content:
-                                                  Text(value.message!.ar!),
+                                                  Text(value),
                                                 ))
                                               })
                                                   : null;
@@ -1407,7 +1407,43 @@ class _profileInformaionState extends State<profileInformaion>
                                               ? {
                                             changePassword().then((value) =>
                                             {
+                                            value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+                                              Navigator.pop(context),
                                               Flushbar(
+                                                flushbarPosition:
+                                                FlushbarPosition.TOP,
+                                                backgroundColor: white,
+                                                margin:
+                                                const EdgeInsets.all(5),
+                                                flushbarStyle:
+                                                FlushbarStyle.FLOATING,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    15.r),
+                                                duration: const Duration(
+                                                    seconds: 5),
+                                                icon: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      left: 18.0),
+                                                  child: Icon(
+                                                    error,
+                                                    color: red,
+                                                    size: 25.sp,
+                                                  ),
+                                                ),
+                                                titleText: text(
+                                                    context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                messageText: text(
+                                                    context,
+                                                    'قشل الاتصال بالانترنت حاول لاحقا',
+                                                    14,
+                                                    black,
+                                                    fontWeight:
+                                                    FontWeight.w200),
+                                              ).show(context)
+                                            }:
+
+                                            Flushbar(
                                                 flushbarPosition:
                                                 FlushbarPosition.TOP,
                                                 backgroundColor: white,
@@ -1424,22 +1460,24 @@ class _profileInformaionState extends State<profileInformaion>
                                                   padding: const EdgeInsets
                                                       .only(left: 18.0),
                                                   child: Icon(
-                                                    value.success == false
+                                                    value == 'false'
                                                         ? error
                                                         : done,
-                                                    color: value.success ==
-                                                        false ? red! : green,
+                                                    color: value ==
+                                                        'false' ? red! : green,
                                                     size: 25.sp,
                                                   ),
                                                 ),
                                                 titleText: text(context,
-                                                    value.success == false
+                                                    value == 'false'
                                                         ? 'خطا'
                                                         : 'تم التعديل بنجاح',
                                                     14, purple),
                                                 messageText: text(
                                                     context,
-                                                    value.message!.ar!,
+                                                    value == 'false'
+                                                        ? 'الرجاء التاكد من صحة البيانات'
+                                                        : 'تم التغير بنجاح',
                                                     14,
                                                     black,
                                                     fontWeight:
@@ -1450,7 +1488,9 @@ class _profileInformaionState extends State<profileInformaion>
                                                   .whenComplete(() =>
                                                   fetchCelebrities(
                                                       userToken!)),
+
                                             })
+
                                           }
                                               : setState(() {
                                             noMatch =
@@ -1476,6 +1516,42 @@ class _profileInformaionState extends State<profileInformaion>
                                         { loadingDialogue(context),
                                           updateInformation().then((value) =>
                                           {
+                                          value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                                            Navigator.pop(context),
+                                            Flushbar(
+                                              flushbarPosition:
+                                              FlushbarPosition.TOP,
+                                              backgroundColor: white,
+                                              margin:
+                                              const EdgeInsets.all(5),
+                                              flushbarStyle:
+                                              FlushbarStyle.FLOATING,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  15.r),
+                                              duration: const Duration(
+                                                  seconds: 5),
+                                              icon: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 18.0),
+                                                child: Icon(
+                                                  error,
+                                                  color: red,
+                                                  size: 25.sp,
+                                                ),
+                                              ),
+                                              titleText: text(
+                                                  context, 'قشل الاتصال بالانترنت', 14, purple),
+                                              messageText: text(
+                                                  context,
+                                                  'قشل الاتصال بالانترنت حاول لاحقا',
+                                                  14,
+                                                  black,
+                                                  fontWeight:
+                                                  FontWeight.w200),
+                                            ).show(context)
+                                          }:    {
                                             Navigator.pop(context),
                                             countryChanged
                                                 ? setState(() {
@@ -1508,28 +1584,24 @@ class _profileInformaionState extends State<profileInformaion>
                                                 padding: const EdgeInsets.only(
                                                     left: 18.0),
                                                 child: Icon(
-                                                  value.success == false
-                                                      ? error
-                                                      : done,
-                                                  color: value.success == false
-                                                      ? red!
-                                                      : green,
+                                                  done,
+                                                  color: green,
                                                   size: 25.sp,
                                                 ),
                                               ),
-                                              titleText: text(context,
-                                                  value.success == false
-                                                      ? 'خطا'
-                                                      : 'تم التعديل بنجاح', 14,
+                                              titleText: text(
+                                                  context, 'تم التعديل بنجاح',
+                                                  14,
                                                   purple),
                                               messageText: text(
                                                   context,
-                                                  value.message!.ar!,
+                                                  value,
                                                   14,
                                                   black,
                                                   fontWeight:
                                                   FontWeight.w200),
                                             ).show(context)
+                                          }
                                           })}
                                             : setState(() {
                                           city == 'المدينة'
@@ -1561,7 +1633,7 @@ class _profileInformaionState extends State<profileInformaion>
   }
 
   // eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMDAzNzUwY2MyNjFjNDY1NjY2YjcwODJlYjgzYmFmYzA0ZjQzMGRlYzEyMzAwYTY5NTE1ZDNlZTYwYWYzYjc0Y2IxMmJiYzA3ZTYzODAwMWYiLCJpYXQiOjE2NTMxMTY4MjcuMTk0MDc3OTY4NTk3NDEyMTA5Mzc1LCJuYmYiOjE2NTMxMTY4MjcuMTk0MDg0ODgyNzM2MjA2MDU0Njg3NSwiZXhwIjoxNjg0NjUyODI3LjE5MDA0ODkzMzAyOTE3NDgwNDY4NzUsInN1YiI6IjExIiwic2NvcGVzIjpbXX0.GUQgvMFS-0VA9wOAhHf7UaX41lo7m8hRm0y4mI70eeAZ0Y9p2CB5613svXrrYJX74SfdUM4y2q48DD-IeT67uydUP3QS9inIyRVTDcEqNPd3i54YplpfP8uSyOCGehmtl5aKKEVAvZLOZS8C-aLIEgEWC2ixwRKwr89K0G70eQ7wHYYHQ3NOruxrpc_izZ5awskVSKwbDVnn9L9-HbE86uP4Y8B5Cjy9tZBGJ-6gJtj3KYP89-YiDlWj6GWs52ShPwXlbMNFVDzPa3oz44eKZ5wNnJJBiky7paAb1hUNq9Q012vJrtazHq5ENGrkQ23LL0n61ITCZ8da1RhUx_g6BYJBvc_10nMuwWxRKCr9l5wygmIItHAGXxB8f8ypQ0vLfTeDUAZa_Wrc_BJwiZU8jSdvPZuoUH937_KcwFQScKoL7VuwbbmskFHrkGZMxMnbDrEedl0TefFQpqUAs9jK4ngiaJgerJJ9qpoCCn4xMSGl_ZJmeQTQzMwcLYdjI0txbSFIieSl6M2muHedWhWscXpzzBhdMOM87cCZYuAP4Gml80jywHCUeyN9ORVkG_hji588pvW5Ur8ZzRitlqJoYtztU3Gq2n6sOn0sRShjTHQGPWWyj5fluqsok3gxpeux5esjG_uLCpJaekrfK3ji2DYp-wB-OBjTGPUqlG9W_fs
-  Future<CelebrityInformation> updateInformation() async {
+  Future<String> updateInformation() async {
     categoriesId.forEach((key, value) {
       if (value == category) {
         print(key);
@@ -1570,77 +1642,95 @@ class _profileInformaionState extends State<profileInformaion>
         catId = key + 1;
       }
     });
-    String token2 =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWVjZjA0OGYxODVkOGZjYjQ5YTI3ZTgyYjQxYjBmNTg3OTMwYTA3NDY3YTc3ZjQwOGZlYWFmNjliNGYxMDQ4ZjEzMjgxMWU4MWNhMDJlNjYiLCJpYXQiOjE2NTAxOTc4MTIuNjUzNTQ5OTA5NTkxNjc0ODA0Njg3NSwibmJmIjoxNjUwMTk3ODEyLjY1MzU1MzAwOTAzMzIwMzEyNSwiZXhwIjoxNjgxNzMzODEyLjY0Mzg2NjA2MjE2NDMwNjY0MDYyNSwic3ViIjoiMTEiLCJzY29wZXMiOltdfQ.toMOLVGTbNRcIqD801Xs3gJujhMvisCzAHHQC_P8UYp3lmzlG3rwadB4M0rooMIVt82AB2CyZfT37tVVWrjAgNq4diKayoQC5wPT7QQrAp5MERuTTM7zH2n3anZh7uargXP1Mxz3X9PzzTRSvojDlfCMsX1PrTLAs0fGQOVVa-u3lkaKpWkVVa1lls0S755KhZXCAt1lKBNcm7GHF657QCh4_daSEOt4WSF4yq-F6i2sJH-oMaYndass7HMj05wT9Z2KkeIFcZ21ZEAKNstraKUfLzwLr2_buHFNmnziJPG1qFDgHLOUo6Omdw3f0ciPLiLD7FnCrqo_zRZQw9V_tPb1-o8MEZJmAH2dfQWQBey4zZgUiScAwZAiPNcTPBWXmSGQHxYVjubKzN18tq-w1EPxgFJ43sRRuIUHNU15rhMio_prjwqM9M061IzYWgzl3LW1NfckIP65l5tmFOMSgGaPDk18ikJNmxWxpFeBamL6tTsct7-BkEuYEU6GEP5D1L-uwu8GGI_T6f0VSW9sal_5Zo0lEsUuR2nO1yrSF8ppooEkFHlPJF25rlezmaUm0MIicaekbjwKdja5J5ZgNacpoAnoXe4arklcR6djnj_bRcxhWiYa-0GSITGvoWLcbc90G32BBe2Pz3RyoaiHkAYA_BNA_0qmjAYJMwB_e8U';
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/profile/update',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $userToken'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'name': name.text,
-        'email': email.text,
-        'password': password.text,
-        'phonenumber': phone.text,
-        'country_id':
-        _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
-        'city_id': _selectedTest == null ? 1 : _selectedTest['no'],
-        'category_id':
-        _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
-        'snapchat': snapchat.text,
-        'tiktok': tiktok.text,
-        'youtube': youtube.text,
-        'instagram': instagram.text,
-        'twitter': twitter.text,
-        'facebook': facebook.text,
-        'description': desc.text,
-        'gender_id': _selectedTest4 == null ? 1 : _selectedTest4['no'],
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return CelebrityInformation.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'https://mobile.celebrityads.net/api/celebrity/profile/update',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'name': name.text,
+          'email': email.text,
+          'password': password.text,
+          'phonenumber': phone.text,
+          'country_id':
+          _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
+          'city_id': _selectedTest == null ? 1 : _selectedTest['no'],
+          'category_id':
+          _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
+          'snapchat': snapchat.text,
+          'tiktok': tiktok.text,
+          'youtube': youtube.text,
+          'instagram': instagram.text,
+          'twitter': twitter.text,
+          'facebook': facebook.text,
+          'description': desc.text,
+          'gender_id': _selectedTest4 == null ? 1 : _selectedTest4['no'],
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return jsonDecode(response.body)['message']['ar'];
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
     }
   }
 
-  Future<CelebrityInformation> changePassword() async {
-    String token2 =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWVjZjA0OGYxODVkOGZjYjQ5YTI3ZTgyYjQxYjBmNTg3OTMwYTA3NDY3YTc3ZjQwOGZlYWFmNjliNGYxMDQ4ZjEzMjgxMWU4MWNhMDJlNjYiLCJpYXQiOjE2NTAxOTc4MTIuNjUzNTQ5OTA5NTkxNjc0ODA0Njg3NSwibmJmIjoxNjUwMTk3ODEyLjY1MzU1MzAwOTAzMzIwMzEyNSwiZXhwIjoxNjgxNzMzODEyLjY0Mzg2NjA2MjE2NDMwNjY0MDYyNSwic3ViIjoiMTEiLCJzY29wZXMiOltdfQ.toMOLVGTbNRcIqD801Xs3gJujhMvisCzAHHQC_P8UYp3lmzlG3rwadB4M0rooMIVt82AB2CyZfT37tVVWrjAgNq4diKayoQC5wPT7QQrAp5MERuTTM7zH2n3anZh7uargXP1Mxz3X9PzzTRSvojDlfCMsX1PrTLAs0fGQOVVa-u3lkaKpWkVVa1lls0S755KhZXCAt1lKBNcm7GHF657QCh4_daSEOt4WSF4yq-F6i2sJH-oMaYndass7HMj05wT9Z2KkeIFcZ21ZEAKNstraKUfLzwLr2_buHFNmnziJPG1qFDgHLOUo6Omdw3f0ciPLiLD7FnCrqo_zRZQw9V_tPb1-o8MEZJmAH2dfQWQBey4zZgUiScAwZAiPNcTPBWXmSGQHxYVjubKzN18tq-w1EPxgFJ43sRRuIUHNU15rhMio_prjwqM9M061IzYWgzl3LW1NfckIP65l5tmFOMSgGaPDk18ikJNmxWxpFeBamL6tTsct7-BkEuYEU6GEP5D1L-uwu8GGI_T6f0VSW9sal_5Zo0lEsUuR2nO1yrSF8ppooEkFHlPJF25rlezmaUm0MIicaekbjwKdja5J5ZgNacpoAnoXe4arklcR6djnj_bRcxhWiYa-0GSITGvoWLcbc90G32BBe2Pz3RyoaiHkAYA_BNA_0qmjAYJMwB_e8U';
+  Future<String> changePassword() async {
 
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/password/change',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $userToken'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'current_password': currentPassword.text,
-        'new_password': newPassword.text,
-        'confirm_password': confirmPassword.text,
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return CelebrityInformation.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'https://mobile.celebrityads.net/api/celebrity/password/change',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'current_password': currentPassword.text,
+          'new_password': newPassword.text,
+          'confirm_password': confirmPassword.text,
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return jsonDecode(response.body)['success'].toString();
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
     }
   }
 
