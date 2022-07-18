@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
@@ -112,39 +113,78 @@ class _addVideoState extends State<addVideo> {
                           builder: (BuildContext context) {
                             FocusManager.instance.primaryFocus
                                 ?.unfocus();
-                            addvideo(userToken!).whenComplete(() => {goTopageReplacement(context, ActivityScreen()),
-                            Flushbar(
-                            flushbarPosition:
-                            FlushbarPosition.TOP,
-                            backgroundColor: white,
-                            margin:
-                            const EdgeInsets.all(5),
-                            flushbarStyle:
-                            FlushbarStyle.FLOATING,
-                            borderRadius:
-                            BorderRadius.circular(
-                            15.r),
-                            duration: const Duration(
-                            seconds: 5),
-                            icon: Padding(
-                            padding: const EdgeInsets.only(left: 18.0),
-                            child: Icon(
-                            done,
-                            color: green,
-                            size: 25.sp,
-                            ),
-                            ),
-                            titleText: text(context, 'تم بنجاح', 14, purple),
-                            messageText: text(
-                            context,
-                            'تم اضافة فيديو بنجاح',
-                            14,
-                            black,
-                            fontWeight:
-                            FontWeight.w200),
-                            ).show(context)
+                            addvideo(userToken!).then((value) =>
+                            value == ''?
+                            {goTopageReplacement(context, ActivityScreen()),
 
-                            });
+                              Flushbar(
+                                flushbarPosition:
+                                FlushbarPosition.TOP,
+                                backgroundColor: white,
+                                margin:
+                                const EdgeInsets.all(5),
+                                flushbarStyle:
+                                FlushbarStyle.FLOATING,
+                                borderRadius:
+                                BorderRadius.circular(
+                                    15.r),
+                                duration: const Duration(
+                                    seconds: 5),
+                                icon: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0),
+                                  child: Icon(
+                                    done,
+                                    color: green,
+                                    size: 25.sp,
+                                  ),
+                                ),
+                                titleText: text(context, 'تم بنجاح', 14, purple),
+                                messageText: text(
+                                    context,
+                                    'تم اضافة فيديو بنجاح',
+                                    14,
+                                    black,
+                                    fontWeight:
+                                    FontWeight.w200),
+                              ).show(context)}
+                                : {
+                              Navigator.pop(context),
+                              Flushbar(
+                                flushbarPosition:
+                                FlushbarPosition.TOP,
+                                backgroundColor: white,
+                                margin:
+                                const EdgeInsets.all(5),
+                                flushbarStyle:
+                                FlushbarStyle.FLOATING,
+                                borderRadius:
+                                BorderRadius.circular(
+                                    15.r),
+                                duration: const Duration(
+                                    seconds: 5),
+                                icon: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 18.0),
+                                  child: Icon(
+                                    error,
+                                    color: red,
+                                    size: 25.sp,
+                                  ),
+                                ),
+                                titleText: text(
+                                    context, 'قشل الاتصال بالانترنت',
+                                    14, purple),
+                                messageText: text(
+                                    context,
+                                    'قشل الاتصال بالانترنت حاول لاحقا',
+                                    14,
+                                    black,
+                                    fontWeight:
+                                    FontWeight.w200),
+                              ).show(context),
+
+                            }
+                            );
 
 
                             // == First dialog closed
@@ -156,6 +196,7 @@ class _addVideoState extends State<addVideo> {
                                   fit: BoxFit.cover,
                                 ),
                               );},
+
                         );
 
 
@@ -172,43 +213,55 @@ class _addVideoState extends State<addVideo> {
     );
   }
 
-  addvideo(String token) async {
-    String token2 =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWVjZjA0OGYxODVkOGZjYjQ5YTI3ZTgyYjQxYjBmNTg3OTMwYTA3NDY3YTc3ZjQwOGZlYWFmNjliNGYxMDQ4ZjEzMjgxMWU4MWNhMDJlNjYiLCJpYXQiOjE2NTAxOTc4MTIuNjUzNTQ5OTA5NTkxNjc0ODA0Njg3NSwibmJmIjoxNjUwMTk3ODEyLjY1MzU1MzAwOTAzMzIwMzEyNSwiZXhwIjoxNjgxNzMzODEyLjY0Mzg2NjA2MjE2NDMwNjY0MDYyNSwic3ViIjoiMTEiLCJzY29wZXMiOltdfQ.toMOLVGTbNRcIqD801Xs3gJujhMvisCzAHHQC_P8UYp3lmzlG3rwadB4M0rooMIVt82AB2CyZfT37tVVWrjAgNq4diKayoQC5wPT7QQrAp5MERuTTM7zH2n3anZh7uargXP1Mxz3X9PzzTRSvojDlfCMsX1PrTLAs0fGQOVVa-u3lkaKpWkVVa1lls0S755KhZXCAt1lKBNcm7GHF657QCh4_daSEOt4WSF4yq-F6i2sJH-oMaYndass7HMj05wT9Z2KkeIFcZ21ZEAKNstraKUfLzwLr2_buHFNmnziJPG1qFDgHLOUo6Omdw3f0ciPLiLD7FnCrqo_zRZQw9V_tPb1-o8MEZJmAH2dfQWQBey4zZgUiScAwZAiPNcTPBWXmSGQHxYVjubKzN18tq-w1EPxgFJ43sRRuIUHNU15rhMio_prjwqM9M061IzYWgzl3LW1NfckIP65l5tmFOMSgGaPDk18ikJNmxWxpFeBamL6tTsct7-BkEuYEU6GEP5D1L-uwu8GGI_T6f0VSW9sal_5Zo0lEsUuR2nO1yrSF8ppooEkFHlPJF25rlezmaUm0MIicaekbjwKdja5J5ZgNacpoAnoXe4arklcR6djnj_bRcxhWiYa-0GSITGvoWLcbc90G32BBe2Pz3RyoaiHkAYA_BNA_0qmjAYJMwB_e8U';
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(studioVideo!.openRead()));
-    // get file length
-    var length = await studioVideo!.length();
+  Future<String> addvideo(String token) async {
 
-    // string to uri
-    var uri =
-        Uri.parse("https://mobile.celebrityads.net/api/celebrity/studio/add");
+ try {
+   var stream =
+   new http.ByteStream(DelegatingStream.typed(studioVideo!.openRead()));
+   // get file length
+   var length = await studioVideo!.length();
 
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Authorization": "Bearer $token"
-    };
-    // create multipart request
-    var request = new http.MultipartRequest("POST", uri);
+   // string to uri
+   var uri =
+   Uri.parse("https://mobile.celebrityads.net/api/celebrity/studio/add");
 
-    // multipart that takes file
-    var multipartFile = new http.MultipartFile('image', stream, length,
-        filename: basename(studioVideo!.path));
+   Map<String, String> headers = {
+     "Accept": "application/json",
+     "Authorization": "Bearer $token"
+   };
+   // create multipart request
+   var request = new http.MultipartRequest("POST", uri);
 
-    // add file to multipart
-    request.files.add(multipartFile);
-    request.headers.addAll(headers);
-    request.fields["title"] = controlvideotitle.text;
-    request.fields["description"] = controlvideodesc.text;
-    request.fields["type"] = "vedio";
-    // send
-    var response = await request.send();
-    print(response.statusCode);
+   // multipart that takes file
+   var multipartFile = new http.MultipartFile('image', stream, length,
+       filename: basename(studioVideo!.path));
 
-    // listen for response
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
+   // add file to multipart
+   request.files.add(multipartFile);
+   request.headers.addAll(headers);
+   request.fields["title"] = controlvideotitle.text;
+   request.fields["description"] = controlvideodesc.text;
+   request.fields["type"] = "vedio";
+   // send
+   var response = await request.send();
+   print(response.statusCode);
+
+   // listen for response
+   response.stream.transform(utf8.decoder).listen((value) {
+     print(value);
+
+   });
+   return '';
+ }catch (e) {
+   if (e is SocketException) {
+     return 'SocketException';
+   } else if(e is TimeoutException) {
+     return 'TimeoutException';
+   } else {
+     return 'serverException';
+
+   }
+ }
   }
 
   Future<File?> getVideo(context) async {

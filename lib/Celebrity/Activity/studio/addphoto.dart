@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:io';
@@ -80,7 +81,8 @@ class _addphotoState extends State<addphoto> {
                                   builder: (BuildContext context) {
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
-                                    addPhoto(userToken!).whenComplete(() =>
+                                    addPhoto(userToken!).then((value) =>
+                                    value == ''?
                                     {goTopageReplacement(context, ActivityScreen()),
 
                                       Flushbar(
@@ -112,7 +114,46 @@ class _addphotoState extends State<addphoto> {
                                             black,
                                             fontWeight:
                                             FontWeight.w200),
-                                      ).show(context)});
+                                      ).show(context)}
+                                      : {
+                                      Navigator.pop(context),
+                                      Flushbar(
+                                        flushbarPosition:
+                                        FlushbarPosition.TOP,
+                                        backgroundColor: white,
+                                        margin:
+                                        const EdgeInsets.all(5),
+                                        flushbarStyle:
+                                        FlushbarStyle.FLOATING,
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            15.r),
+                                        duration: const Duration(
+                                            seconds: 5),
+                                        icon: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 18.0),
+                                          child: Icon(
+                                            error,
+                                            color: red,
+                                            size: 25.sp,
+                                          ),
+                                        ),
+                                        titleText: text(
+                                            context, 'قشل الاتصال بالانترنت',
+                                            14, purple),
+                                        messageText: text(
+                                            context,
+                                            'قشل الاتصال بالانترنت حاول لاحقا',
+                                            14,
+                                            black,
+                                            fontWeight:
+                                            FontWeight.w200),
+                                      ).show(context),
+
+                                    }
+                                    );
+
 
                                     // == First dialog closed
                                     return
@@ -123,6 +164,7 @@ class _addphotoState extends State<addphoto> {
                                           fit: BoxFit.cover,
                                         ),
                                       );},
+
                                 );
 
                               }
@@ -138,44 +180,54 @@ class _addphotoState extends State<addphoto> {
     );
   }
 
-   addPhoto(String token) async {
-    String token2 =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMWNjMTA1MjcxODRhN2QzYTIwNDJkYTdmNTMyNTA4ZTdjMDE4NWQwOWI3MzRkY2VhMGEzZjYxY2U3MjRmYmM4M2M5ZTcwNGYyYmNjYmIwNjAiLCJpYXQiOjE2NTA3MzU4NjEuMDQ2MzQwOTQyMzgyODEyNSwibmJmIjoxNjUwNzM1ODYxLjA0NjM0NTk0OTE3Mjk3MzYzMjgxMjUsImV4cCI6MTY4MjI3MTg2MS4wNDEzODQ5MzUzNzkwMjgzMjAzMTI1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.Dp0SkGykv6S4A3maaSmgkWMfKCXbumkxg8cmCJcgoBmFOjxwiKht2vywEnOXtPyFSV7BY48IpvrO6xlrfCE9Oy5wSp86caE-uYEo-uHgzsuRqf-hHpL9DcNsrfuZBQi4h3GiiCfyYV0362FkVl_hclamppj8VL-S7C02_Ddg7Ygnlce3-k8Hm8NRutBREsk4or75C-1mL70ArOCWuLazaUbAJexN2MuLMjqQF9h-pgcaQhEY3rhBEarcEcfdREJgGy_5zARbAdSi_mwclQCqNr9KatmRhkDL_My0GqmGvkt8RUSb_Uo93NXv9lvdw41gMcrStKvVbGg4RMRSxPRD_P9I8-26Ipasx5wMlFdZU10-mSrGKDLu3d4vxVcLFcQIwQqK19m5urFdgMVznRBqEnqceQUb_UjUh8i7VOa8rRUFFbLy7ALZaAk23DtVz25AHRIaYbV_jmgXbx_9IuJc3-dslYVvfGbtgRniKgLEDHKgWgVfiljUU9aUZmIh7i1uYgDZm1LBDWY_wPRQdPoQedfSiLs0Qy1ZmfahRBRWgNKFZDMoKvhtbuuP3rJLcIiQ6nLbyu1i4ma8ly74po4bYZcQDKTFx1oSi2fkUkDF_ZtqLFnx7xvzfXY-Za8krfB-AThg7Phi8-KVCdlTza_KwqkQciGzG4MD3-eY62JXIIU';
+ Future<String>  addPhoto(String token) async {
 
-    var stream = new http.ByteStream(DelegatingStream.typed(studioimage!.openRead()));
-    // get file length
-    var length = await studioimage!.length();
+    try {
+      var stream = new http.ByteStream(
+          DelegatingStream.typed(studioimage!.openRead()));
+      // get file length
+      var length = await studioimage!.length();
 
-    // string to uri
-    var uri =
-    Uri.parse("https://mobile.celebrityads.net/api/celebrity/studio/add");
+      // string to uri
+      var uri =
+      Uri.parse("https://mobile.celebrityads.net/api/celebrity/studio/add");
 
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Authorization": "Bearer $token"
-    };
-    // create multipart request
-    var request = new http.MultipartRequest("POST", uri);
+      Map<String, String> headers = {
+        "Accept": "application/json",
+        "Authorization": "Bearer $token"
+      };
+      // create multipart request
+      var request = new http.MultipartRequest("POST", uri);
 
-    // multipart that takes file
-    var multipartFile = new http.MultipartFile('image', stream, length,
-        filename: basename(studioimage!.path));
+      // multipart that takes file
+      var multipartFile = new http.MultipartFile('image', stream, length,
+          filename: basename(studioimage!.path));
 
-    // add file to multipart
-    request.files.add(multipartFile);
-    request.headers.addAll(headers);
-    request.fields["title"] = controlphototitle.text;
-    request.fields["description"] = controlphotodesc.text;
-    request.fields["type"] = "image";
-    // send
-    var response = await request.send();
-    print(response.statusCode);
+      // add file to multipart
+      request.files.add(multipartFile);
+      request.headers.addAll(headers);
+      request.fields["title"] = controlphototitle.text;
+      request.fields["description"] = controlphotodesc.text;
+      request.fields["type"] = "image";
+      // send
+      var response = await request.send();
+      print(response.statusCode);
 
-    // listen for response
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
+      // listen for response
+      response.stream.transform(utf8.decoder).listen((value) {
+        print(value);
+      });
+      return '';
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
 
+      }
+    }
   }
 
   Future<File?> getPhoto(context) async {
