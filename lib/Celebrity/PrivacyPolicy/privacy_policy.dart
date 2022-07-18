@@ -177,7 +177,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                     textFieldDescOnChange(
                                                       context,
                                                       'اكتب سياسة الاعلان الخاصة بك',
-                                                      12,
+                                                      14,
                                                       false,
                                                       addYourAdvPP,
                                                       (String? value) {
@@ -265,7 +265,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                     textFieldDescOnChange(
                                                       context,
                                                       'اكتب سياسة الاهداء الخاصة بك',
-                                                      12,
+                                                      14,
                                                       false,
                                                       addYourGiftingPP,
                                                       (String? value) {
@@ -353,7 +353,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                     textFieldDescOnChange(
                                                       context,
                                                       'اكتب سياسة المساحة الاعلانية الخاصة بك',
-                                                      12,
+                                                      14,
                                                       false,
                                                       addYourAdvAreaPP,
                                                       (String? value) {

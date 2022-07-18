@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 import '../../Models/Variables/Variables.dart';
-
 
 class CelebrityCalenderMain extends StatelessWidget {
   const CelebrityCalenderMain({Key? key}) : super(key: key);
@@ -30,7 +30,6 @@ class CelebrityCalenderMain extends StatelessWidget {
 
 ///---------------------CelebrityCalenderHome---------------------
 class CelebrityCalenderHome extends StatefulWidget {
-
   const CelebrityCalenderHome({Key? key}) : super(key: key);
 
   @override
@@ -38,7 +37,6 @@ class CelebrityCalenderHome extends StatefulWidget {
 }
 
 class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
-
   ///future discount model variable
   Future<CalenderModel>? calender;
 
@@ -61,6 +59,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
   late int day;
   late int year;
 
+  bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,264 +67,408 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
       child: Column(children: [
         Expanded(
           child: Stack(children: [
-            Container(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: EdgeInsets.only(top: 23.h, right: 20.w),
-                child: text(context, 'الجدول الخاص بالمواعيد المتفق عليها', 17,
-                    ligthtBlack),
-              ),
-            ),
             paddingg(
-              10,
-              10,
-              60,
+                10,
+                10,
+                30,
 
-              ///ListView
-              FutureBuilder<CalenderModel>(
-                future: calender,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center();
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.active ||
-                      snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Center(child: Text(snapshot.error.toString()));
-                      //---------------------------------------------------------------------------
-                    } else if (snapshot.hasData) {
-
-                      return snapshot.data!.data!.orders!.isNotEmpty ? ListView.builder(
-                        itemCount: snapshot.data!.data!.orders!.length,
-                        itemBuilder: (context, index) {
-
-                          dateFormat = DateTime.parse(snapshot.data!.data!.orders![index].date!);
-
-                          ///Save the year
-                          year  = dateFormat.year;
-
-                          ///Save the day date
-                          day = dateFormat.day;
-
-                          ///Convert the month to text
-                          if(dateFormat.month == 01){ ///1
-                            month = 'يناير';
-                          }else if(dateFormat.month == 02){ ///2
-                            month = 'فبراير';
-                          }else if(dateFormat.month == 03){ ///3
-                            month = 'مارش';
-                          }else if(dateFormat.month == 04){ ///4
-                            month = 'ابريل';
-                          }else if(dateFormat.month == 05){ ///5
-                            month = 'مايو';
-                          }else if(dateFormat.month == 06){ ///6
-                            month = 'يونيو';
-                          }else if(dateFormat.month == 07){ ///7
-                            month = 'يوليو';
-                          }else if(dateFormat.month == 08){ ///8
-                            month = 'أغطسطس';
-                          }else if(dateFormat.month == 09){ ///9
-                            month = 'سبتمبر';
-                          }else if(dateFormat.month == 10){ ///10
-                            month = 'أكتوبر';
-                          }else if(dateFormat.month == 11){ ///11
-                            month = 'نوفمبر';
-                          }else{ /// 12
-                            month = 'ديسمبر';
-                          }
-
-                          return paddingg(
-                            5,
-                            12,
-                            10,
-                            SizedBox(
-                              height: 90.h,
-                              child: Card(
-                                elevation: 20,
-                                color: white,
-                                shadowColor: Colors.black38,
-                                child: paddingg(
-                                  0,
-                                  0,
-                                  0,
-
-                                  ///Row to store all info
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      paddingg(
-                                          10,
-                                          2,
-                                          0,
-                                          Row(
-                                            children: [
-                                              Container(
-
-                                                ///the box of date
-                                                alignment: Alignment.center,
-                                                height: 80.h,
-                                                width: 80.w,
-                                                decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: const Alignment(
-                                                          0.8, 2.0),
-                                                      end: const Alignment(
-                                                          -0.69, -1.0),
-                                                      colors: [
-                                                        const Color(0xff0ab3d0)
-                                                            .withOpacity(0.90),
-                                                        const Color(0xffe468ca)
-                                                            .withOpacity(0.90)
-                                                      ],
-                                                      stops: const [0.0, 1.0],
-                                                    ),
-                                                    borderRadius: BorderRadius
-                                                        .only(
-                                                      bottomLeft: Radius
-                                                          .circular(10.r),
-                                                      bottomRight:
-                                                      Radius.circular(10.r),
-                                                      topRight: Radius.circular(
-                                                          10.r),
-                                                      topLeft: Radius.circular(
-                                                          10.r),
-                                                    )),
-                                                ///Text
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                     Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                           text(context, day.toString(), 16, white, fontWeight: FontWeight.bold),
-                                                           SizedBox(
-                                                             width: 5.w,
-                                                           ),
-                                                           text(context, month, 16, white, fontWeight: FontWeight.bold),
-                                                        ],
-                                                      ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(left: 10.w, right: 10.w),
-                                                      child: text(context, year.toString(), 16, white, fontWeight: FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              ///SizedBox
-                                              SizedBox(
-                                                width: 20.w,
-                                              ),
-
-                                              ///type of order and date
-                                              Center(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 10.h,
-                                                    ),
-                                                    text(
-                                                        context,
-                                                        snapshot.data!.data!.orders![index].adType!.name!,
-                                                        18,
-                                                        black.withOpacity(0.9)),
-                                                    text(
-                                                        context,
-                                                        snapshot.data!.data!.orders![index].adTiming!.name!,
-                                                        14,
-                                                        grey!.withOpacity(0.9)),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 7.w),
-                                        child: Row(children: [
-                                          InkWell(
-                                            child: Icon(
-                                              infoIcon,
-                                              size: 23,
-                                              color: black,
-                                            ),
-                                            onTap: () {
-                                              ///When chick the pop card will show with all details
-                                              showDialogFunc(
-                                                  context,
-                                                  snapshot.data!.data!.orders![index].user!.name!,
-                                                  snapshot.data!.data!.orders![index].id!,
-                                                  snapshot.data!.data!.orders![index].date!,
-                                                  snapshot.data!.data!.orders![index].adType!.name!
-                                              );
-                                            },
-                                          ),
-                                          SizedBox(
-                                            width: 5.w,
-                                          ),
-
-                                          InkWell(
-                                            child: GradientIcon(
-                                              share,
-                                              25.w,
-                                              const LinearGradient(
-                                                begin: Alignment(0.7, 2.0),
-                                                end: Alignment(-0.69, -1.0),
-                                                colors: [
-                                                  Color(0xff0ab3d0),
-                                                  Color(0xffe468ca)
-                                                ],
-                                                stops: [0.0, 1.0],
-                                              ),
-                                            ),
-                                            onTap: () async {
-                                              ///Click on it then you can share the details
-                                              ///PDF File have all info of requests
-                                              //Share.shareFiles(_createPDF());
-
-                                              final pdf = await PdfClass.createPDF(
-                                                  snapshot.data!.data!.orders![index].user!.name!,
-                                                  snapshot.data!.data!.orders![index].id!.toString(),
-                                                  snapshot.data!.data!.orders![index].date!.toString(),
-                                                  snapshot.data!.data!.orders![index].adType!.name!);
-                                              PdfClass.openFile(pdf);
-                                            },
-                                          ),
-                                        ]),
-                                      ),
-                                    ],
+                ///ListView
+                FutureBuilder<CalenderModel>(
+                    future: calender,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center();
+                      } else if (snapshot.connectionState ==
+                              ConnectionState.active ||
+                          snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasError) {
+                          return Center(child: Text(snapshot.error.toString()));
+                          //---------------------------------------------------------------------------
+                        } else if (snapshot.hasData) {
+                          return snapshot.data!.data!.orders!.isNotEmpty
+                              ? Column(
+                                children:[
+                                  Container(
+                                    alignment: Alignment.topRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 10.h, right: 20.w),
+                                      child: text(
+                                          context,
+                                          'الجدول الخاص بالمواعيد المتفق عليها',
+                                          17,
+                                          ligthtBlack),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ) : Center(
-                          child: Center(
-                              child: text(
-                                context,
-                                "لا توجد مواعيد لعرضها حاليا",
-                                15,
-                                black,
-                              )));
-                    } else {
-                      return const Center(child: Text('No info to show!!'));
-                    }
-                  } else {
-                    return Center(
-                        child: Text('State: ${snapshot.connectionState}'));
-                  }
-                }
-              )
-            ),
+                                  SizedBox(
+                                    height: 10.h,
+                                  ),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount:
+                                      snapshot.data!.data!.orders!.length,
+                                      itemBuilder: (context, index) {
+                                        dateFormat = DateTime.parse(snapshot
+                                            .data!.data!.orders![index].date!);
+
+                                        ///Save the year
+                                        year = dateFormat.year;
+
+                                        ///Save the day date
+                                        day = dateFormat.day;
+
+                                        ///Convert the month to text
+                                        if (dateFormat.month == 01) {
+                                          ///1
+                                          month = 'يناير';
+                                        } else if (dateFormat.month == 02) {
+                                          ///2
+                                          month = 'فبراير';
+                                        } else if (dateFormat.month == 03) {
+                                          ///3
+                                          month = 'مارش';
+                                        } else if (dateFormat.month == 04) {
+                                          ///4
+                                          month = 'ابريل';
+                                        } else if (dateFormat.month == 05) {
+                                          ///5
+                                          month = 'مايو';
+                                        } else if (dateFormat.month == 06) {
+                                          ///6
+                                          month = 'يونيو';
+                                        } else if (dateFormat.month == 07) {
+                                          ///7
+                                          month = 'يوليو';
+                                        } else if (dateFormat.month == 08) {
+                                          ///8
+                                          month = 'أغطسطس';
+                                        } else if (dateFormat.month == 09) {
+                                          ///9
+                                          month = 'سبتمبر';
+                                        } else if (dateFormat.month == 10) {
+                                          ///10
+                                          month = 'أكتوبر';
+                                        } else if (dateFormat.month == 11) {
+                                          ///11
+                                          month = 'نوفمبر';
+                                        } else {
+                                          /// 12
+                                          month = 'ديسمبر';
+                                        }
+
+                                        return Column(
+                                          children: [
+                                            paddingg(
+                                              5,
+                                              12,
+                                              10,
+                                              SizedBox(
+                                                height: 90.h,
+                                                child: Card(
+                                                  elevation: 20,
+                                                  color: white,
+                                                  shadowColor: Colors.black38,
+                                                  child: paddingg(
+                                                    0,
+                                                    0,
+                                                    0,
+
+                                                    ///Row to store all info
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        paddingg(
+                                                            10,
+                                                            2,
+                                                            0,
+                                                            Row(
+                                                              children: [
+                                                                Container(
+                                                                  ///the box of date
+                                                                  alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                                  height: 80.h,
+                                                                  width: 80.w,
+                                                                  decoration:
+                                                                  BoxDecoration(
+                                                                      gradient:
+                                                                      LinearGradient(
+                                                                        begin:
+                                                                        const Alignment(0.8, 2.0),
+                                                                        end:
+                                                                        const Alignment(-0.69, -1.0),
+                                                                        colors: [
+                                                                          const Color(0xff0ab3d0).withOpacity(0.90),
+                                                                          const Color(0xffe468ca).withOpacity(0.90)
+                                                                        ],
+                                                                        stops: const [
+                                                                          0.0,
+                                                                          1.0
+                                                                        ],
+                                                                      ),
+                                                                      borderRadius:
+                                                                      BorderRadius.only(
+                                                                        bottomLeft:
+                                                                        Radius.circular(10.r),
+                                                                        bottomRight:
+                                                                        Radius.circular(10.r),
+                                                                        topRight:
+                                                                        Radius.circular(10.r),
+                                                                        topLeft:
+                                                                        Radius.circular(10.r),
+                                                                      )),
+
+                                                                  ///Text
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                    children: [
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                        MainAxisAlignment.center,
+                                                                        children: [
+                                                                          text(
+                                                                              context,
+                                                                              day.toString(),
+                                                                              16,
+                                                                              white,
+                                                                              fontWeight: FontWeight.bold),
+                                                                          SizedBox(
+                                                                            width:
+                                                                            5.w,
+                                                                          ),
+                                                                          text(
+                                                                              context,
+                                                                              month,
+                                                                              16,
+                                                                              white,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ],
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: EdgeInsets.only(
+                                                                            left:
+                                                                            10.w,
+                                                                            right: 10.w),
+                                                                        child: text(
+                                                                            context,
+                                                                            year
+                                                                                .toString(),
+                                                                            16,
+                                                                            white,
+                                                                            fontWeight:
+                                                                            FontWeight.bold),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+
+                                                                ///SizedBox
+                                                                SizedBox(
+                                                                  width: 20.w,
+                                                                ),
+
+                                                                ///type of order and date
+                                                                Center(
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                        10.h,
+                                                                      ),
+                                                                      text(
+                                                                          context,
+                                                                          snapshot
+                                                                              .data!
+                                                                              .data!
+                                                                              .orders![index]
+                                                                              .adType!
+                                                                              .name!,
+                                                                          18,
+                                                                          black.withOpacity(0.9)),
+                                                                      text(
+                                                                          context,
+                                                                          snapshot
+                                                                              .data!
+                                                                              .data!
+                                                                              .orders![index]
+                                                                              .adTiming!
+                                                                              .name!,
+                                                                          14,
+                                                                          grey!.withOpacity(0.9)),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                        Padding(
+                                                          padding:
+                                                          EdgeInsets.only(
+                                                              left: 7.w),
+                                                          child: Row(children: [
+                                                            InkWell(
+                                                              child: Icon(
+                                                                infoIcon,
+                                                                size: 23,
+                                                                color: black,
+                                                              ),
+                                                              onTap: () {
+                                                                ///When chick the pop card will show with all details
+                                                                showDialogFunc(
+                                                                    context,
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .user!
+                                                                        .name!,
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .id!,
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .date!,
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .adType!
+                                                                        .name!);
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              width: 5.w,
+                                                            ),
+                                                            InkWell(
+                                                              child:
+                                                              GradientIcon(
+                                                                share,
+                                                                25.w,
+                                                                const LinearGradient(
+                                                                  begin:
+                                                                  Alignment(
+                                                                      0.7,
+                                                                      2.0),
+                                                                  end:
+                                                                  Alignment(
+                                                                      -0.69,
+                                                                      -1.0),
+                                                                  colors: [
+                                                                    Color(
+                                                                        0xff0ab3d0),
+                                                                    Color(
+                                                                        0xffe468ca)
+                                                                  ],
+                                                                  stops: [
+                                                                    0.0,
+                                                                    1.0
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                ///Click on it then you can share the details
+                                                                ///PDF File have all info of requests
+                                                                //Share.shareFiles(_createPDF());
+
+                                                                final pdf = await PdfClass.createPDF(
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .user!
+                                                                        .name!,
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .id!
+                                                                        .toString(),
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .date!
+                                                                        .toString(),
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .orders![
+                                                                    index]
+                                                                        .adType!
+                                                                        .name!);
+                                                                PdfClass
+                                                                    .openFile(
+                                                                    pdf);
+                                                              },
+                                                            ),
+                                                          ]),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ]
+                              )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: SizedBox(
+                                          height: 180.h,
+                                          width: 180.w,
+                                          child: Lottie.asset(
+                                              'assets/lottie/noCalender.json')),
+                                    ),
+                                    SizedBox(
+                                      height: 2.h,
+                                    ),
+                                    text(
+                                      context,
+                                      "لا توجد مواعيد لعرضها حاليا",
+                                      15,
+                                      black,
+                                    )
+                                  ],
+                                );
+                        } else {
+                          return const Center(child: Text('No info to show!!'));
+                        }
+                      } else {
+                        return Center(
+                            child: Text('State: ${snapshot.connectionState}'));
+                      }
+                    })),
           ]),
         ),
       ]),
     );
   }
-
 
   ///GET
   Future<CalenderModel> fetchCalender(String token) async {
@@ -505,5 +648,3 @@ showDialogFunc(context, personalName, invoices, date2, typeOfOrder) {
     },
   );
 }
-
-

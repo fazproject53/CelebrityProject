@@ -86,7 +86,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          appBar: appBarNoIcon(
+          appBar: drowAppBar(
               widget.isUpdate ? 'تعديل كود الخصم' : 'إنشاء كود خصم جديد',
               context),
           body: SafeArea(
