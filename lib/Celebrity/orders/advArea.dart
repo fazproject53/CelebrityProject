@@ -211,7 +211,8 @@ class _advAreaState extends State<advArea>{
                     builder: (BuildContext context) {
 
                         addAdAreaOrder().then((value) => {
-    goTopageReplacement(context, UserRequestMainPage()),
+                          value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'?{
+
     Flushbar(
     flushbarPosition:
     FlushbarPosition.TOP,
@@ -226,23 +227,56 @@ class _advAreaState extends State<advArea>{
     duration: const Duration(
     seconds: 5),
     icon: Padding(
-    padding: const EdgeInsets.only(left: 18.0),
+    padding: const EdgeInsets.only(
+    left: 18.0),
     child: Icon(
-    done,
-    color: green,
+    error,
+    color: red,
     size: 25.sp,
     ),
     ),
-    titleText: text(context, 'تم التعديل بنجاح', 14, purple),
+    titleText: text(
+    context, 'قشل الاتصال بالانترنت', 14, purple),
     messageText: text(
     context,
-    value,
+    'قشل الاتصال بالانترنت حاول لاحقا',
     14,
     black,
     fontWeight:
     FontWeight.w200),
     ).show(context)
-
+                          }:{
+                          goTopageReplacement(context, UserRequestMainPage()),
+                          Flushbar(
+                            flushbarPosition:
+                            FlushbarPosition.TOP,
+                            backgroundColor: white,
+                            margin:
+                            const EdgeInsets.all(5),
+                            flushbarStyle:
+                            FlushbarStyle.FLOATING,
+                            borderRadius:
+                            BorderRadius.circular(
+                                15.r),
+                            duration: const Duration(
+                                seconds: 5),
+                            icon: Padding(
+                              padding: const EdgeInsets.only(left: 18.0),
+                              child: Icon(
+                                done,
+                                color: green,
+                                size: 25.sp,
+                              ),
+                            ),
+                            titleText: text(context, 'تم التعديل بنجاح', 14, purple),
+                            messageText: text(
+                                context,
+                                value,
+                                14,
+                                black,
+                                fontWeight:
+                                FontWeight.w200),
+                          ).show(context)}
     });
                       return
                         Align(
@@ -275,37 +309,49 @@ class _advAreaState extends State<advArea>{
     );}
 
  Future<String> addAdAreaOrder() async {
-    String token2 ='eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWEwNzYxYWY4NTY4NjUxOTc0NzY5Zjk2OGYyYzlhNGZlMmViODYyOGYyZjU5NzU5NDllOGI3MWJkNjcyZWZlOTA2YWRkMDczZTg5YmFkZjEiLCJpYXQiOjE2NTA0NDk4NzYuMTA3MDk5MDU2MjQzODk2NDg0Mzc1LCJuYmYiOjE2NTA0NDk4NzYuMTA3MTA0MDYzMDM0MDU3NjE3MTg3NSwiZXhwIjoxNjgxOTg1ODc2LjEwMzA4OTA5NDE2MTk4NzMwNDY4NzUsInN1YiI6IjE0Iiwic2NvcGVzIjpbXX0.5nxz23qSWZfll1gGsnC_HZ0-IcD8eTa0e0p9ciKZh_akHwZugs1gU-zjMYOFMUVK34AHPjnpu_lu5QYOPHZuAZpjgPZOWX5iYefAwicq52ZeWSiWbLNlbajR28QKGaUzSn9Y84rwVtxXzAllaJLiwPfhsXK_jQpdUoeWyozMmc5S4_9_Gw72ZeW_VibZ_8CcW05FtKF08yFwRm1mPuuPLUmCSfoVee16FIyvXJBDWEtpjtjzxQUv6ceVw0QQCeLkNeJPPNh3cuAQH1PgEbQm-Tb3kvXg0yu_5flddpNtG5uihcQBQvuOtaSiLZDlJpcG0kUJ2iqGXuog6CosNxq97Wo28ytoM36-zeAQ8JpbpCTi1qn_3RNFr8wZ5C-RvMMq4he2B839qIWDjm0BM7BJSskuUkt9uAFifks8LF3o_USXMQ1mk20_YJxdeaETXwNQgfJ3pZCHUP5UsGmsUsmhiH69Gwm2HTI21k9mV5QGjjWUUihimZO2snbh-pDz7mO_5651j2eVEfi3h3V7HtC0CNGkofH4HPHSTORlEdYlqLvzTqfDos-X05yDSnajPWOldps-ITtzvuYCsstA1X1opTm8siyuDS-SmvnEHFYD53ln_8AfL9I6aCQ9YGNWpNo442zej0qqPxLr_AQhAzfEcqgasRrr32031veKVCd21rA';
-    var stream = new http.ByteStream(DelegatingStream.typed(image!.openRead()));
-    // get file length
-    var length = await image!.length();
+    try {
+      var stream = new http.ByteStream(
+          DelegatingStream.typed(image!.openRead()));
+      // get file length
+      var length = await image!.length();
 
-    // string to uri
-    var uri = Uri.parse("https://mobile.celebrityads.net/api/order/ad-space/add");
+      // string to uri
+      var uri = Uri.parse(
+          "https://mobile.celebrityads.net/api/order/ad-space/add");
 
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Authorization": "Bearer $userToken"
-    };
-    // create multipart request
-    var request =  http.MultipartRequest("POST", uri);
+      Map<String, String> headers = {
+        "Accept": "application/json",
+        "Authorization": "Bearer $userToken"
+      };
+      // create multipart request
+      var request = http.MultipartRequest("POST", uri);
 
-    // multipart that takes file
-    var multipartFile =  http.MultipartFile('image', stream, length,
-        filename: Path.basename(image!.path));
+      // multipart that takes file
+      var multipartFile = http.MultipartFile('image', stream, length,
+          filename: Path.basename(image!.path));
 
-    // listen for response
-    request.files.add(multipartFile);
-    request.headers.addAll(headers);
-    request.fields["celebrity_id"] = widget.id.toString();
-    request.fields["date"]=dateTime.toString();
-    request.fields["link"]= link.text;
-    request.fields["celebrity_promo_code"]= copun.text;
+      // listen for response
+      request.files.add(multipartFile);
+      request.headers.addAll(headers);
+      request.fields["celebrity_id"] = widget.id.toString();
+      request.fields["date"] = dateTime.toString();
+      request.fields["link"] = link.text;
+      request.fields["celebrity_promo_code"] = copun.text;
 
-    var response = await request.send();
-    http.Response respo = await http.Response.fromStream(response);
-    print(jsonDecode(respo.body)['message']['ar']);
-    return jsonDecode(respo.body)['message']['ar'];
+      var response = await request.send();
+      http.Response respo = await http.Response.fromStream(response);
+      print(jsonDecode(respo.body)['message']['ar']);
+      return jsonDecode(respo.body)['message']['ar'];
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
+    }
     }
 
   Future<File?> getImage(context) async {

@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:celepraty/Celebrity/celebrityHomePage.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -485,41 +486,84 @@ class _gifttingFormState extends State<gifttingForm>{
                                     builder: (BuildContext context) {
                                       FocusManager.instance.primaryFocus
                                           ?.unfocus();
-                                      addGift().then((value) =>  {
-                                     goTopageReplacement(context, UserRequestMainPage()),
-                                      Flushbar(
-                                      flushbarPosition:
-                                      FlushbarPosition.TOP,
-                                      backgroundColor: white,
-                                      margin:
-                                      const EdgeInsets.all(5),
-                                      flushbarStyle:
-                                      FlushbarStyle.FLOATING,
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                      15.r),
-                                      duration: const Duration(
-                                      seconds: 5),
-                                      icon: Padding(
-                                      padding: const EdgeInsets.only(left: 18.0),
-                                      child: Icon(
-                                      done,
-                                      color: green,
-                                      size: 25.sp,
-                                      ),
-                                      ),
-                                      titleText: text(context, 'تم التعديل بنجاح', 14, purple),
-                                      messageText: text(
-                                      context,
-                                      value,
-                                      14,
-                                      black,
-                                      fontWeight:
-                                      FontWeight.w200),
-                                      ).show(context)
+                                      addGift().then((value) =>
+                                      {
+                                        value == 'SocketException' ||
+                                            value == 'TimeoutException' ||
+                                            value == 'ServerException' ? {
 
+                                          Navigator.pop(context),
+                                          Flushbar(
+                                            flushbarPosition:
+                                            FlushbarPosition.TOP,
+                                            backgroundColor: white,
+                                            margin:
+                                            const EdgeInsets.all(5),
+                                            flushbarStyle:
+                                            FlushbarStyle.FLOATING,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                15.r),
+                                            duration: const Duration(
+                                                seconds: 5),
+                                            icon: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 18.0),
+                                              child: Icon(
+                                                error,
+                                                color: red,
+                                                size: 25.sp,
+                                              ),
+                                            ),
+                                            titleText: text(
+                                                context, 'قشل الاتصال بالانترنت',
+                                                14, purple),
+                                            messageText: text(
+                                                context,
+                                                'قشل الاتصال بالانترنت حاول لاحقا',
+                                                14,
+                                                black,
+                                                fontWeight:
+                                                FontWeight.w200),
+                                          ).show(context)
+                                        } : {
+                                          goTopageReplacement(
+                                              context, UserRequestMainPage()),
+                                          Flushbar(
+                                            flushbarPosition:
+                                            FlushbarPosition.TOP,
+                                            backgroundColor: white,
+                                            margin:
+                                            const EdgeInsets.all(5),
+                                            flushbarStyle:
+                                            FlushbarStyle.FLOATING,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                15.r),
+                                            duration: const Duration(
+                                                seconds: 5),
+                                            icon: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 18.0),
+                                              child: Icon(
+                                                done,
+                                                color: green,
+                                                size: 25.sp,
+                                              ),
+                                            ),
+                                            titleText: text(
+                                                context, 'تم التعديل بنجاح', 14,
+                                                purple),
+                                            messageText: text(
+                                                context,
+                                                value,
+                                                14,
+                                                black,
+                                                fontWeight:
+                                                FontWeight.w200),
+                                          ).show(context)}
                                       });
-                                          // == First dialog closed
+                                  // == First dialog closed
 
                                       return
                                         Align(
@@ -557,38 +601,50 @@ class _gifttingFormState extends State<gifttingForm>{
 
 
         Future<String> addGift() async {
-    String token2 =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWEwNzYxYWY4NTY4NjUxOTc0NzY5Zjk2OGYyYzlhNGZlMmViODYyOGYyZjU5NzU5NDllOGI3MWJkNjcyZWZlOTA2YWRkMDczZTg5YmFkZjEiLCJpYXQiOjE2NTA0NDk4NzYuMTA3MDk5MDU2MjQzODk2NDg0Mzc1LCJuYmYiOjE2NTA0NDk4NzYuMTA3MTA0MDYzMDM0MDU3NjE3MTg3NSwiZXhwIjoxNjgxOTg1ODc2LjEwMzA4OTA5NDE2MTk4NzMwNDY4NzUsInN1YiI6IjE0Iiwic2NvcGVzIjpbXX0.5nxz23qSWZfll1gGsnC_HZ0-IcD8eTa0e0p9ciKZh_akHwZugs1gU-zjMYOFMUVK34AHPjnpu_lu5QYOPHZuAZpjgPZOWX5iYefAwicq52ZeWSiWbLNlbajR28QKGaUzSn9Y84rwVtxXzAllaJLiwPfhsXK_jQpdUoeWyozMmc5S4_9_Gw72ZeW_VibZ_8CcW05FtKF08yFwRm1mPuuPLUmCSfoVee16FIyvXJBDWEtpjtjzxQUv6ceVw0QQCeLkNeJPPNh3cuAQH1PgEbQm-Tb3kvXg0yu_5flddpNtG5uihcQBQvuOtaSiLZDlJpcG0kUJ2iqGXuog6CosNxq97Wo28ytoM36-zeAQ8JpbpCTi1qn_3RNFr8wZ5C-RvMMq4he2B839qIWDjm0BM7BJSskuUkt9uAFifks8LF3o_USXMQ1mk20_YJxdeaETXwNQgfJ3pZCHUP5UsGmsUsmhiH69Gwm2HTI21k9mV5QGjjWUUihimZO2snbh-pDz7mO_5651j2eVEfi3h3V7HtC0CNGkofH4HPHSTORlEdYlqLvzTqfDos-X05yDSnajPWOldps-ITtzvuYCsstA1X1opTm8siyuDS-SmvnEHFYD53ln_8AfL9I6aCQ9YGNWpNo442zej0qqPxLr_AQhAzfEcqgasRrr32031veKVCd21rA';
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/order/gift/add',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $userToken'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'celebrity_id' : widget.id!,
-        'date': current.toString(),
-        'occasion_id': _selectedTest == null ? ocassionlist.indexOf(0) : ocassionlist.indexOf(_selectedTest),
-        'gift_type_id': _selectedTest2 == null ? typelist.indexOf(0) : typelist.indexOf(_selectedTest2),
-        'description': desc.text,
-        'from': from.text,
-        'to': to.text,
-        'celebrity_promo_code':copun.text,
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'https://mobile.celebrityads.net/api/order/gift/add',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'celebrity_id': widget.id!,
+          'date': current.toString(),
+          'occasion_id': _selectedTest == null
+              ? ocassionlist.indexOf(0)
+              : ocassionlist.indexOf(_selectedTest),
+          'gift_type_id': _selectedTest2 == null
+              ? typelist.indexOf(0)
+              : typelist.indexOf(_selectedTest2),
+          'description': desc.text,
+          'from': from.text,
+          'to': to.text,
+          'celebrity_promo_code': copun.text,
 
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return jsonDecode(response.body)['message']['ar'];
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return jsonDecode(response.body)['message']['ar'];
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if (e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+      }
     }
   }
 

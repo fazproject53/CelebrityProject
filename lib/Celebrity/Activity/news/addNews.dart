@@ -91,7 +91,6 @@ class _addNewsState extends State<addNews> {
                                 context).width,
                                 buttoms(context, 'اضافة الخبر', 15, white, () {
                                   if (_formKey.currentState!.validate()) {
-                                    try {
                                       addNews(userToken!).then((value) =>
                                       {
                                         value == ''?{
@@ -163,48 +162,7 @@ class _addNewsState extends State<addNews> {
                                         ).show(context)
 
                                       });
-                                    }catch(e){
-                                      if (e is SocketException) {
-                                        return
-                                          Flushbar(
-                                            flushbarPosition:
-                                            FlushbarPosition.TOP,
-                                            backgroundColor: white,
-                                            margin:
-                                            const EdgeInsets.all(5),
-                                            flushbarStyle:
-                                            FlushbarStyle.FLOATING,
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                15.r),
-                                            duration: const Duration(
-                                                seconds: 5),
-                                            icon: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 18.0),
-                                              child: Icon(
-                                                error,
-                                                color: red,
-                                                size: 25.sp,
-                                              ),
-                                            ),
-                                            titleText: text(
-                                                context,'تم بنجاح', 14, purple),
-                                            messageText: text(
-                                                context,
-                                                'تم اضافة الخبر بنجاح',
-                                                14,
-                                                black,
-                                                fontWeight:
-                                                FontWeight.w200),
-                                          ).show(context);
 
-
-                                      } else {
-
-                                        return Future.error('serverExceptions');
-                                      }
-                                    }
                                   }
                                 })),),
                             const SizedBox(height: 30,),
