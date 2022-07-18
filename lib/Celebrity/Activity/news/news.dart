@@ -73,7 +73,7 @@ String? userToken;
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: mainLoad(context));
+                          return mainLoad(context);
                         } else if (snapshot.connectionState ==
                                 ConnectionState.active ||
                             snapshot.connectionState == ConnectionState.done) {

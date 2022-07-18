@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:path/path.dart';
@@ -41,6 +43,11 @@ class userProfile extends StatefulWidget {
 class _userProfileState extends State<userProfile>
     //with AutomaticKeepAliveClientMixin
 {
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
   Future<UserProfile>? getUsers;
   String userToken = "";
   List<Data>? data;
@@ -83,6 +90,67 @@ class _userProfileState extends State<userProfile>
     super.initState();
   }
 
+  Future<UserProfile> fetchUsers(String token) async {
+
+    try {
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/user/profile'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        Logging.theUser = new TheUser();
+        Logging.theUser!.name =
+        jsonDecode(response.body)["data"]?["user"]['name'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['name'];
+        Logging.theUser!.email =
+        jsonDecode(response.body)["data"]?["user"]['email'];
+        Logging.theUser!.id =
+            jsonDecode(response.body)["data"]?["user"]['id'].toString();
+        Logging.theUser!.phone =
+        jsonDecode(response.body)["data"]?["user"]['phonenumber'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['phonenumber'].toString();
+        Logging.theUser!.image =
+        jsonDecode(response.body)["data"]?["user"]['image'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['image'];
+        Logging.theUser!.country =
+        jsonDecode(response.body)["data"]?["user"]['country'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['country']['name'];
+        print(response.body);
+        return UserProfile.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -103,7 +171,24 @@ class _userProfileState extends State<userProfile>
                           ConnectionState.active ||
                       snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
+                      if (snapshot.error.toString() ==
+                          'SocketException') {
+                        return Center(
+                            child: SizedBox(
+                                height: 300.h,
+                                width: 250.w,
+                                child: internetConnection(
+                                    context, reload: () {
+                                  setState(() {
+                                    getUsers = fetchUsers(userToken);
+                                    isConnectSection = true;
+                                  });
+                                })));
+                      } else {
+                        return const Center(
+                            child: Text(
+                                'حدث خطا ما اثناء استرجاع البيانات'));
+                      }
                       //---------------------------------------------------------------------------
                     } else if (snapshot.hasData) {
                       return Column(
@@ -192,8 +277,124 @@ class _userProfileState extends State<userProfile>
                             8,
                             8,
                             text(context, snapshot.data!.data!.user!.name!, 20, black,
-                                fontWeight: FontWeight.bold, family: 'Cairo'),
-                          ),
+                                fontWeight: FontWeight.bold, family: 'Cairo'),),
+
+                              SingleChildScrollView(
+                                child: Container(
+                                  child: paddingg(
+                                    8,
+                                    0,
+                                    25,
+                                    ListView.separated(
+                                      primary: false,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        return MaterialButton(
+                                            onPressed: index == labels.length - 1
+                                                ? () {
+                                              singOut(context, userToken);
+                                            }
+                                                : () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => page[index]),
+                                              );
+                                            },
+                                            child: addListViewButton(
+                                              labels[index],
+                                              icons[index],
+                                            ));
+                                      },
+                                      separatorBuilder: (context, index) => const Divider(),
+                                      itemCount: labels.length,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              //========================== social media icons row =======================================
+
+                              SizedBox(
+                                height: 50.h,
+                              ),
+                              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                padding(
+                                  8,
+                                  8,
+                                  Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- faceboock.png',
+                                      )),
+                                ),
+                                padding(
+                                  8,
+                                  8,
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Image.asset(
+                                      'assets/image/icon- insta.png',
+                                    ),
+                                  ),
+                                ),
+                                padding(
+                                  8,
+                                  8,
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Image.asset(
+                                      'assets/image/icon- snapchat.png',
+                                    ),
+                                  ),
+                                ),
+                                padding(
+                                  8,
+                                  8,
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Image.asset(
+                                      'assets/image/icon- twitter.png',
+                                    ),
+                                  ),
+                                ),
+                                padding(
+                                  8,
+                                  8,
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    color: white,
+                                    child: SvgPicture.asset('assets/Svg/icon-tiktok.svg',width: 30,
+                                      height: 30,),
+                                  ),
+                                ),
+                              ]),
+
+                              //SvgPicture.asset(assetName),
+                              paddingg(
+                                8,
+                                8,
+                                12,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      copyRight,
+                                      size: 14,
+                                    ),
+                                    text(context, 'حقوق الطبع والنشر محفوظة', 14, black),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30.h,
+                              )
+
                         ],
                       );
                     } else {
@@ -209,121 +410,7 @@ class _userProfileState extends State<userProfile>
 
               //=========================== buttons listView =============================
 
-              SingleChildScrollView(
-                child: Container(
-                  child: paddingg(
-                    8,
-                    0,
-                    25,
-                    ListView.separated(
-                      primary: false,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return MaterialButton(
-                            onPressed: index == labels.length - 1
-                                ? () {
-                                    singOut(context, userToken);
-                                  }
-                                : () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => page[index]),
-                                    );
-                                  },
-                            child: addListViewButton(
-                              labels[index],
-                              icons[index],
-                            ));
-                      },
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemCount: labels.length,
-                    ),
-                  ),
-                ),
-              ),
 
-              //========================== social media icons row =======================================
-
-              SizedBox(
-                height: 50.h,
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                padding(
-                  8,
-                  8,
-                  Container(
-                      width: 30,
-                      height: 30,
-                      child: Image.asset(
-                        'assets/image/icon- faceboock.png',
-                      )),
-                ),
-                padding(
-                  8,
-                  8,
-                  Container(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset(
-                      'assets/image/icon- insta.png',
-                    ),
-                  ),
-                ),
-                padding(
-                  8,
-                  8,
-                  Container(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset(
-                      'assets/image/icon- snapchat.png',
-                    ),
-                  ),
-                ),
-                padding(
-                  8,
-                  8,
-                  Container(
-                    width: 30,
-                    height: 30,
-                    child: Image.asset(
-                      'assets/image/icon- twitter.png',
-                    ),
-                  ),
-                ),
-                padding(
-                  8,
-                  8,
-                  Container(
-                    width: 30,
-                    height: 30,
-                    color: white,
-                    child: SvgPicture.asset('assets/Svg/icon-tiktok.svg',width: 30,
-                      height: 30,),
-                  ),
-                ),
-              ]),
-
-              //SvgPicture.asset(assetName),
-              paddingg(
-                8,
-                8,
-                12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      copyRight,
-                      size: 14,
-                    ),
-                    text(context, 'حقوق الطبع والنشر محفوظة', 14, black),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 30.h,
-              )
             ]),
           ),
         ),
@@ -409,32 +496,8 @@ void singOut(context, String token) async {
 }
 
 //------------------------------------------------------------
-Future<UserProfile> fetchUsers(String token) async {
-  final response = await http.get(
-      Uri.parse('https://mobile.celebrityads.net/api/user/profile'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      });
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    Logging.theUser = new TheUser();
-    Logging.theUser!.name = jsonDecode(response.body)["data"]?["user"]['name'] == null? '': jsonDecode(response.body)["data"]?["user"]['name'];
-    Logging.theUser!.email = jsonDecode(response.body)["data"]?["user"]['email'];
-    Logging.theUser!.id = jsonDecode(response.body)["data"]?["user"]['id'].toString();
-    Logging.theUser!.phone = jsonDecode(response.body)["data"]?["user"]['phonenumber'] == null? '': jsonDecode(response.body)["data"]?["user"]['phonenumber'].toString();
-    Logging.theUser!.image = jsonDecode(response.body)["data"]?["user"]['image'] == null? '': jsonDecode(response.body)["data"]?["user"]['image'];
-    Logging.theUser!.country = jsonDecode(response.body)["data"]?["user"]['country'] == null? '' :jsonDecode(response.body)["data"]?["user"]['country']['name'];
-    print(response.body);
-    return UserProfile.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load activity');
-  }
-}
+
+
 
 class UserProfile {
   bool? success;

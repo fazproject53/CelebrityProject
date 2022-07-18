@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:celepraty/Account/logging.dart';
 import 'package:celepraty/MainScreen/main_screen_navigation.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
 import '../../Account/LoggingSingUpAPI.dart';
+import '../../Account/TheUser.dart';
 import '../../Celebrity/setting/profileInformation.dart';
 import 'userProfile.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +25,10 @@ class userInformation extends StatefulWidget {
 }
 
 class _userInformationState extends State<userInformation> {
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
 
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -155,7 +162,27 @@ class _userInformationState extends State<userInformation> {
               } else if (snapshot.connectionState == ConnectionState.active ||
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
+                  if (snapshot.error.toString() ==
+                      'SocketException') {
+                    return Center(
+                        child: Padding(
+                          padding:  EdgeInsets.only(top: 150.h),
+                          child: SizedBox(
+                              height: 300.h,
+                              width: 250.w,
+                              child: internetConnection(
+                                  context, reload: () {
+                                setState(() {
+                                  getUser = fetchUsers(userToken);
+                                  isConnectSection = true;
+                                });
+                              })),
+                        ));
+                  } else {
+                    return const Center(
+                        child: Text(
+                            'حدث خطا ما اثناء استرجاع البيانات'));
+                  }
                   //---------------------------------------------------------------------------
                 } else if (snapshot.hasData) {
                   int number;
@@ -662,7 +689,8 @@ class _userInformationState extends State<userInformation> {
                                               false;
                                               cityChanged =
                                               false;
-                                              getUser = fetchUsers(userToken);})
+                                              getUser = fetchUsers(userToken);
+                                                })
                                                 : Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
@@ -777,6 +805,67 @@ class _userInformationState extends State<userInformation> {
       // then throw an exception.
       print(countryId.toString() + 'in the city get');
       throw Exception('Failed to load activity');
+    }
+  }
+
+  Future<UserProfile> fetchUsers(String token) async {
+
+    try {
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/user/profile'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        Logging.theUser = new TheUser();
+        Logging.theUser!.name =
+        jsonDecode(response.body)["data"]?["user"]['name'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['name'];
+        Logging.theUser!.email =
+        jsonDecode(response.body)["data"]?["user"]['email'];
+        Logging.theUser!.id =
+            jsonDecode(response.body)["data"]?["user"]['id'].toString();
+        Logging.theUser!.phone =
+        jsonDecode(response.body)["data"]?["user"]['phonenumber'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['phonenumber'].toString();
+        Logging.theUser!.image =
+        jsonDecode(response.body)["data"]?["user"]['image'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['image'];
+        Logging.theUser!.country =
+        jsonDecode(response.body)["data"]?["user"]['country'] == null
+            ? ''
+            : jsonDecode(response.body)["data"]?["user"]['country']['name'];
+        print(response.body);
+        return UserProfile.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 

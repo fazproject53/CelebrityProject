@@ -1537,7 +1537,7 @@ Widget internetConnection(context, {reload}) {
       text(context, 'لايوجد اتصال بالانترنت في الوقت الحالي', 20, black,
           align: TextAlign.center),
       SizedBox(
-        height: 5.h,
+        height: 20.h,
       ),
       buttoms(context, 'إعادة تحميل', 14, black, reload,
           backgrounColor: grey!, horizontal: 20),

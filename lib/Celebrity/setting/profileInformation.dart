@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 import 'package:celepraty/Account/LoggingSingUpAPI.dart';
 import 'package:celepraty/Celebrity/celebrityHomePage.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -20,6 +22,10 @@ class profileInformaion extends StatefulWidget {
 class _profileInformaionState extends State<profileInformaion>
 // with AutomaticKeepAliveClientMixin
     {
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
   Future<CelebrityInformation>? celebrities;
   Future<CityL>? cities;
   Future<CountryL>? countries;
@@ -198,7 +204,27 @@ class _profileInformaionState extends State<profileInformaion>
                         ConnectionState.active ||
                         snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
-                        return Text(snapshot.error.toString());
+                        if (snapshot.error.toString() ==
+                            'SocketException') {
+                          return Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 180.h),
+                                child: SizedBox(
+                                    height: 300.h,
+                                    width: 250.w,
+                                    child: internetConnection(
+                                        context, reload: () {
+                                      setState(() {
+                                        celebrities = fetchCelebrities(userToken!);
+                                        isConnectSection = true;
+                                      });
+                                    })),
+                              ));
+                        } else {
+                          return const Center(
+                              child: Text(
+                                  'حدث خطا ما اثناء استرجاع البيانات'));
+                        }
                         //---------------------------------------------------------------------------
                       } else if (snapshot.hasData) {
                         snapshot.data != null
@@ -319,13 +345,18 @@ class _profileInformaionState extends State<profileInformaion>
                                 15,
                                 12,
                                 textFieldNoIcon(
-                                    context, 'الاسم', 14, false, name,
+                                    context,
+                                    'الاسم',
+                                    14,
+                                    false,
+                                    name,
                                         (String? value) {
                                       if (value == null || value.isEmpty) {
                                         return 'حقل اجباري';
                                       }
                                       return null;
-                                    }, false),
+                                    },
+                                    false),
                               ),
                               paddingg(
                                 15,
@@ -333,8 +364,8 @@ class _profileInformaionState extends State<profileInformaion>
                                 12,
                                 textFieldDesc(context, 'الوصف الخاص بالمشهور',
                                     14, false, desc, (String? value) {
-                                      if (value == null || value.isEmpty) {
-                                      } else {
+                                      if (value == null ||
+                                          value.isEmpty) {} else {
                                         return value.length > 150
                                             ? 'يجب ان لا يزيد الوصف عن 150 حرف'
                                             : null;
@@ -354,17 +385,21 @@ class _profileInformaionState extends State<profileInformaion>
                                 15,
                                 15,
                                 12,
-                                textFieldNoIcon(context, 'البريد الالكتروني',
-                                    14, false, email, (String? value) {
-                                      if (value == null || value.isEmpty) {
-                                      } else {
-                                        return value.contains('@') &&
-                                            value.contains('.com')
-                                            ? null
-                                            : 'صيغة البريد الالكتروني غير صحيحة ';
-                                      }
-                                      return null;
-                                    }, false),
+                                textFieldNoIcon(
+                                    context,
+                                    'البريد الالكتروني',
+                                    14,
+                                    false,
+                                    email, (String? value) {
+                                  if (value == null || value.isEmpty) {} else {
+                                    return value.contains('@') &&
+                                        value.contains('.com')
+                                        ? null
+                                        : 'صيغة البريد الالكتروني غير صحيحة ';
+                                  }
+                                  return null;
+                                },
+                                    false),
                               ),
                               Container(
                                 height: 65.h,
@@ -372,13 +407,21 @@ class _profileInformaionState extends State<profileInformaion>
                                   15,
                                   15,
                                   12,
-                                  textFieldNoIcon(context, 'كلمة المرور',
-                                      14, true, password, (String? value) {
-                                        if (value == null || value.isEmpty) {}
-                                        return null;
-                                      }, false, child: IconButton(onPressed: (){setState(() {
-                                        editPassword = !editPassword;
-                                      });}, icon:  Padding(
+                                  textFieldNoIcon(
+                                      context,
+                                      'كلمة المرور',
+                                      14,
+                                      true,
+                                      password, (String? value) {
+                                    if (value == null || value.isEmpty) {}
+                                    return null;
+                                  },
+                                      false,
+                                      child: IconButton(onPressed: () {
+                                        setState(() {
+                                          editPassword = !editPassword;
+                                        });
+                                      }, icon: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Icon(Icons.edit, color: black),
                                       ))),
@@ -404,7 +447,8 @@ class _profileInformaionState extends State<profileInformaion>
                                             if (value == null ||
                                                 value.isEmpty) {}
                                             return null;
-                                          }, false),
+                                          },
+                                          false),
                                     ),
                                     paddingg(
                                       15,
@@ -421,7 +465,8 @@ class _profileInformaionState extends State<profileInformaion>
                                           return 'حقل اجباري';
                                         }
                                         return null;
-                                      }, false),
+                                      },
+                                          false),
                                     ),
                                     paddingg(
                                       15,
@@ -441,7 +486,8 @@ class _profileInformaionState extends State<profileInformaion>
                                             return noMatch
                                                 ? 'كلمة المرور وتاكيد كلمة المرور غير متطابقين'
                                                 : null;
-                                          }, false),
+                                          },
+                                          false),
                                     ),
                                   ],
                                 ),
@@ -459,32 +505,39 @@ class _profileInformaionState extends State<profileInformaion>
                                         15,
                                         15,
                                         12,
-                                        textFieldNoIcon(context, 'رقم الجوال', 14,
-                                          false, phone, (String? value) {
-                                            RegExp regExp = RegExp(
-                                                r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                                            if (value != null) {
-                                              if (value.isNotEmpty) {
-                                                if (value.length != 9) {
-                                                  return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
-                                                }
-                                                if (value.startsWith('0')) {
-                                                  return 'رقم الجوال يجب ان لا يبدا ب 0 ';
-                                                }
-                                                // if(!regExp.hasMatch(value)){
-                                                //   return "رقم الجوال غير صالح";
-                                                // }
+                                        textFieldNoIcon(
+                                          context,
+                                          'رقم الجوال',
+                                          14,
+                                          false,
+                                          phone, (String? value) {
+                                          RegExp regExp = RegExp(
+                                              r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                                          if (value != null) {
+                                            if (value.isNotEmpty) {
+                                              if (value.length != 9) {
+                                                return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
                                               }
+                                              if (value.startsWith('0')) {
+                                                return 'رقم الجوال يجب ان لا يبدا ب 0 ';
+                                              }
+                                              // if(!regExp.hasMatch(value)){
+                                              //   return "رقم الجوال غير صالح";
+                                              // }
                                             }
+                                          }
 
-                                            return null;
-                                          }, false, child:Container(
+                                          return null;
+                                        },
+                                          false,
+                                          child: Container(
                                             width: 60.w,
                                             child: CountryCodePicker(
                                               padding: EdgeInsets.all(0),
                                               onChanged: print,
                                               // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                              initialSelection: country == 'السعودية'
+                                              initialSelection: country ==
+                                                  'السعودية'
                                                   ? 'SA'
                                                   : country == 'فلسطين'
                                                   ? 'PS'
@@ -507,13 +560,14 @@ class _profileInformaionState extends State<profileInformaion>
                                               // optional. Shows only country name and flag
                                               showCountryOnly: false,
                                               textStyle: TextStyle(
-                                                  color: black, fontSize: 15.sp),
+                                                  color: black,
+                                                  fontSize: 15.sp),
                                               // optional. Shows only country name and flag when popup is closed.
                                               showOnlyCountryWhenClosed: false,
                                               // optional. aligns the flag and the Text left
                                               alignLeft: true,
                                             ),
-                                          ), ),
+                                          ),),
                                       ),
                                     ),
 
@@ -551,8 +605,9 @@ class _profileInformaionState extends State<profileInformaion>
                                   boxWidth: 500.w,
                                   boxHeight: 45.h,
                                   boxDecoration: BoxDecoration(
-                                      border:  Border.all(color: newGrey, width: 0.5),
-                                      color:  lightGrey.withOpacity(0.10),
+                                      border: Border.all(
+                                          color: newGrey, width: 0.5),
+                                      color: lightGrey.withOpacity(0.10),
                                       borderRadius: BorderRadius.circular(8.r)),
 
                                   ///Icons
@@ -613,7 +668,8 @@ class _profileInformaionState extends State<profileInformaion>
                                               countrylist.add({
                                                 'no': i,
                                                 'keyword':
-                                                '${snapshot.data!.data![i].name!}'
+                                                '${snapshot.data!.data![i]
+                                                    .name!}'
                                               }),
                                             },
                                           _dropdownTestItems3 =
@@ -651,8 +707,10 @@ class _profileInformaionState extends State<profileInformaion>
                                             boxWidth: 500.w,
                                             boxHeight: 45.h,
                                             boxDecoration: BoxDecoration(
-                                                border:  Border.all(color: newGrey, width: 0.5),
-                                                color: lightGrey.withOpacity(0.10),
+                                                border: Border.all(
+                                                    color: newGrey, width: 0.5),
+                                                color: lightGrey.withOpacity(
+                                                    0.10),
                                                 borderRadius:
                                                 BorderRadius.circular(8.r)),
 
@@ -678,7 +736,8 @@ class _profileInformaionState extends State<profileInformaion>
                                     } else {
                                       return Center(
                                           child: Text(
-                                              'State: ${snapshot.connectionState}'));
+                                              'State: ${snapshot
+                                                  .connectionState}'));
                                     }
                                   })),
 
@@ -713,9 +772,11 @@ class _profileInformaionState extends State<profileInformaion>
                                           i++)
                                             {
                                               citilist.add({
-                                                'no': snapshot.data!.data![i].id!,
+                                                'no': snapshot.data!.data![i]
+                                                    .id!,
                                                 'keyword':
-                                                '${snapshot.data!.data![i].name!}'
+                                                '${snapshot.data!.data![i]
+                                                    .name!}'
                                               }),
                                             },
                                           _dropdownTestItems =
@@ -753,8 +814,10 @@ class _profileInformaionState extends State<profileInformaion>
                                             boxWidth: 500.w,
                                             boxHeight: 45.h,
                                             boxDecoration: BoxDecoration(
-                                                border:  Border.all(color: newGrey, width: 0.5),
-                                                color:  lightGrey.withOpacity(0.10),
+                                                border: Border.all(
+                                                    color: newGrey, width: 0.5),
+                                                color: lightGrey.withOpacity(
+                                                    0.10),
                                                 borderRadius:
                                                 BorderRadius.circular(8.r)),
 
@@ -780,15 +843,17 @@ class _profileInformaionState extends State<profileInformaion>
                                     } else {
                                       return Center(
                                           child: Text(
-                                              'State: ${snapshot.connectionState}'));
+                                              'State: ${snapshot
+                                                  .connectionState}'));
                                     }
                                   })),
 
-                              citychosen != null?
-                              citychosen == false ?  Padding(
+                              citychosen != null ?
+                              citychosen == false ? Padding(
                                 padding: const EdgeInsets.only(right: 18.0),
-                                child: text(context, 'الرجاء تحديد المدينة', 14, red!),
-                              ): SizedBox()
+                                child: text(
+                                    context, 'الرجاء تحديد المدينة', 14, red!),
+                              ) : SizedBox()
                                   :
                               SizedBox(),
                               FutureBuilder(
@@ -823,7 +888,8 @@ class _profileInformaionState extends State<profileInformaion>
                                               categorylist.add({
                                                 'no': i,
                                                 'keyword':
-                                                '${snapshot.data!.data![i].name}'
+                                                '${snapshot.data!.data![i]
+                                                    .name}'
                                               }),
                                             },
                                           _dropdownTestItems2 =
@@ -839,6 +905,7 @@ class _profileInformaionState extends State<profileInformaion>
                                           DropdownBelow(
                                             itemWidth: 370.w,
                                             dropdownColor: white,
+
                                             ///text style inside the menu
                                             itemTextstyle: TextStyle(
                                               fontSize: 12.sp,
@@ -860,8 +927,10 @@ class _profileInformaionState extends State<profileInformaion>
                                             boxWidth: 500.w,
                                             boxHeight: 45.h,
                                             boxDecoration: BoxDecoration(
-                                                border:  Border.all(color: newGrey, width: 0.5),
-                                                color:  lightGrey.withOpacity(0.10),
+                                                border: Border.all(
+                                                    color: newGrey, width: 0.5),
+                                                color: lightGrey.withOpacity(
+                                                    0.10),
 
                                                 borderRadius:
                                                 BorderRadius.circular(8.r)),
@@ -888,7 +957,8 @@ class _profileInformaionState extends State<profileInformaion>
                                     } else {
                                       return Center(
                                           child: Text(
-                                              'State: ${snapshot.connectionState}'));
+                                              'State: ${snapshot
+                                                  .connectionState}'));
                                     }
                                   })),
 
@@ -899,11 +969,16 @@ class _profileInformaionState extends State<profileInformaion>
                                 15,
                                 12,
                                 textFieldNoIcon(
-                                    context, 'رابط الصفحة', 14, false, pageLink,
+                                    context,
+                                    'رابط الصفحة',
+                                    14,
+                                    false,
+                                    pageLink,
                                         (String? value) {
                                       if (value == null || value.isEmpty) {}
                                       return null;
-                                    }, false),
+                                    },
+                                    false),
                               ),
 
                               //===================================== اضافة روابط الصفحات =======================================================
@@ -933,9 +1008,11 @@ class _profileInformaionState extends State<profileInformaion>
                                             });
 
                                             _formKey.currentState!.validate() &&
-                                                _formKey2.currentState == null &&
+                                                _formKey2.currentState ==
+                                                    null &&
                                                 genderChosen == true
-                                                ? updateInformation().then((value) =>
+                                                ? updateInformation().then((
+                                                value) =>
                                             {
                                               countryChanged
                                                   ? setState(() {
@@ -1001,10 +1078,13 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
+                                              _formKey.currentState!
+                                                  .validate() &&
+                                                  _formKey2.currentState ==
+                                                      null &&
                                                   genderChosen == true
-                                                  ? updateInformation().then((value) =>
+                                                  ? updateInformation().then((
+                                                  value) =>
                                               {
                                                 countryChanged
                                                     ? setState(() {
@@ -1025,7 +1105,6 @@ class _profileInformaionState extends State<profileInformaion>
                                                   content:
                                                   Text(value.message!.ar!),
                                                 ))
-
                                               })
                                                   : null;
                                             },
@@ -1060,10 +1139,13 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
+                                              _formKey.currentState!
+                                                  .validate() &&
+                                                  _formKey2.currentState ==
+                                                      null &&
                                                   genderChosen == true
-                                                  ? updateInformation().then((value) =>
+                                                  ? updateInformation().then((
+                                                  value) =>
                                               {
                                                 countryChanged
                                                     ? setState(() {
@@ -1118,10 +1200,13 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
+                                              _formKey.currentState!
+                                                  .validate() &&
+                                                  _formKey2.currentState ==
+                                                      null &&
                                                   genderChosen == true
-                                                  ? updateInformation().then((value) =>
+                                                  ? updateInformation().then((
+                                                  value) =>
                                               {
                                                 countryChanged
                                                     ? setState(() {
@@ -1188,10 +1273,13 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
+                                              _formKey.currentState!
+                                                  .validate() &&
+                                                  _formKey2.currentState ==
+                                                      null &&
                                                   genderChosen == true
-                                                  ? updateInformation().then((value) =>
+                                                  ? updateInformation().then((
+                                                  value) =>
                                               {
                                                 countryChanged
                                                     ? setState(() {
@@ -1258,10 +1346,13 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
+                                              _formKey.currentState!
+                                                  .validate() &&
+                                                  _formKey2.currentState ==
+                                                      null &&
                                                   genderChosen == true
-                                                  ? updateInformation().then((value) =>
+                                                  ? updateInformation().then((
+                                                  value) =>
                                               {
                                                 countryChanged
                                                     ? setState(() {
@@ -1282,7 +1373,6 @@ class _profileInformaionState extends State<profileInformaion>
                                                   content:
                                                   Text(value.message!.ar!),
                                                 ))
-
                                               })
                                                   : null;
                                             },
@@ -1304,9 +1394,8 @@ class _profileInformaionState extends State<profileInformaion>
                                 gradientContainerNoborder(
                                     getSize(context).width,
                                     buttoms(context, 'حفظ', 20, white, () {
-
-                                      if (currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)
-                                      {
+                                      if (currentPassword.text.isNotEmpty &&
+                                          newPassword.text.isNotEmpty) {
                                         _formKey2.currentState == null
                                             ? null
                                             : _formKey2.currentState!
@@ -1332,15 +1421,22 @@ class _profileInformaionState extends State<profileInformaion>
                                                 duration: const Duration(
                                                     seconds: 5),
                                                 icon: Padding(
-                                                  padding: const EdgeInsets.only(left: 18.0),
+                                                  padding: const EdgeInsets
+                                                      .only(left: 18.0),
                                                   child: Icon(
-                                                    value.success == false?error: done,
-                                                    color: value.success == false? red!: green,
+                                                    value.success == false
+                                                        ? error
+                                                        : done,
+                                                    color: value.success ==
+                                                        false ? red! : green,
                                                     size: 25.sp,
                                                   ),
                                                 ),
                                                 titleText: text(context,
-                                                    value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+                                                    value.success == false
+                                                        ? 'خطا'
+                                                        : 'تم التعديل بنجاح',
+                                                    14, purple),
                                                 messageText: text(
                                                     context,
                                                     value.message!.ar!,
@@ -1355,7 +1451,6 @@ class _profileInformaionState extends State<profileInformaion>
                                                   fetchCelebrities(
                                                       userToken!)),
                                             })
-
                                           }
                                               : setState(() {
                                             noMatch =
@@ -1364,7 +1459,7 @@ class _profileInformaionState extends State<profileInformaion>
                                         }
                                             : null;
                                       }
-                                      else{
+                                      else {
                                         _selectedTest4 == null &&
                                             gender == 'الجنس'
                                             ? setState(() {
@@ -1375,7 +1470,8 @@ class _profileInformaionState extends State<profileInformaion>
                                         });
                                         _formKey.currentState!.validate() &&
                                             _formKey2.currentState == null &&
-                                            genderChosen == true && citychosen == true
+                                            genderChosen == true &&
+                                            citychosen == true
                                             ?
                                         { loadingDialogue(context),
                                           updateInformation().then((value) =>
@@ -1409,15 +1505,23 @@ class _profileInformaionState extends State<profileInformaion>
                                               duration: const Duration(
                                                   seconds: 5),
                                               icon: Padding(
-                                                padding: const EdgeInsets.only(left: 18.0),
+                                                padding: const EdgeInsets.only(
+                                                    left: 18.0),
                                                 child: Icon(
-                                                  value.success == false?error: done,
-                                                  color: value.success == false? red!: green,
+                                                  value.success == false
+                                                      ? error
+                                                      : done,
+                                                  color: value.success == false
+                                                      ? red!
+                                                      : green,
                                                   size: 25.sp,
                                                 ),
                                               ),
                                               titleText: text(context,
-                                                  value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+                                                  value.success == false
+                                                      ? 'خطا'
+                                                      : 'تم التعديل بنجاح', 14,
+                                                  purple),
                                               messageText: text(
                                                   context,
                                                   value.message!.ar!,
@@ -1428,8 +1532,11 @@ class _profileInformaionState extends State<profileInformaion>
                                             ).show(context)
                                           })}
                                             : setState(() {
-                                          city == 'المدينة'?citychosen = false: null;
-                                        },);}
+                                          city == 'المدينة'
+                                              ? citychosen = false
+                                              : null;
+                                        },);
+                                      }
                                     })),
                               ),
                               const SizedBox(
@@ -1460,7 +1567,7 @@ class _profileInformaionState extends State<profileInformaion>
         print(key);
         print(key.toString() +
             '---------------------------------------------');
-        catId = key+1;
+        catId = key + 1;
       }
     });
     String token2 =
@@ -1608,28 +1715,46 @@ class _profileInformaionState extends State<profileInformaion>
   }
 
   Future<CelebrityInformation> fetchCelebrities(String tokenn) async {
-    String token =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWVjZjA0OGYxODVkOGZjYjQ5YTI3ZTgyYjQxYjBmNTg3OTMwYTA3NDY3YTc3ZjQwOGZlYWFmNjliNGYxMDQ4ZjEzMjgxMWU4MWNhMDJlNjYiLCJpYXQiOjE2NTAxOTc4MTIuNjUzNTQ5OTA5NTkxNjc0ODA0Njg3NSwibmJmIjoxNjUwMTk3ODEyLjY1MzU1MzAwOTAzMzIwMzEyNSwiZXhwIjoxNjgxNzMzODEyLjY0Mzg2NjA2MjE2NDMwNjY0MDYyNSwic3ViIjoiMTEiLCJzY29wZXMiOltdfQ.toMOLVGTbNRcIqD801Xs3gJujhMvisCzAHHQC_P8UYp3lmzlG3rwadB4M0rooMIVt82AB2CyZfT37tVVWrjAgNq4diKayoQC5wPT7QQrAp5MERuTTM7zH2n3anZh7uargXP1Mxz3X9PzzTRSvojDlfCMsX1PrTLAs0fGQOVVa-u3lkaKpWkVVa1lls0S755KhZXCAt1lKBNcm7GHF657QCh4_daSEOt4WSF4yq-F6i2sJH-oMaYndass7HMj05wT9Z2KkeIFcZ21ZEAKNstraKUfLzwLr2_buHFNmnziJPG1qFDgHLOUo6Omdw3f0ciPLiLD7FnCrqo_zRZQw9V_tPb1-o8MEZJmAH2dfQWQBey4zZgUiScAwZAiPNcTPBWXmSGQHxYVjubKzN18tq-w1EPxgFJ43sRRuIUHNU15rhMio_prjwqM9M061IzYWgzl3LW1NfckIP65l5tmFOMSgGaPDk18ikJNmxWxpFeBamL6tTsct7-BkEuYEU6GEP5D1L-uwu8GGI_T6f0VSW9sal_5Zo0lEsUuR2nO1yrSF8ppooEkFHlPJF25rlezmaUm0MIicaekbjwKdja5J5ZgNacpoAnoXe4arklcR6djnj_bRcxhWiYa-0GSITGvoWLcbc90G32BBe2Pz3RyoaiHkAYA_BNA_0qmjAYJMwB_e8U';
-    final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/celebrity/profile'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $tokenn'
+    try {
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/celebrity/profile'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $tokenn'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return CelebrityInformation.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }
+    catch (e) {
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
         });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return CelebrityInformation.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
-}
 
+}
 // @override
 // TODO: implement wantKeepAlive
 // bool get wantKeepAlive => true;
