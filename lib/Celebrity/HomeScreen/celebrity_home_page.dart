@@ -6,16 +6,16 @@ import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:celepraty/Users/Exploer/viewData.dart';
 import 'package:celepraty/Users/Exploer/viewDataImage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../MainScreen/main_screen_navigation.dart';
 import '../../ModelAPI/CelebrityScreenAPI.dart';
 import '../../Models/Methods/classes/GradientIcon.dart';
-import '../../celebrity/HomeScreen/celebrity_home_page.dart';
+
 import '../orders/advArea.dart';
 import '../orders/advForm.dart';
 import '../orders/gifttingForm.dart';
@@ -30,24 +30,109 @@ class CelebrityHome extends StatefulWidget {
 }
 
 class _CelebrityHomeState extends State<CelebrityHome>
-    with AutomaticKeepAliveClientMixin
-{
+    with AutomaticKeepAliveClientMixin {
   bool isSelect = false;
   Future<introModel>? celebrityHome;
 
   ///list of string to store the advertising area images
   List<String> advImage = [];
 
-  @override
-  void initState() {
-    celebrityHome = getSectionsData(widget.pageUrl!);
-    super.initState();
+  ///Pagination Variable Section
+  final baseUrl = 'https://mobile.celebrityads.net/api/celebrity-page';
+  int page = 1;
+
+  // There is next page or not
+  bool _hasNextPage = true;
+
+  // Used to display loading indicators when _firstLoad function is running
+  bool _isFirstLoadRunning = false;
+
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunning = false;
+
+  //This holds the news fetched from the server
+  List _news = [];
+  ScrollController scrollController = ScrollController();
+
+  ///This function will be called when the app launches
+  void _firstLoad() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
+    try {
+      final res =
+          await http.get(Uri.parse("$baseUrl/$widget.pageUrl?page=$page"));
+      setState(() {
+        _news = json.decode(res.body);
+      });
+    } catch (err) {
+      if (kDebugMode) {
+        print('Something went wrong');
+      }
+    }
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
-  Future<introModel> getSectionsData(String pageurl) async {
+  ///LoadMore Function will be triggered whenever the user scroll
+  void _loadMore() async {
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false &&
+        scrollController.position.extentAfter < 300) {
+      setState(() {
+        _isLoadMoreRunning = true; // Display a progress indicator at the bottom
+      });
+      page += 1; // Increase _page by 1
+      try {
+        final res =
+            await http.get(Uri.parse("$baseUrl/$widget.pageUrl?page=$page"));
+
+        final List fetchedNews = json.decode(res.body);
+        if (fetchedNews.isNotEmpty) {
+          setState(() {
+            _news.addAll(fetchedNews);
+          });
+        } else {
+          // This means there is no more data
+          // and therefore, we will not send another GET request
+          setState(() {
+            _hasNextPage = false;
+          });
+        }
+      } catch (err) {
+        if (kDebugMode) {
+          print('Something went wrong!');
+        }
+      }
+
+      setState(() {
+        _isLoadMoreRunning = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    celebrityHome = getSectionsData(widget.pageUrl!);
+
+    _firstLoad();
+    scrollController = ScrollController()..addListener(_loadMore);
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(_loadMore);
+    super.dispose();
+  }
+
+  Future<introModel> getSectionsData(String pageUrl) async {
     final response = await http.get(
         Uri.parse(
-            'https://mobile.celebrityads.net/api/celebrity-page/$pageurl'),
+            'https://mobile.celebrityads.net/api/celebrity-page/$pageUrl'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -108,7 +193,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                     decoration: BoxDecoration(
                                         image: DecorationImage(
                                             image: NetworkImage(
-                                              snapshot.data!.data!.celebrity!.image!,
+                                              snapshot.data!.data!.celebrity!
+                                                  .image!,
                                             ),
                                             fit: BoxFit.cover,
                                             colorFilter: const ColorFilter.mode(
@@ -122,7 +208,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                       children: [
                                         ///back icon to the main screen
                                         IconButton(
-                                          icon: const Icon(Icons.arrow_back_ios),
+                                          icon:
+                                              const Icon(Icons.arrow_back_ios),
                                           color: white,
                                           iconSize: 30,
                                           onPressed: () {
@@ -146,6 +233,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                               size: 27,
                                             ),
                                           ),
+
                                           ///SizedBox
                                           SizedBox(
                                             width: 6.w,
@@ -367,88 +455,102 @@ class _CelebrityHomeState extends State<CelebrityHome>
                           ),
 
                           ///horizontal listView for news
-                          Visibility(
-                            visible: snapshot.data!.data!.news!.isEmpty
-                                ? false
-                                : true,
-                            child: SizedBox(
-                              height: 90.h,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data!.data!.news!.length,
-                                  itemBuilder: (context, index) {
-                                    return Row(children: [
+                          _isFirstLoadRunning
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : SizedBox(
+                                  height: 60.h,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    controller: scrollController,
+                                    itemCount: 2,
+                                    itemBuilder: (_, index) => Row(children: [
                                       Padding(
-                                        padding: EdgeInsets.only(right: 8.w),
-                                        child: Container(
-                                          height: 70.h,
-                                          width: 208.w,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(50.r),
-                                              bottomRight:
-                                                  Radius.circular(50.r),
-                                              topLeft: Radius.circular(15.r),
-                                              bottomLeft: Radius.circular(15.r),
+                                          padding: EdgeInsets.only(right: 8.w),
+                                          child: Container(
+                                            height: 70.h,
+                                            width: 208.w,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(50.r),
+                                                bottomRight:
+                                                    Radius.circular(50.r),
+                                                topLeft: Radius.circular(15.r),
+                                                bottomLeft:
+                                                    Radius.circular(15.r),
+                                              ),
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.7, 2.0),
+                                                end: Alignment(-0.69, -1.0),
+                                                colors: [
+                                                  Color(0xff0ab3d0),
+                                                  Color(0xffe468ca)
+                                                ],
+                                                stops: [0.0, 1.0],
+                                              ),
                                             ),
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.7, 2.0),
-                                              end: Alignment(-0.69, -1.0),
-                                              colors: [
-                                                Color(0xff0ab3d0),
-                                                Color(0xffe468ca)
-                                              ],
-                                              stops: [0.0, 1.0],
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsets.only(right: 8.w),
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundImage:
-                                                      Image.network(snapshot
-                                                              .data!
-                                                              .data!
-                                                              .celebrity!
-                                                              .image!)
-                                                          .image,
-                                                  radius: 30.r,
-                                                ),
-                                                SizedBox(
-                                                  width: 10.w,
-                                                ),
-                                                SizedBox(
-                                                  height: 70.h,
-                                                  width: 110.w,
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      text(
-                                                        context,
-                                                        snapshot
-                                                            .data!
-                                                            .data!
-                                                            .news![index]
-                                                            .description!,
-                                                        11,
-                                                        white,
-                                                      ),
-                                                    ],
+                                            child: Padding(
+                                              padding: EdgeInsets.only(right: 8.w),
+                                              child: Row(
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundImage:
+                                                    Image.network(snapshot
+                                                        .data!
+                                                        .data!
+                                                        .celebrity!
+                                                        .image!)
+                                                        .image,
+                                                    radius: 30.r,
                                                   ),
-                                                ),
-                                              ],
+                                                  SizedBox(
+                                                    width: 10.w,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 70.h,
+                                                    width: 110.w,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .center,
+                                                      children: [
+                                                        text(
+                                                          context,
+                                                          'rayana',
+                                                          11,
+                                                          white,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    ]);
-                                  }),
+                                          ))
+                                    ]),
+                                  ),
+                                ),
+                          // when the _loadMore function is running
+                          if (_isLoadMoreRunning == true)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10, bottom: 40),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
-                          ),
+
+                          // When nothing else to load
+                          if (_hasNextPage == false)
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(top: 30, bottom: 40),
+                              color: Colors.amber,
+                              child: const Center(
+                                child:
+                                    Text('You have fetched all of the content'),
+                              ),
+                            ),
 
                           ///SizedBox
                           SizedBox(
@@ -458,7 +560,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                           Visibility(
                             visible: advImage.isEmpty ? false : true,
                             child: Container(
-                                margin: EdgeInsets.only(right: 10.w, left: 10.w),
+                                margin:
+                                    EdgeInsets.only(right: 10.w, left: 10.w),
                                 height: 150.h,
                                 decoration: BoxDecoration(
                                     color: black,
@@ -515,6 +618,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                           SizedBox(
                             height: 10.h,
                           ),
+
+                          ///studio
                           Visibility(
                             visible: snapshot.data!.data!.studio!.isEmpty
                                 ? false
@@ -659,7 +764,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                             height: 10.h,
                           ),
 
-                          currentuser == 'user'?  padding(
+                          padding(
                             15,
                             15,
                             gradientContainerNoborder(
@@ -675,7 +780,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                           snapshot.data!.data!.celebrity!.name!
                                               .toString()));
                                 })),
-                          ):SizedBox(),
+                          ),
                           SizedBox(
                             height: 20.h,
                           ),
@@ -754,11 +859,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
                         borderRadius: BorderRadius.all(Radius.circular(50))),
                     height: 40.h,
                     width: 40.h,
-                    child:
-                        Padding(
-                          padding:  EdgeInsets.only(top: 2.h, left: 10.w),
-                          child: Icon(arrow, size: 25.w, color: white),
-                        )),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 2.h, left: 10.w),
+                      child: Icon(arrow, size: 25.w, color: white),
+                    )),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -824,11 +928,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
                             BorderRadius.all(const Radius.circular(70))),
                     height: 40.h,
                     width: 40.h,
-                    child:
-                        Padding(
-                          padding: EdgeInsets.only(top: 2.h, left: 10.w),
-                          child: Icon(arrow, size: 25.w, color: white),
-                        )),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 2.h, left: 10.w),
+                      child: Icon(arrow, size: 25.w, color: white),
+                    )),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -892,11 +995,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
                         borderRadius: BorderRadius.all(Radius.circular(50.r))),
                     height: 40.h,
                     width: 40.h,
-                    child:
-                        Padding(
-                          padding:EdgeInsets.only(top: 2.h, left: 10.w),
-                          child: Icon(arrow, size: 25.w, color: white),
-                        )),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 2.h, left: 10.w),
+                      child: Icon(arrow, size: 25.w, color: white),
+                    )),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -1045,6 +1147,64 @@ class _CelebrityHomeState extends State<CelebrityHome>
       },
     );
   }
+
+  ///Pagination of news
+  // getNews(String pageUrl) async {
+  //   if(isLoading){
+  //     return ;
+  //   }
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //
+  //   ///page url check
+  //   String url = "https://mobile.celebrityads.net/api/celebrity-page/4OxvkYUSPB1GBViM?page=$basicPage";
+  //   if(basicPage == 1){
+  //     loadingRequestDialogue(context);
+  //   }
+  //
+  //   try{
+  //     final response = await http.get(Uri.parse(url), headers: {
+  //       'Content-Type': 'application/json',
+  //       'Accept': 'application/json',
+  //
+  //     });
+  //     if(response.statusCode == 20){
+  //       final body = response.body;
+  //       introModel newsPagination = introModel.fromJson(jsonDecode(body));
+  //
+  //       var newNews = newsPagination.data!.news!;
+  //       pageCount = newsPagination.data!.newsPageCount!;
+  //       if (!mounted) return;
+  //       print('boooooodyyyyy: $body');
+  //       setState(() {
+  //         if(newNews.isNotEmpty){
+  //           isHasMore = newNews.isEmpty;
+  //           oldNews.addAll(newNews);
+  //
+  //           isLoading = false;
+  //           newItemLength = newNews.length;
+  //           if(basicPage == 1){
+  //             Navigator.pop(context);
+  //           }
+  //           basicPage++;
+  //         }else if(newNews.isEmpty && basicPage == 1){
+  //           if(basicPage == 1){
+  //             Navigator.pop(context);
+  //           }
+  //           setState(() {
+  //             empty = true;
+  //           });
+  //         }
+  //       });
+  //       return newsPagination;
+  //     }else{
+  //       return Future.error('error');
+  //     }
+  //   }catch (error){
+  //     if (basicPage == 1) {
+  //       Navigator.pop(context);
+  //     }
+  //   }
+  // }
 }
-
-
