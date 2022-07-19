@@ -30,6 +30,7 @@ class _userInformationState extends State<userInformation> {
   bool timeoutException = true;
   bool serverExceptions = true;
 
+  bool noint = false;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   final TextEditingController name =  TextEditingController();
@@ -45,7 +46,7 @@ class _userInformationState extends State<userInformation> {
   bool noMatch =false;
   bool editPassword = false;
 
-  bool citychosen = false;
+  bool? citychosen;
   Map<int, String> getid = HashMap();
   Map<int, String> cid = HashMap();
 
@@ -200,9 +201,10 @@ class _userInformationState extends State<userInformation> {
                     country = snapshot.data!.data!.user!.country != null
                         ? snapshot.data!.data!.user!.country!.name!
                         : '',
-                    city = snapshot.data!.data!.user!.city != null
-                        ? snapshot.data!.data!.user!.city!.name.toString()
-                        : 'المدينة',
+                  snapshot.data!.data!.user!.city != null? {
+                      city = snapshot.data!.data!.user!.city!.name.toString(),
+                  citychosen = true}
+                        : city = 'المدينة',
                     print('the length is = '+ getid.length.toString() + Logging.theUser!.country!),
                     getid.forEach((key, value) {
                       print(value);
@@ -433,9 +435,7 @@ class _userInformationState extends State<userInformation> {
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
-                                        return Center(
-                                            child: Text(
-                                                snapshot.error.toString()));
+                                        return Center();
                                         //---------------------------------------------------------------------------
                                       } else if (snapshot.hasData) {
                                         _dropdownTestItems3.isEmpty
@@ -525,6 +525,7 @@ class _userInformationState extends State<userInformation> {
                                     }
                                   })),
 
+
                               FutureBuilder(
                                   future: cities,
                                   builder: ((context,
@@ -539,8 +540,7 @@ class _userInformationState extends State<userInformation> {
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
                                         return Center(
-                                            child: Text(
-                                                snapshot.error.toString()));
+                                            );
                                         //---------------------------------------------------------------------------
                                       } else if (snapshot.hasData) {
                                         _dropdownTestItems.isEmpty
@@ -623,10 +623,16 @@ class _userInformationState extends State<userInformation> {
                                       // 'State: ${snapshot.connectionState}'));
                                     }
                                   })),
-                              citychosen && _selectedTest == null?  Padding(
+
+
+                              citychosen != null ?
+                              citychosen == false ? Padding(
                                 padding: const EdgeInsets.only(right: 18.0),
-                                child: text(context, 'الرجاء تحديد المدينة', 14, red!),
-                              ): SizedBox(),
+                                child: text(
+                                    context, 'الرجاء تحديد المدينة', 14, red!),
+                              ) : SizedBox()
+                                  :
+                              SizedBox(),
                               //=========== end dropdown ==================================
 
                               //===================== button ================================
@@ -643,61 +649,43 @@ class _userInformationState extends State<userInformation> {
                                       if (( currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)){
                                         _formKey2.currentState ==null?null:
                                         _formKey2.currentState!.validate()? {
-                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => Flushbar(
-                                            flushbarPosition:
-                                            FlushbarPosition.TOP,
-                                            backgroundColor: white,
-                                            margin:
-                                            const EdgeInsets.all(5),
-                                            flushbarStyle:
-                                            FlushbarStyle.FLOATING,
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                15.r),
-                                            duration: const Duration(
-                                                seconds: 5),
-                                            icon: Padding(
-                                              padding: const EdgeInsets.only(left: 18.0),
-                                              child: Icon(
-                                                value.success == false?error: done,
-                                                color: value.success == false? red!: green,
-                                                size: 25.sp,
-                                              ),
-                                            ),
-                                            titleText: text(context,
-                                                value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
-                                            messageText: text(
-                                                context,
-                                                value.message!.ar!,
-                                                14,
-                                                black,
-                                                fontWeight:
-                                                FontWeight.w200),
-                                          ).show(context),)  , updateUserInformation(userToken).whenComplete(() => fetchUsers(userToken))}: setState((){noMatch = true;})}:null;}
-                                      else{
-                                        _formKey.currentState!.validate() &&  _formKey2.currentState == null && citychosen?
+                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => {
+                                            value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+                                              Navigator.pop(context),
+                                              Flushbar(
+                                                flushbarPosition:
+                                                FlushbarPosition.TOP,
+                                                backgroundColor: white,
+                                                margin:
+                                                const EdgeInsets.all(5),
+                                                flushbarStyle:
+                                                FlushbarStyle.FLOATING,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    15.r),
+                                                duration: const Duration(
+                                                    seconds: 5),
+                                                icon: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      left: 18.0),
+                                                  child: Icon(
+                                                    error,
+                                                    color: red,
+                                                    size: 25.sp,
+                                                  ),
+                                                ),
+                                                titleText: text(
+                                                    context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                messageText: text(
+                                                    context,
+                                                    'قشل الاتصال بالانترنت حاول لاحقا',
+                                                    14,
+                                                    black,
+                                                    fontWeight:
+                                                    FontWeight.w200),
+                                              ).show(context)
+                                            }:
 
-                                        {
-                                          loadingDialogue(context),
-                                          updateUserInformation(userToken)
-                                              .then((value) {
-                                            Navigator.pop(context);
-                                            countryChanged || cityChanged
-                                                ? setState(() {
-                                              helper = 0;
-                                              countryChanged =
-                                              false;
-                                              cityChanged =
-                                              false;
-                                              getUser = fetchUsers(userToken);
-                                                })
-                                                : Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (context) =>
-                                                      MainScreen()),
-                                            );
                                             Flushbar(
                                               flushbarPosition:
                                               FlushbarPosition.TOP,
@@ -712,23 +700,134 @@ class _userInformationState extends State<userInformation> {
                                               duration: const Duration(
                                                   seconds: 5),
                                               icon: Padding(
-                                                padding: const EdgeInsets.only(left: 18.0),
+                                                padding: const EdgeInsets
+                                                    .only(left: 18.0),
                                                 child: Icon(
-                                                  value.success == false?error: done,
-                                                  color: value.success == false? red!: green,
+                                                 value.contains('false')?error: done,
+                                                  color: value.contains('false')
+                                                      ? red! : green,
                                                   size: 25.sp,
                                                 ),
                                               ),
-                                              titleText: text(context,
-                                                  value.success == false?'خطا':'تم التعديل بنجاح', 14, purple),
+
                                               messageText: text(
                                                   context,
-                                                  value.message!.ar!,
+                                                      value.contains('true')?
+                                                  value.replaceAll('true', ''):
+                                                          value.replaceAll('false', ''),
                                                   14,
                                                   black,
                                                   fontWeight:
                                                   FontWeight.w200),
-                                            ).show(context);
+
+                                              titleText: text(
+                                                  context,
+                                                  value.contains('false')?'خطا':'تم بنجاح' ,
+                                                  14,
+                                                  purple,
+                                                  fontWeight:
+                                                  FontWeight.w200),
+                                            ).show(context),
+                                          })  , updateUserInformation(userToken).whenComplete(() => fetchUsers(userToken))}: setState((){noMatch = true;})}:null;}
+                                      else{
+                                        _formKey.currentState!.validate() &&  _formKey2.currentState == null && citychosen == true?
+
+                                        {
+                                          loadingDialogue(context),
+                                          updateUserInformation(userToken)
+                                              .then((value) {
+                                                value == 'SocketException'?{
+                                                  value == 'SocketException'?{
+                                                  Navigator.pop(context),
+                                                  Flushbar(
+                                                    flushbarPosition:
+                                                    FlushbarPosition.TOP,
+                                                    backgroundColor: white,
+                                                    margin:
+                                                    const EdgeInsets.all(5),
+                                                    flushbarStyle:
+                                                    FlushbarStyle.FLOATING,
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.r),
+                                                    duration: const Duration(
+                                                        seconds: 5),
+                                                    icon: Padding(
+                                                      padding: const EdgeInsets
+                                                          .only(left: 18.0),
+                                                      child: Icon(
+                                                        error,
+                                                        color: red,
+                                                        size: 25.sp,
+                                                      ),
+                                                    ),
+                                                    titleText: text(context,
+                                                        'فشل الاتصال بالانترنت', 14,
+                                                        purple),
+                                                    messageText: text(
+                                                        context,
+                                                        'فشل الاتصال بالانترنت حاول مرة اخرى لاحقا',
+                                                        14,
+                                                        black,
+                                                        fontWeight:
+                                                        FontWeight.w200),
+                                                  ).show(context)}:null
+                                                }: {
+
+                                                  Navigator.pop(context),
+                                                  countryChanged || cityChanged
+                                                      ? setState(() {
+                                                    helper = 0;
+                                                    countryChanged =
+                                                    false;
+                                                    cityChanged =
+                                                    false;
+                                                    getUser =
+                                                        fetchUsers(userToken);
+                                                  })
+                                                      : Navigator
+                                                      .pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                            MainScreen()),
+                                                  ),
+                                                  Flushbar(
+                                                    flushbarPosition:
+                                                    FlushbarPosition.TOP,
+                                                    backgroundColor: white,
+                                                    margin:
+                                                    const EdgeInsets.all(5),
+                                                    flushbarStyle:
+                                                    FlushbarStyle.FLOATING,
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.r),
+                                                    duration: const Duration(
+                                                        seconds: 5),
+                                                    icon: Padding(
+                                                      padding: const EdgeInsets
+                                                          .only(left: 18.0),
+                                                      child: Icon(
+                                                        done,
+                                                        color: green,
+                                                        size: 25.sp,
+                                                      ),
+                                                    ),
+                                                    titleText: text(context,
+                                                        'تم التعديل بنجاح', 14,
+                                                        purple),
+                                                    messageText: text(
+                                                        context,
+                                                        'تم تعديل تعديل بيانات المشهور بنجاح بنجاح',
+                                                        14,
+                                                        black,
+                                                        fontWeight:
+                                                        FontWeight.w200),
+                                                  ).show(context)
+                                                };
+
 
                                             //   setState(() {
                                             //     helper = 0;
@@ -770,43 +869,65 @@ class _userInformationState extends State<userInformation> {
   }
 
   Future<CountryL> fetCountries() async {
-    final response = await http.get(
-      Uri.parse('https://mobile.celebrityads.net/api/countries'),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/countries'),
+      );
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
 
-      for(int i =0; i< jsonDecode(response.body)['data'].length;i++){
-        setState(() {
-          getid.putIfAbsent(i, () => jsonDecode(response.body)['data'][i]['name']);
-        });
+        for (int i = 0; i < jsonDecode(response.body)['data'].length; i++) {
+          setState(() {
+            getid.putIfAbsent(
+                i, () => jsonDecode(response.body)['data'][i]['name']);
+          });
+        }
+
+        return CountryL.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
       }
-
-      return CountryL.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          noint = true;
+        });
+        return Future.error('SocketException');
+      }else {
+        return Future.error('serverExceptions');
+      }
     }
   }
 
   Future<CityL> fetCities(int countryId) async {
-    final response = await http.get(
-      Uri.parse('https://mobile.celebrityads.net/api/cities/$countryId'),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/cities/$countryId'),
+      );
 
-    if (response.statusCode == 200) {
-
-      return CityL.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      print(countryId.toString() + 'in the city get');
-      throw Exception('Failed to load activity');
+      if (response.statusCode == 200) {
+        return CityL.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        print(countryId.toString() + 'in the city get');
+        throw Exception('Failed to load activity');
+      }
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          noint = true;
+        });
+        return Future.error('SocketException');
+      }else {
+        return Future.error('serverExceptions');
+      }
     }
-  }
+    }
 
   Future<UserProfile> fetchUsers(String token) async {
 
@@ -929,66 +1050,85 @@ class _userInformationState extends State<userInformation> {
     );
   }
 
-  Future<UserProfile> updateUserInformation(String token) async {
-    String token2 =
-        'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWEwNzYxYWY4NTY4NjUxOTc0NzY5Zjk2OGYyYzlhNGZlMmViODYyOGYyZjU5NzU5NDllOGI3MWJkNjcyZWZlOTA2YWRkMDczZTg5YmFkZjEiLCJpYXQiOjE2NTA0NDk4NzYuMTA3MDk5MDU2MjQzODk2NDg0Mzc1LCJuYmYiOjE2NTA0NDk4NzYuMTA3MTA0MDYzMDM0MDU3NjE3MTg3NSwiZXhwIjoxNjgxOTg1ODc2LjEwMzA4OTA5NDE2MTk4NzMwNDY4NzUsInN1YiI6IjE0Iiwic2NvcGVzIjpbXX0.5nxz23qSWZfll1gGsnC_HZ0-IcD8eTa0e0p9ciKZh_akHwZugs1gU-zjMYOFMUVK34AHPjnpu_lu5QYOPHZuAZpjgPZOWX5iYefAwicq52ZeWSiWbLNlbajR28QKGaUzSn9Y84rwVtxXzAllaJLiwPfhsXK_jQpdUoeWyozMmc5S4_9_Gw72ZeW_VibZ_8CcW05FtKF08yFwRm1mPuuPLUmCSfoVee16FIyvXJBDWEtpjtjzxQUv6ceVw0QQCeLkNeJPPNh3cuAQH1PgEbQm-Tb3kvXg0yu_5flddpNtG5uihcQBQvuOtaSiLZDlJpcG0kUJ2iqGXuog6CosNxq97Wo28ytoM36-zeAQ8JpbpCTi1qn_3RNFr8wZ5C-RvMMq4he2B839qIWDjm0BM7BJSskuUkt9uAFifks8LF3o_USXMQ1mk20_YJxdeaETXwNQgfJ3pZCHUP5UsGmsUsmhiH69Gwm2HTI21k9mV5QGjjWUUihimZO2snbh-pDz7mO_5651j2eVEfi3h3V7HtC0CNGkofH4HPHSTORlEdYlqLvzTqfDos-X05yDSnajPWOldps-ITtzvuYCsstA1X1opTm8siyuDS-SmvnEHFYD53ln_8AfL9I6aCQ9YGNWpNo442zej0qqPxL'
-        'r_AQhAzfEcqgasRrr32031veKVCd21rA';
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/user/profile/update',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'name': name.text,
-        'email': email.text,
-        'password': password.text,
-        'phonenumber':
-        countrycode != null ? countrycode! + phone.text : phone.text,
-        'country_id':
-        _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
-        'city_id': _selectedTest == null ? null : _selectedTest['no'],
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return UserProfile.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+  Future<String> updateUserInformation(String token) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'https://mobile.celebrityads.net/api/user/profile/update',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'name': name.text,
+          'email': email.text,
+          'password': password.text,
+          'phonenumber':
+          countrycode != null ? countrycode! + phone.text : phone.text,
+          'country_id':
+          _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
+          'city_id': _selectedTest == null ? null : _selectedTest['no'],
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return '';
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
     }
   }
-  Future<UserProfile> changePassword(String token) async {
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/user/password/change',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'current_password': currentPassword.text,
-        'new_password': newPassword.text,
-        'confirm_password': confirmPassword.text,
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return UserProfile.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+  Future<String> changePassword(String token) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'https://mobile.celebrityads.net/api/user/password/change',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'current_password': currentPassword.text,
+          'new_password': newPassword.text,
+          'confirm_password': confirmPassword.text,
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return jsonDecode(response.body)['message']['ar'] + jsonDecode(response.body)['success'].toString();
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
+
+      }
     }
   }
   Widget textFieldPassword2(

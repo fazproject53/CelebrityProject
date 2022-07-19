@@ -77,7 +77,7 @@ class _InvoiceState extends State<Invoice> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center();
+                          return Center(child: mainLoad(context),);
                         } else if (snapshot.connectionState ==
                             ConnectionState.active ||
                             snapshot.connectionState == ConnectionState.done) {

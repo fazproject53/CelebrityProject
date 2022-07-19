@@ -636,226 +636,231 @@ class _profileInformaionState extends State<profileInformaion>
                                       'تحديد نوع الجنس اجباري لتحديث المعلومات',
                                       14,
                                       red!)),
-                              FutureBuilder(
-                                  future: countries,
-                                  builder: ((context,
-                                      AsyncSnapshot<CountryL> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center();
-                                    } else if (snapshot.connectionState ==
-                                        ConnectionState.active ||
-                                        snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                            child: Text(
-                                                snapshot.error.toString()));
-                                        //---------------------------------------------------------------------------
-                                      } else if (snapshot.hasData) {
-                                        _dropdownTestItems3.isEmpty
-                                            ? {
-                                          countrylist.add({
-                                            'no': 0,
-                                            'keyword': 'الدولة'
-                                          }),
-                                          for (int i = 0;
-                                          i <
-                                              snapshot
-                                                  .data!.data!.length;
-                                          i++)
-                                            {
-                                              countrylist.add({
-                                                'no': i,
-                                                'keyword':
-                                                '${snapshot.data!.data![i]
-                                                    .name!}'
-                                              }),
-                                            },
-                                          _dropdownTestItems3 =
-                                              buildDropdownTestItems(
-                                                  countrylist)
-                                        }
-                                            : null;
 
-                                        return paddingg(
-                                          15,
-                                          15,
-                                          12,
-                                          DropdownBelow(
-                                            itemWidth: 370.w,
-                                            dropdownColor: white,
+                              isConnectSection?
 
-                                            ///text style inside the menu
-                                            itemTextstyle: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: black,
-                                              fontFamily: 'Cairo',
-                                            ),
+                                FutureBuilder(
+                                    future: countries,
+                                    builder: ((context,
+                                        AsyncSnapshot<CountryL> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center();
+                                      } else if (snapshot.connectionState ==
+                                          ConnectionState.active ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          return Center();
+                                          //---------------------------------------------------------------------------
+                                        } else if (snapshot.hasData) {
+                                          _dropdownTestItems3.isEmpty
+                                              ? {
+                                            countrylist.add({
+                                              'no': 0,
+                                              'keyword': 'الدولة'
+                                            }),
+                                            for (int i = 0;
+                                            i <
+                                                snapshot
+                                                    .data!.data!.length;
+                                            i++)
+                                              {
+                                                countrylist.add({
+                                                  'no': i,
+                                                  'keyword':
+                                                  '${snapshot.data!.data![i]
+                                                      .name!}'
+                                                }),
+                                              },
+                                            _dropdownTestItems3 =
+                                                buildDropdownTestItems(
+                                                    countrylist)
+                                          }
+                                              : null;
 
-                                            ///hint style
-                                            boxTextstyle: TextStyle(
+                                          return paddingg(
+                                            15,
+                                            15,
+                                            12,
+                                            DropdownBelow(
+                                              itemWidth: 370.w,
+                                              dropdownColor: white,
+
+                                              ///text style inside the menu
+                                              itemTextstyle: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: black,
-                                                fontFamily: 'Cairo'),
+                                                fontFamily: 'Cairo',
+                                              ),
 
-                                            ///box style
-                                            boxPadding: EdgeInsets.fromLTRB(
-                                                13.w, 12.h, 13.w, 12.h),
-                                            boxWidth: 500.w,
-                                            boxHeight: 45.h,
-                                            boxDecoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: newGrey, width: 0.5),
-                                                color: lightGrey.withOpacity(
-                                                    0.10),
-                                                borderRadius:
-                                                BorderRadius.circular(8.r)),
+                                              ///hint style
+                                              boxTextstyle: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: black,
+                                                  fontFamily: 'Cairo'),
 
-                                            ///Icons
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              color: Colors.grey,
+                                              ///box style
+                                              boxPadding: EdgeInsets.fromLTRB(
+                                                  13.w, 12.h, 13.w, 12.h),
+                                              boxWidth: 500.w,
+                                              boxHeight: 45.h,
+                                              boxDecoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: newGrey,
+                                                      width: 0.5),
+                                                  color: lightGrey.withOpacity(
+                                                      0.10),
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.r)),
+
+                                              ///Icons
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.grey,
+                                              ),
+                                              hint: Text(
+                                                country,
+                                                textDirection: TextDirection
+                                                    .rtl,
+                                              ),
+                                              value: _selectedTest3,
+                                              items: _dropdownTestItems3,
+                                              onChanged: onChangeDropdownTests3,
                                             ),
-                                            hint: Text(
-                                              country,
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            value: _selectedTest3,
-                                            items: _dropdownTestItems3,
-                                            onChanged: onChangeDropdownTests3,
-                                          ),
-                                        );
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text(
+                                                  'لايوجد لينك لعرضهم حاليا'));
+                                        }
                                       } else {
-                                        return const Center(
-                                            child: Text(
-                                                'لايوجد لينك لعرضهم حاليا'));
-                                      }
-                                    } else {
-                                      return Center(
-                                          child: Text(
-                                              'State: ${snapshot
-                                                  .connectionState}'));
-                                    }
-                                  })),
-
-                              FutureBuilder(
-                                  future: cities,
-                                  builder: ((context,
-                                      AsyncSnapshot<CityL> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center();
-                                    } else if (snapshot.connectionState ==
-                                        ConnectionState.active ||
-                                        snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                      if (snapshot.hasError) {
                                         return Center(
                                             child: Text(
-                                                snapshot.error.toString()));
-                                        //---------------------------------------------------------------------------
-                                      } else if (snapshot.hasData) {
-                                        _dropdownTestItems.isEmpty
-                                            ? {
-                                          citilist.add({
-                                            'no': 0,
-                                            'keyword':
-                                            'المدينة'
-                                          }),
-                                          for (int i = 0;
-                                          i <
-                                              snapshot
-                                                  .data!.data!.length;
-                                          i++)
-                                            {
-                                              citilist.add({
-                                                'no': snapshot.data!.data![i]
-                                                    .id!,
-                                                'keyword':
-                                                '${snapshot.data!.data![i]
-                                                    .name!}'
-                                              }),
-                                            },
-                                          _dropdownTestItems =
-                                              buildDropdownTestItems(
-                                                  citilist)
-                                        }
-                                            : null;
+                                                'State: ${snapshot
+                                                    .connectionState}'));
+                                      }
+                                    })):SizedBox(),
 
-                                        return paddingg(
-                                          15,
-                                          15,
-                                          12,
-                                          DropdownBelow(
-                                            itemWidth: 370.w,
-                                            dropdownColor: white,
+                                isConnectSection?
+                                FutureBuilder(
+                                    future: cities,
+                                    builder: ((context,
+                                        AsyncSnapshot<CityL> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center();
+                                      } else if (snapshot.connectionState ==
+                                          ConnectionState.active ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          return Center();
+                                          //---------------------------------------------------------------------------
+                                        } else if (snapshot.hasData) {
+                                          _dropdownTestItems.isEmpty
+                                              ? {
+                                            citilist.add({
+                                              'no': 0,
+                                              'keyword':
+                                              'المدينة'
+                                            }),
+                                            for (int i = 0;
+                                            i <
+                                                snapshot
+                                                    .data!.data!.length;
+                                            i++)
+                                              {
+                                                citilist.add({
+                                                  'no': snapshot.data!.data![i]
+                                                      .id!,
+                                                  'keyword':
+                                                  '${snapshot.data!.data![i]
+                                                      .name!}'
+                                                }),
+                                              },
+                                            _dropdownTestItems =
+                                                buildDropdownTestItems(
+                                                    citilist)
+                                          }
+                                              : null;
 
-                                            ///text style inside the menu
-                                            itemTextstyle: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: black,
-                                              fontFamily: 'Cairo',
-                                            ),
+                                          return paddingg(
+                                            15,
+                                            15,
+                                            12,
+                                            DropdownBelow(
+                                              itemWidth: 370.w,
+                                              dropdownColor: white,
 
-                                            ///hint style
-                                            boxTextstyle: TextStyle(
+                                              ///text style inside the menu
+                                              itemTextstyle: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: black,
-                                                fontFamily: 'Cairo'),
+                                                fontFamily: 'Cairo',
+                                              ),
 
-                                            ///box style
-                                            boxPadding: EdgeInsets.fromLTRB(
-                                                13.w, 12.h, 13.w, 12.h),
-                                            boxWidth: 500.w,
-                                            boxHeight: 45.h,
-                                            boxDecoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: newGrey, width: 0.5),
-                                                color: lightGrey.withOpacity(
-                                                    0.10),
-                                                borderRadius:
-                                                BorderRadius.circular(8.r)),
+                                              ///hint style
+                                              boxTextstyle: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: black,
+                                                  fontFamily: 'Cairo'),
 
-                                            ///Icons
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              color: Colors.grey,
+                                              ///box style
+                                              boxPadding: EdgeInsets.fromLTRB(
+                                                  13.w, 12.h, 13.w, 12.h),
+                                              boxWidth: 500.w,
+                                              boxHeight: 45.h,
+                                              boxDecoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: newGrey,
+                                                      width: 0.5),
+                                                  color: lightGrey.withOpacity(
+                                                      0.10),
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.r)),
+
+                                              ///Icons
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.grey,
+                                              ),
+                                              hint: Text(
+                                                city,
+                                                textDirection: TextDirection
+                                                    .rtl,
+                                              ),
+                                              value: _selectedTest,
+                                              items: _dropdownTestItems,
+                                              onChanged: onChangeDropdownTests,
                                             ),
-                                            hint: Text(
-                                              city,
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            value: _selectedTest,
-                                            items: _dropdownTestItems,
-                                            onChanged: onChangeDropdownTests,
-                                          ),
-                                        );
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text(
+                                                  'لايوجد لينك لعرضهم حاليا'));
+                                        }
                                       } else {
-                                        return const Center(
+                                        return Center(
                                             child: Text(
-                                                'لايوجد لينك لعرضهم حاليا'));
+                                                ''));
                                       }
-                                    } else {
-                                      return Center(
-                                          child: Text(
-                                              'State: ${snapshot
-                                                  .connectionState}'));
-                                    }
-                                  })),
+                                    })):SizedBox(),
 
-                              citychosen != null ?
-                              citychosen == false ? Padding(
-                                padding: const EdgeInsets.only(right: 18.0),
-                                child: text(
-                                    context, 'الرجاء تحديد المدينة', 14, red!),
-                              ) : SizedBox()
-                                  :
-                              SizedBox(),
+                                citychosen != null ?
+                                citychosen == false ? Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: text(
+                                      context, 'الرجاء تحديد المدينة', 14,
+                                      red!),
+                                ) : SizedBox()
+                                    :
+                                SizedBox(),
+
                               FutureBuilder(
                                   future: categories,
                                   builder: ((context,
@@ -868,9 +873,7 @@ class _profileInformaionState extends State<profileInformaion>
                                         snapshot.connectionState ==
                                             ConnectionState.done) {
                                       if (snapshot.hasError) {
-                                        return Center(
-                                            child: Text(
-                                                snapshot.error.toString()));
+                                        return SizedBox();
                                         //---------------------------------------------------------------------------
                                       } else if (snapshot.hasData) {
                                         _dropdownTestItems2.isEmpty
@@ -1006,47 +1009,106 @@ class _profileInformaionState extends State<profileInformaion>
                                                 : setState(() {
                                               genderChosen = true;
                                             });
-
                                             _formKey.currentState!.validate() &&
-                                                _formKey2.currentState ==
-                                                    null &&
-                                                genderChosen == true
-                                                ? updateInformation().then((
-                                                value) =>
-                                            {
-                                              countryChanged
-                                                  ? setState(() {
-                                                helper = 0;
-                                                countryChanged = false;
-                                                celebrities =
-                                                    fetchCelebrities(
-                                                        userToken!);
-                                              })
-                                                  : Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    const MainScreen()),
-                                              ),
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                content:
-                                                Text(value),
-                                              ))
-                                              //   setState(() {
-                                              //     helper = 0;
-                                              //     celebrities =
-                                              //         fetchCelebrities();
-                                              //   }),
-                                              //   ScaffoldMessenger.of(
-                                              //           context)
-                                              //       .showSnackBar(
-                                              //           const SnackBar(
-                                              //     content: Text(
-                                              //         "تم تعديل المعلومات بنجاح"),
-                                              //   ))
-                                            })
-                                                : null;
+                                                _formKey2.currentState == null &&
+                                                genderChosen == true &&
+                                                citychosen == true
+                                                ?
+                                            { loadingDialogue(context),
+                                              updateInformation().then((value) =>
+                                              {
+                                                value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                                                  Navigator.pop(context),
+                                                  Flushbar(
+                                                    flushbarPosition:
+                                                    FlushbarPosition.TOP,
+                                                    backgroundColor: white,
+                                                    margin:
+                                                    const EdgeInsets.all(5),
+                                                    flushbarStyle:
+                                                    FlushbarStyle.FLOATING,
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.r),
+                                                    duration: const Duration(
+                                                        seconds: 5),
+                                                    icon: Padding(
+                                                      padding: const EdgeInsets.only(
+                                                          left: 18.0),
+                                                      child: Icon(
+                                                        error,
+                                                        color: red,
+                                                        size: 25.sp,
+                                                      ),
+                                                    ),
+                                                    titleText: text(
+                                                        context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                    messageText: text(
+                                                        context,
+                                                        'قشل الاتصال بالانترنت حاول لاحقا',
+                                                        14,
+                                                        black,
+                                                        fontWeight:
+                                                        FontWeight.w200),
+                                                  ).show(context)
+                                                }:    {
+                                                  Navigator.pop(context),
+                                                  countryChanged
+                                                      ? setState(() {
+                                                    helper = 0;
+                                                    countryChanged = false;
+                                                    celebrities =
+                                                        fetchCelebrities(
+                                                            userToken!);
+                                                  })
+                                                      : Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MainScreen()),
+                                                  ),
+                                                  Flushbar(
+                                                    flushbarPosition:
+                                                    FlushbarPosition.TOP,
+                                                    backgroundColor: white,
+                                                    margin:
+                                                    const EdgeInsets.all(5),
+                                                    flushbarStyle:
+                                                    FlushbarStyle.FLOATING,
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.r),
+                                                    duration: const Duration(
+                                                        seconds: 5),
+                                                    icon: Padding(
+                                                      padding: const EdgeInsets.only(
+                                                          left: 18.0),
+                                                      child: Icon(
+                                                        done,
+                                                        color: green,
+                                                        size: 25.sp,
+                                                      ),
+                                                    ),
+                                                    titleText: text(
+                                                        context, 'تم التعديل بنجاح',
+                                                        14,
+                                                        purple),
+                                                    messageText: text(
+                                                        context,
+                                                        value,
+                                                        14,
+                                                        black,
+                                                        fontWeight:
+                                                        FontWeight.w200),
+                                                  ).show(context)
+                                                }
+                                              })}
+                                                : setState(() {
+                                              city == 'المدينة'
+                                                  ? citychosen = false
+                                                  : null;
+                                            },);
                                           },
                                           child: text(
                                               context, 'اضافة', 14, black,
@@ -1078,35 +1140,106 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!
-                                                  .validate() &&
-                                                  _formKey2.currentState ==
-                                                      null &&
-                                                  genderChosen == true
-                                                  ? updateInformation().then((
-                                                  value) =>
-                                              {
-                                                countryChanged
-                                                    ? setState(() {
-                                                  helper = 0;
-                                                  countryChanged = false;
-                                                  celebrities =
-                                                      fetchCelebrities(
-                                                          userToken!);
-                                                })
-                                                    : Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                      const MainScreen()),
-                                                ),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                  Text(value),
-                                                ))
-                                              })
-                                                  : null;
+                                              _formKey.currentState!.validate() &&
+                                                  _formKey2.currentState == null &&
+                                                  genderChosen == true &&
+                                                  citychosen == true
+                                                  ?
+                                              { loadingDialogue(context),
+                                                updateInformation().then((value) =>
+                                                {
+                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                                                    Navigator.pop(context),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          error,
+                                                          color: red,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                      messageText: text(
+                                                          context,
+                                                          'قشل الاتصال بالانترنت حاول لاحقا',
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }:    {
+                                                    Navigator.pop(context),
+                                                    countryChanged
+                                                        ? setState(() {
+                                                      helper = 0;
+                                                      countryChanged = false;
+                                                      celebrities =
+                                                          fetchCelebrities(
+                                                              userToken!);
+                                                    })
+                                                        : Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MainScreen()),
+                                                    ),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          done,
+                                                          color: green,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'تم التعديل بنجاح',
+                                                          14,
+                                                          purple),
+                                                      messageText: text(
+                                                          context,
+                                                          value,
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }
+                                                })}
+                                                  : setState(() {
+                                                city == 'المدينة'
+                                                    ? citychosen = false
+                                                    : null;
+                                              },);
                                             },
                                             child: text(
                                                 context, 'اضافة', 14, black,
@@ -1139,35 +1272,106 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!
-                                                  .validate() &&
-                                                  _formKey2.currentState ==
-                                                      null &&
-                                                  genderChosen == true
-                                                  ? updateInformation().then((
-                                                  value) =>
-                                              {
-                                                countryChanged
-                                                    ? setState(() {
-                                                  helper = 0;
-                                                  countryChanged = false;
-                                                  celebrities =
-                                                      fetchCelebrities(
-                                                          userToken!);
-                                                })
-                                                    : Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                      const celebrityHomePage()),
-                                                ),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                  Text(value),
-                                                ))
-                                              })
-                                                  : null;
+                                              _formKey.currentState!.validate() &&
+                                                  _formKey2.currentState == null &&
+                                                  genderChosen == true &&
+                                                  citychosen == true
+                                                  ?
+                                              { loadingDialogue(context),
+                                                updateInformation().then((value) =>
+                                                {
+                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                                                    Navigator.pop(context),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          error,
+                                                          color: red,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                      messageText: text(
+                                                          context,
+                                                          'قشل الاتصال بالانترنت حاول لاحقا',
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }:    {
+                                                    Navigator.pop(context),
+                                                    countryChanged
+                                                        ? setState(() {
+                                                      helper = 0;
+                                                      countryChanged = false;
+                                                      celebrities =
+                                                          fetchCelebrities(
+                                                              userToken!);
+                                                    })
+                                                        : Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MainScreen()),
+                                                    ),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          done,
+                                                          color: green,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'تم التعديل بنجاح',
+                                                          14,
+                                                          purple),
+                                                      messageText: text(
+                                                          context,
+                                                          value,
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }
+                                                })}
+                                                  : setState(() {
+                                                city == 'المدينة'
+                                                    ? citychosen = false
+                                                    : null;
+                                              },);
                                             },
                                             child: text(
                                                 context, 'اضافة', 14, black,
@@ -1200,47 +1404,106 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!
-                                                  .validate() &&
-                                                  _formKey2.currentState ==
-                                                      null &&
-                                                  genderChosen == true
-                                                  ? updateInformation().then((
-                                                  value) =>
-                                              {
-                                                countryChanged
-                                                    ? setState(() {
-                                                  helper = 0;
-                                                  countryChanged = false;
-                                                  celebrities =
-                                                      fetchCelebrities(
-                                                          userToken!);
-                                                })
-                                                    : Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                      const MainScreen()),
-                                                ),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                  Text(value),
-                                                ))
-                                                //   setState(() {
-                                                //     helper = 0;
-                                                //     celebrities =
-                                                //         fetchCelebrities();
-                                                //   }),
-                                                //   ScaffoldMessenger.of(
-                                                //           context)
-                                                //       .showSnackBar(
-                                                //           const SnackBar(
-                                                //     content: Text(
-                                                //         "تم تعديل المعلومات بنجاح"),
-                                                //   ))
-                                              })
-                                                  : null;
+                                              _formKey.currentState!.validate() &&
+                                                  _formKey2.currentState == null &&
+                                                  genderChosen == true &&
+                                                  citychosen == true
+                                                  ?
+                                              { loadingDialogue(context),
+                                                updateInformation().then((value) =>
+                                                {
+                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                                                    Navigator.pop(context),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          error,
+                                                          color: red,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                      messageText: text(
+                                                          context,
+                                                          'قشل الاتصال بالانترنت حاول لاحقا',
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }:    {
+                                                    Navigator.pop(context),
+                                                    countryChanged
+                                                        ? setState(() {
+                                                      helper = 0;
+                                                      countryChanged = false;
+                                                      celebrities =
+                                                          fetchCelebrities(
+                                                              userToken!);
+                                                    })
+                                                        : Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MainScreen()),
+                                                    ),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          done,
+                                                          color: green,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'تم التعديل بنجاح',
+                                                          14,
+                                                          purple),
+                                                      messageText: text(
+                                                          context,
+                                                          value,
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }
+                                                })}
+                                                  : setState(() {
+                                                city == 'المدينة'
+                                                    ? citychosen = false
+                                                    : null;
+                                              },);
                                             },
                                             child: text(
                                                 context, 'اضافة', 14, black,
@@ -1273,47 +1536,106 @@ class _profileInformaionState extends State<profileInformaion>
                                                   : setState(() {
                                                 genderChosen = true;
                                               });
-                                              _formKey.currentState!
-                                                  .validate() &&
-                                                  _formKey2.currentState ==
-                                                      null &&
-                                                  genderChosen == true
-                                                  ? updateInformation().then((
-                                                  value) =>
-                                              {
-                                                countryChanged
-                                                    ? setState(() {
-                                                  helper = 0;
-                                                  countryChanged = false;
-                                                  celebrities =
-                                                      fetchCelebrities(
-                                                          userToken!);
-                                                })
-                                                    : Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                      const celebrityHomePage()),
-                                                ),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                  Text(value),
-                                                ))
-                                                //   setState(() {
-                                                //     helper = 0;
-                                                //     celebrities =
-                                                //         fetchCelebrities();
-                                                //   }),
-                                                //   ScaffoldMessenger.of(
-                                                //           context)
-                                                //       .showSnackBar(
-                                                //           const SnackBar(
-                                                //     content: Text(
-                                                //         "تم تعديل المعلومات بنجاح"),
-                                                //   ))
-                                              })
-                                                  : null;
+                                              _formKey.currentState!.validate() &&
+                                                  _formKey2.currentState == null &&
+                                                  genderChosen == true &&
+                                                  citychosen == true
+                                                  ?
+                                              { loadingDialogue(context),
+                                                updateInformation().then((value) =>
+                                                {
+                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                                                    Navigator.pop(context),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          error,
+                                                          color: red,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'قشل الاتصال بالانترنت', 14, purple),
+                                                      messageText: text(
+                                                          context,
+                                                          'قشل الاتصال بالانترنت حاول لاحقا',
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }:    {
+                                                    Navigator.pop(context),
+                                                    countryChanged
+                                                        ? setState(() {
+                                                      helper = 0;
+                                                      countryChanged = false;
+                                                      celebrities =
+                                                          fetchCelebrities(
+                                                              userToken!);
+                                                    })
+                                                        : Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MainScreen()),
+                                                    ),
+                                                    Flushbar(
+                                                      flushbarPosition:
+                                                      FlushbarPosition.TOP,
+                                                      backgroundColor: white,
+                                                      margin:
+                                                      const EdgeInsets.all(5),
+                                                      flushbarStyle:
+                                                      FlushbarStyle.FLOATING,
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.r),
+                                                      duration: const Duration(
+                                                          seconds: 5),
+                                                      icon: Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 18.0),
+                                                        child: Icon(
+                                                          done,
+                                                          color: green,
+                                                          size: 25.sp,
+                                                        ),
+                                                      ),
+                                                      titleText: text(
+                                                          context, 'تم التعديل بنجاح',
+                                                          14,
+                                                          purple),
+                                                      messageText: text(
+                                                          context,
+                                                          value,
+                                                          14,
+                                                          black,
+                                                          fontWeight:
+                                                          FontWeight.w200),
+                                                    ).show(context)
+                                                  }
+                                                })}
+                                                  : setState(() {
+                                                city == 'المدينة'
+                                                    ? citychosen = false
+                                                    : null;
+                                              },);
                                             },
                                             child: text(
                                                 context, 'اضافة', 14, black,
@@ -1338,44 +1660,115 @@ class _profileInformaionState extends State<profileInformaion>
                                     child: Center(
                                         child: InkWell(
                                             onTap: () {
-                                              _selectedTest4 == null &&
-                                                  gender == 'الجنس'
-                                                  ? setState(() {
-                                                genderChosen = false;
-                                              })
-                                                  : setState(() {
-                                                genderChosen = true;
-                                              });
-                                              _formKey.currentState!
-                                                  .validate() &&
-                                                  _formKey2.currentState ==
-                                                      null &&
-                                                  genderChosen == true
-                                                  ? updateInformation().then((
-                                                  value) =>
-                                              {
-                                                countryChanged
-                                                    ? setState(() {
-                                                  helper = 0;
-                                                  countryChanged = false;
-                                                  celebrities =
-                                                      fetchCelebrities(
-                                                          userToken!);
-                                                })
-                                                    : Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                      const MainScreen()),
-                                                ),
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                  Text(value),
-                                                ))
-                                              })
-                                                  : null;
-                                            },
+                    _selectedTest4 == null &&
+                    gender == 'الجنس'
+                    ? setState(() {
+                    genderChosen = false;
+                    })
+                        : setState(() {
+                    genderChosen = true;
+                    });
+                    _formKey.currentState!.validate() &&
+                    _formKey2.currentState == null &&
+                    genderChosen == true &&
+                    citychosen == true
+                    ?
+                    { loadingDialogue(context),
+                    updateInformation().then((value) =>
+                    {
+                    value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+
+                    Navigator.pop(context),
+                    Flushbar(
+                    flushbarPosition:
+                    FlushbarPosition.TOP,
+                    backgroundColor: white,
+                    margin:
+                    const EdgeInsets.all(5),
+                    flushbarStyle:
+                    FlushbarStyle.FLOATING,
+                    borderRadius:
+                    BorderRadius.circular(
+                    15.r),
+                    duration: const Duration(
+                    seconds: 5),
+                    icon: Padding(
+                    padding: const EdgeInsets.only(
+                    left: 18.0),
+                    child: Icon(
+                    error,
+                    color: red,
+                    size: 25.sp,
+                    ),
+                    ),
+                    titleText: text(
+                    context, 'قشل الاتصال بالانترنت', 14, purple),
+                    messageText: text(
+                    context,
+                    'قشل الاتصال بالانترنت حاول لاحقا',
+                    14,
+                    black,
+                    fontWeight:
+                    FontWeight.w200),
+                    ).show(context)
+                    }:    {
+                    Navigator.pop(context),
+                    countryChanged
+                    ? setState(() {
+                    helper = 0;
+                    countryChanged = false;
+                    celebrities =
+                    fetchCelebrities(
+                    userToken!);
+                    })
+                        : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) =>
+                    MainScreen()),
+                    ),
+                    Flushbar(
+                    flushbarPosition:
+                    FlushbarPosition.TOP,
+                    backgroundColor: white,
+                    margin:
+                    const EdgeInsets.all(5),
+                    flushbarStyle:
+                    FlushbarStyle.FLOATING,
+                    borderRadius:
+                    BorderRadius.circular(
+                    15.r),
+                    duration: const Duration(
+                    seconds: 5),
+                    icon: Padding(
+                    padding: const EdgeInsets.only(
+                    left: 18.0),
+                    child: Icon(
+                    done,
+                    color: green,
+                    size: 25.sp,
+                    ),
+                    ),
+                    titleText: text(
+                    context, 'تم التعديل بنجاح',
+                    14,
+                    purple),
+                    messageText: text(
+                    context,
+                    value,
+                    14,
+                    black,
+                    fontWeight:
+                    FontWeight.w200),
+                    ).show(context)
+                    }
+                    })}
+                        : setState(() {
+                    city == 'المدينة'
+                    ? citychosen = false
+                        : null;
+                    },);
+                    },
                                             child: text(
                                                 context, 'اضافة', 14, black,
                                                 align: TextAlign.center))),
@@ -1741,42 +2134,80 @@ class _profileInformaionState extends State<profileInformaion>
 //getCountries--------------------------------------------------------------------
 
   Future<CountryL> fetCountries() async {
-    final response = await http.get(
-      Uri.parse('https://mobile.celebrityads.net/api/countries'),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/countries'),
+      );
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
 
-      for (int i = 0; i < jsonDecode(response.body)['data'].length; i++) {
-        setState(() {
-          getid.putIfAbsent(
-              i, () => jsonDecode(response.body)['data'][i]['name']);
-        });
+        for (int i = 0; i < jsonDecode(response.body)['data'].length; i++) {
+          setState(() {
+            getid.putIfAbsent(
+                i, () => jsonDecode(response.body)['data'][i]['name']);
+          });
+        }
+        return CountryL.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
       }
-      return CountryL.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+    }catch (e) {
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 
   Future<CityL> fetCities(int countryId) async {
-    final response = await http.get(
-      Uri.parse('https://mobile.celebrityads.net/api/cities/$countryId'),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/cities/$countryId'),
+      );
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
 
-      return CityL.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        return CityL.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 
