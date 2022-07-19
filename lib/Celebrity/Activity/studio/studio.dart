@@ -7,6 +7,7 @@ import 'package:celepraty/Celebrity/Activity/studio/addVideo.dart';
 import 'package:celepraty/Celebrity/Activity/studio/addphoto.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,23 @@ class Studio extends StatefulWidget {
 
 class _StudioState extends State<Studio> {
 
+  final _baseUrl ='https://mobile.celebrityads.net/api/celebrity/studio';
+  int _page = 1;
+
+
+  // There is next page or not
+  bool _hasNextPage = true;
+
+  // Used to display loading indicators when _firstLoad function is running
+  bool _isFirstLoadRunning = false;
+
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunning = false;
+
+  // This holds the posts fetched from the server
+  List _posts = [];
+   ScrollController _controller = ScrollController();
+
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
@@ -33,347 +51,424 @@ class _StudioState extends State<Studio> {
   String? userToken;
   static const _actionTitles = ['Create Post', 'Upload Photo', 'Upload Video'];
 
+
+
+  void _loadMore() async {
+
+    print('#########################################################');
+    // Increase _page by 1
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false ) {
+
+        setState(() {
+          _isLoadMoreRunning =
+          true; // Display a progress indicator at the bottom
+        });
+        _page += 1;
+        try {
+          final res =
+          await http.get(Uri.parse("$_baseUrl?page=$_page"), headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $userToken'
+          });
+
+          if (TheStudio
+              .fromJson(jsonDecode(res.body))
+              .data!
+              .studio!
+              .isNotEmpty) {
+            setState(() {
+              _posts.clear();
+              _posts.addAll(TheStudio
+                  .fromJson(jsonDecode(res.body))
+                  .data!
+                  .studio!);
+            });
+          } else {
+            setState(() {
+              _hasNextPage = false;
+            });
+          }
+        } catch (err) {
+          if (kDebugMode) {
+            print('Something went wrong!');
+          }
+        }
+
+          setState(() {
+            _isLoadMoreRunning = false;
+          });
+        }
+  }
   @override
   void initState() {
+    super.initState();
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
-        getStudio = fetchStudio(userToken!);
-
+        fetchStudio();
+        _controller = ScrollController()..addListener(_loadMore);
       });
+
     });
-    super.initState();
+
+
   }
 
   @override
+  void dispose() {
+    _controller.removeListener(_loadMore);
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         floatingActionButton: addv || addp
             ? null
             : ExpandableFab(
-                distance: 80.0,
-                children: [
-                  ActionButton(
-                    onPressed: () => {
-                      setState(() {
-                        addv = true;
-                      })
-                    },
-                    icon: Icon(
-                      videoIcon,
-                      color: white,
-                    ),
-                    color: pink,
-                  ),
-                  ActionButton(
-                    onPressed: () => {
-                      setState(() {
-                        addp = true;
-                      })
-                    },
-                    icon: Icon(
-                      imageIcon,
-                      color: white,
-                    ),
-                    color: pink,
-                  ),
-                ],
+          distance: 80.0,
+          children: [
+            ActionButton(
+              onPressed: () =>
+              {
+                setState(() {
+                  addv = true;
+                })
+              },
+              icon: Icon(
+                videoIcon,
+                color: white,
               ),
+              color: pink,
+            ),
+            ActionButton(
+              onPressed: () =>
+              {
+                setState(() {
+                  addp = true;
+                })
+              },
+              icon: Icon(
+                imageIcon,
+                color: white,
+              ),
+              color: pink,
+            ),
+          ],
+        ),
         body: addp
             ? addphoto()
             : addv
-                ? addVideo()
-                : SingleChildScrollView(
-                    child: FutureBuilder<TheStudio>(
-                        future: getStudio,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: mainLoad(context));
-                          } else if (snapshot.connectionState ==
-                                  ConnectionState.active ||
-                              snapshot.connectionState ==
-                                  ConnectionState.done) {
-                            if (snapshot.hasError) {
-                              if (snapshot.error.toString() ==
-                                  'SocketException') {
-                                return Center(
-                                    child: SizedBox(
-                                        height: 500.h,
-                                        width: 250.w,
-                                        child: internetConnection(
-                                            context, reload: () {
-                                          setState(() {
-                                            getStudio = fetchStudio(userToken!);
-                                            isConnectSection = true;
-                                          });
-                                        })));
-                              } else {
-                                return const Center(
-                                    child: Text(
-                                        'حدث خطا ما اثناء استرجاع البيانات'));
-                              }
-                              //---------------------------------------------------------------------------
-                            } else if (snapshot.hasData) {
+            ? addVideo()
+            : SingleChildScrollView(
+          controller: _controller,
+          child: _isFirstLoadRunning
+              ? const Center(
+            child: const CircularProgressIndicator(),
+          )
+              : _posts.isEmpty ? Padding(
+            padding: EdgeInsets.only(top: getSize(context).height / 7),
+            child: Center(child: Column(
+              children: [
+                Image.asset(
+                  'assets/image/studio.png', height: 150.h, width: 150.w,),
+                text(context, 'لا توجد وسائط حاليا', 23, black),
+              ],
+            )),
+          ) : Column(
+            children: [
+              paddingg(
+                10,
+                10,
+                0,
+                 ListView.builder(
+                    controller: _controller,
+                    itemCount: _posts.length,
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    itemBuilder: (_, index) {
+                      return paddingg(
+                        5,
+                        5,
+                        5,
+                        SizedBox(
+                          height: 140.h,
+                          width: 270.w,
+                          child: Card(
+                            elevation: 5,
+                            color: white,
+                            child: paddingg(
+                              0,
+                              0,
+                              0,
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment
+                                    .spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      paddingg(
+                                        5,
+                                        2,
+                                        0,
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              bottom: 2.h, top: 2.h),
+                                          alignment: Alignment
+                                              .centerRight,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                2.0),
+                                            child: _posts[index].type! ==
+                                                "image" ? Image.network(
+                                              _posts[index].image!,
+                                              fit: BoxFit
+                                                  .fill,
+                                              height: double.infinity.h,
+                                              width: 125.w,
+                                            ) : Container(
+                                                height: double.infinity.h,
+                                                width: 100.w,
+                                                child: VideoPlayer(
+                                                    VideoPlayerController
+                                                        .network(
+                                                        _posts[index].image!)
+                                                      ..initialize())),
 
-                              return snapshot.data!.data!.studio!.isEmpty? Padding(
-                                padding: EdgeInsets.only(top:getSize(context).height/7),
-                                child: Center(child: Column(
-                                  children: [
-                                    Image.asset('assets/image/studio.png', height: 150.h, width: 150.w,),
-                                    text(context, 'لا توجد وسائط حاليا', 23, black),
-                                  ],
-                                )),
-                              ): SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    paddingg(
-                                      10,
-                                      10,
-                                      0,
-                                      Container(
-                                        child: ListView.builder(
-                                          itemCount: snapshot.data!.data!.studio!.length,
-                                          shrinkWrap: true,
-                                          physics: ScrollPhysics(),
-                                          itemBuilder: (context, index) {
-
-
-                                            return paddingg(
-                                              5,
-                                              5,
-                                              5,
-                                              SizedBox(
-                                                height: 140.h,
-                                                width: 270.w,
-                                                child: Card(
-                                                  elevation: 5,
-                                                  color: white,
-                                                  child: paddingg(
-                                                    0,
-                                                    0,
-                                                    0,
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            paddingg(
-                                                              5,
-                                                              2,
-                                                              0,
-                                                              Container(
-                                                                margin: EdgeInsets.only(bottom: 2.h, top: 2.h),
-                                                                alignment: Alignment
-                                                                    .centerRight,
-                                                                child: ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              2.0),
-                                                                  child: snapshot.data!.data!.studio![index].type! == "image"? Image.network(
-                                                                    snapshot.data!.data!.studio![index].image!,
-                                                                    fit: BoxFit
-                                                                        .fill,
-                                                                    height: double.infinity.h,
-                                                                    width: 125.w,
-                                                                  ): Container(height: double.infinity.h,
-                                                                      width: 100.w,child: VideoPlayer( VideoPlayerController.network(snapshot.data!.data!.studio![index].image!)..initialize())),
-
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(width:3.w,),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: 10.h,
-                                                                ),
-                                                                SingleChildScrollView(
-                                                                  child: Container(
-                                                                    width: 180.w,
-                                                                    height: 100.h,
-                                                                    child: text(
-                                                                        context,
-                                                                        snapshot.data!.data!.studio![index].description!,
-                                                                        14,
-                                                                        black),
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10.h,
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  bottom: 20.h,
-                                                                  left: 15.w),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 30.h,
-                                                              ),
-                                                              InkWell(
-                                                                child: Container(
-                                                                  child: Icon(
-                                                                    removeDiscount,
-                                                                    color: white,
-                                                                    size: 18,
-                                                                  ),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                  50),
-                                                                          gradient:
-                                                                              const LinearGradient(
-                                                                            begin: Alignment(
-                                                                                0.7,
-                                                                                2.0),
-                                                                            end: Alignment(
-                                                                                -0.69,
-                                                                                -1.0),
-                                                                            colors: [
-                                                                              Color(
-                                                                                  0xff0ab3d0),
-                                                                              Color(
-                                                                                  0xffe468ca)
-                                                                            ],
-                                                                            stops: [
-                                                                              0.0,
-                                                                              1.0
-                                                                            ],
-                                                                          )),
-                                                                  height: 28.h,
-                                                                  width: 32.w,
-                                                                ),
-                                                                onTap: (){
-                                                                  showDialog<String>(
-                                                                      context: context,
-                                                                      builder: (BuildContext context) =>
-                                                                      AlertDialog(
-                                                                    title: Directionality(
-                                                                        textDirection: TextDirection.rtl,
-                                                                        child: text(context, 'حذف من الاستديو', 16, black,)),
-                                                                    content: Directionality(
-                                                                        textDirection: TextDirection.rtl,
-                                                                        child: text(context, 'هل انت متأكد من انك تريد الحذف ؟', 14, black,)),
-                                                                    actions: <Widget>[
-                                                                      Padding(
-                                                                        padding:  EdgeInsets.only(top: 0.h,),
-                                                                        child: TextButton(
-                                                                            onPressed: () =>
-                                                                                Navigator.pop(
-                                                                                    context,
-                                                                                    'الغاء'),
-                                                                            child: text(context, 'الغاء', 15, purple)
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
-                                                                        child: TextButton(
-                                                                            onPressed: () => setState(() {
-                                                                              deleteStudio(snapshot.data!.data!.studio![index].id!);
-                                                                              Navigator.pop(
-                                                                                  context,
-                                                                                  'حذف');
-
-                                                                            }),
-                                                                            child: text(context, 'حذف', 15, purple)
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),);
-                                                                 },
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
+                                          ),
                                         ),
                                       ),
+                                      SizedBox(width: 3.w,),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                          SingleChildScrollView(
+                                            child: Container(
+                                              width: 180.w,
+                                              height: 100.h,
+                                              child: text(
+                                                  context,
+                                                  _posts[index].description!,
+                                                  14,
+                                                  black),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10.h,
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.only(
+                                        bottom: 20.h,
+                                        left: 15.w),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .center,
+                                      children: [
+                                        SizedBox(
+                                          height: 30.h,
+                                        ),
+                                        InkWell(
+                                          child: Container(
+                                            child: Icon(
+                                              removeDiscount,
+                                              color: white,
+                                              size: 18,
+                                            ),
+                                            decoration:
+                                            BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    50),
+                                                gradient:
+                                                const LinearGradient(
+                                                  begin: Alignment(
+                                                      0.7,
+                                                      2.0),
+                                                  end: Alignment(
+                                                      -0.69,
+                                                      -1.0),
+                                                  colors: [
+                                                    Color(
+                                                        0xff0ab3d0),
+                                                    Color(
+                                                        0xffe468ca)
+                                                  ],
+                                                  stops: [
+                                                    0.0,
+                                                    1.0
+                                                  ],
+                                                )),
+                                            height: 28.h,
+                                            width: 32.w,
+                                          ),
+                                          onTap: () {
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (
+                                                  BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Directionality(
+                                                        textDirection: TextDirection
+                                                            .rtl,
+                                                        child: text(context,
+                                                          'حذف من الاستديو',
+                                                          16, black,)),
+                                                    content: Directionality(
+                                                        textDirection: TextDirection
+                                                            .rtl,
+                                                        child: text(context,
+                                                          'هل انت متأكد من انك تريد الحذف ؟',
+                                                          14, black,)),
+                                                    actions: <Widget>[
+                                                      Padding(
+                                                        padding: EdgeInsets
+                                                            .only(top: 0.h,),
+                                                        child: TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'الغاء'),
+                                                            child: text(
+                                                                context,
+                                                                'الغاء', 15,
+                                                                purple)
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: EdgeInsets
+                                                            .only(bottom: 0.h,
+                                                            right: 0.w),
+                                                        child: TextButton(
+                                                            onPressed: () =>
+                                                                setState(() {
+                                                                  deleteStudio(
+                                                                      _posts[index]
+                                                                          .id!);
+                                                                  Navigator
+                                                                      .pop(
+                                                                      context,
+                                                                      'حذف');
+                                                                }),
+                                                            child: text(
+                                                                context,
+                                                                'حذف', 15,
+                                                                purple)
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),);
+                                          },
+                                        )
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              );
-                            } else {
-                              return const Center(child: Text('Empty data'));
-                            }
-                          } else {
-                            return Center(
-                                child:
-                                    Text('State: ${snapshot.connectionState}'));
-                          }
-                        }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
+
+              ),
+
+              if (_isLoadMoreRunning == true)
+                const Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 40),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+
+              // When nothing else to load
+              if (_hasNextPage == false)
+                Container(
+                  padding: const EdgeInsets.only(top: 30, bottom: 40),
+                  color: white,
+                  child: const Center(
+                    child: Text(''),
+                  ),
+                )
+            ],
+          ),
+
+
+        ),
+
+
       ),
+
     );
+
   }
 
-  Future<TheStudio> fetchStudio(String usertoken) async {
+void fetchStudio() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     try {
       final response = await http.get(
-          Uri.parse('https://mobile.celebrityads.net/api/celebrity/studio'),
+          Uri.parse('$_baseUrl?page=$_page'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer $usertoken'
+            'Authorization': 'Bearer $userToken'
           });
       if (response.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
+        setState(() {
+          _posts = TheStudio
+              .fromJson(jsonDecode(response.body))
+              .data!
+              .studio!;
+        });
         print(response.body);
-        return TheStudio.fromJson(jsonDecode(response.body));
+
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    }catch(e){
-      if (e is SocketException) {
-        setState(() {
-          isConnectSection = false;
-        });
-        return Future.error('SocketException');
-      } else if (e is TimeoutException) {
-        setState(() {
-          timeoutException = false;
-        });
-        return Future.error('TimeoutException');
-      } else {
-        setState(() {
-          serverExceptions = false;
-        });
-        return Future.error('serverExceptions');
+    }catch (err) {
+      if (kDebugMode) {
+        print('first load Something went wrong');
       }
     }
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
+
   }
+
+
+
   Future<http.Response> deleteStudio(int id) async {
     String token2 =
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWVjZjA0OGYxODVkOGZjYjQ5YTI3ZTgyYjQxYjBmNTg3OTMwYTA3NDY3YTc3ZjQwOGZlYWFmNjliNGYxMDQ4ZjEzMjgxMWU4MWNhMDJlNjYiLCJpYXQiOjE2NTAxOTc4MTIuNjUzNTQ5OTA5NTkxNjc0ODA0Njg3NSwibmJmIjoxNjUwMTk3ODEyLjY1MzU1MzAwOTAzMzIwMzEyNSwiZXhwIjoxNjgxNzMzODEyLjY0Mzg2NjA2MjE2NDMwNjY0MDYyNSwic3ViIjoiMTEiLCJzY29wZXMiOltdfQ.toMOLVGTbNRcIqD801Xs3gJujhMvisCzAHHQC_P8UYp3lmzlG3rwadB4M0rooMIVt82AB2CyZfT37tVVWrjAgNq4diKayoQC5wPT7QQrAp5MERuTTM7zH2n3anZh7uargXP1Mxz3X9PzzTRSvojDlfCMsX1PrTLAs0fGQOVVa-u3lkaKpWkVVa1lls0S755KhZXCAt1lKBNcm7GHF657QCh4_daSEOt4WSF4yq-F6i2sJH-oMaYndass7HMj05wT9Z2KkeIFcZ21ZEAKNstraKUfLzwLr2_buHFNmnziJPG1qFDgHLOUo6Omdw3f0ciPLiLD7FnCrqo_zRZQw9V_tPb1-o8MEZJmAH2dfQWQBey4zZgUiScAwZAiPNcTPBWXmSGQHxYVjubKzN18tq-w1EPxgFJ43sRRuIUHNU15rhMio_prjwqM9M061IzYWgzl3LW1NfckIP65l5tmFOMSgGaPDk18ikJNmxWxpFeBamL6tTsct7-BkEuYEU6GEP5D1L-uwu8GGI_T6f0VSW9sal_5Zo0lEsUuR2nO1yrSF8ppooEkFHlPJF25rlezmaUm0MIicaekbjwKdja5J5ZgNacpoAnoXe4arklcR6djnj_bRcxhWiYa-0GSITGvoWLcbc90G32BBe2Pz3RyoaiHkAYA_BNA_0qmjAYJMwB_e8U';
@@ -388,7 +483,7 @@ class _StudioState extends State<Studio> {
     );
 
     setState(() {
-      getStudio = fetchStudio(userToken!);
+      fetchStudio();
     });
     return response;
   }
