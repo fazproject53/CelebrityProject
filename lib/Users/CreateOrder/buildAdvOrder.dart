@@ -34,10 +34,13 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
   final _formKey2 = GlobalKey<FormState>();
   final _formKey3 = GlobalKey<FormState>();
 
+  bool ActiveConnection = false;
+  String T = "";
   int? celebrityId;
   int current = 0;
   bool isCompleted = false;
   bool platformChosen = true;
+  bool redo =false;
   final TextEditingController subject = new TextEditingController();
   final TextEditingController desc = new TextEditingController();
   final TextEditingController pageLink = new TextEditingController();
@@ -197,11 +200,12 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       ww = getSize(context).width;
     });
 
+    CheckUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: isCompleted ? null : drowAppBar('انشاء طلب اعلان', context),
-        body:Stepper(
+        body:ActiveConnection?Stepper(
                 margin: EdgeInsets.symmetric(horizontal: 24),
                 steps: getSteps(),
                 type: StepperType.horizontal,
@@ -333,7 +337,15 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                     ],
                   );
                 },
-              ),
+              ):Center(
+            child: SizedBox(
+                height: 300.h,
+                width: 250.w,
+                child: internetConnection(
+                    context, reload: () {
+                  CheckUserConnection();
+                  ActiveConnection? setState((){redo == true;}):null;
+                })))
       ),
     );
   }
@@ -516,7 +528,9 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                             ConnectionState.active ||
                         snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
-                        return Center(child: Text(snapshot.error.toString()));
+                          countries = fetCountries();
+
+                        return SizedBox();
                         //---------------------------------------------------------------------------
                       } else if (snapshot.hasData) {
                         _dropdownTestItems3.isEmpty
@@ -604,7 +618,8 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                             ConnectionState.active ||
                         snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
-                        return Center(child: Text(snapshot.error.toString()));
+                          categories = fetCategories();
+                        return SizedBox();
                         //---------------------------------------------------------------------------
                       } else if (snapshot.hasData) {
                         _dropdownTestItems2.isEmpty
@@ -694,7 +709,9 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
     ConnectionState.active ||
     snapshot.connectionState == ConnectionState.done) {
     if (snapshot.hasError) {
-    return Center(child: Text(snapshot.error.toString()));
+        budgets = fetchBudget();
+
+      return SizedBox();
     //---------------------------------------------------------------------------
     } else if (snapshot.hasData) {
     _dropdownTestItems.isEmpty
@@ -1633,7 +1650,22 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       ),
     );
   }
-
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
   buildCompleted(context) {
    goTopagepush(context, MainScreen());
   }
