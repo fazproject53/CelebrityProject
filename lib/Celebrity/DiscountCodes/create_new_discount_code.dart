@@ -740,10 +740,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                                                 messageText: text(context, 'تم حفظ التغيرات بنجاح', 14, black, fontWeight: FontWeight.w200),
                                                                               ).show(context),
                                                                             })
-                                                                : createNewDiscountCode(
-                                                                        userToken!)
-                                                                    .whenComplete(
-                                                                        () => {
+                                                                : createNewDiscountCode(userToken!).whenComplete(() => {
                                                                               print('save'),
                                                                               Flushbar(
                                                                                 flushbarPosition: FlushbarPosition.TOP,
@@ -760,19 +757,10 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                                                 titleText: text(context, 'تم', 16, purple),
                                                                                 messageText: text(context, 'تم الحفظ بنجاح', 14, black, fontWeight: FontWeight.w200),
                                                                               ).show(context),
-                                                                            }),
-                                                            goToPagePushRefresh(
-                                                                context,
-                                                                DiscountCodes(),
-                                                                then: (value) {
-                                                              setState(() {
-                                                                fetchDiscountCode(
-                                                                    userToken!);
-                                                              });
-                                                            }),
+                                                                            }
+                                                                            ),
                                                           }
-                                                        else
-                                                          {
+                                                        else {
                                                             ///these text fields and is required
                                                             setState(() {
                                                               isCheck = true;

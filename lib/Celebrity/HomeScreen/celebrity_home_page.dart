@@ -16,7 +16,6 @@ import 'package:video_player/video_player.dart';
 import '../../ModelAPI/CelebrityScreenAPI.dart';
 import '../../Models/Methods/classes/GradientIcon.dart';
 
-import '../../celebrity/Activity/studio/studio.dart';
 import '../orders/advArea.dart';
 import '../orders/advForm.dart';
 import '../orders/gifttingForm.dart';
@@ -35,8 +34,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
   bool isSelect = false;
   Future<introModel>? celebrityHome;
 
+
   ///list of string to store the advertising area images
   List<String> advImage = [];
+
   ///---------------------------------------------------------------------------
   ///Pagination Variable Section News
   int page = 1;
@@ -52,9 +53,22 @@ class _CelebrityHomeState extends State<CelebrityHome>
   //This holds the news fetched from the server
   List _news = [];
   ScrollController scrollController = ScrollController();
+
   ///---------------------------------------------------------------------------
+  ///Pagination Variable Section Studio
+  int pageStudio = 1;
+  // There is next page or not
+  bool _hasNextPageStudio = true;
 
+  // Used to display loading indicators when _firstLoad function is running
+  bool _isFirstLoadRunningStudio = false;
 
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunningStudio = false;
+
+  //This holds the news fetched from the server
+  List _studio = [];
+  ScrollController scrollControllerStudio = ScrollController();
 
   ///This function will be called when the app launches
   void _firstLoadNews(String pageUrl) async {
@@ -62,7 +76,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
       _isFirstLoadRunning = true;
     });
     try {
-      final res = await http.get(Uri.parse("https://mobile.celebrityads.net/api/celebrity-page/$pageUrl?page=$page"));
+      final res = await http.get(Uri.parse(
+          "https://mobile.celebrityads.net/api/celebrity-page/$pageUrl?page=$page"));
       introModel newsModel = introModel.fromJson(jsonDecode(res.body));
       var newNews = newsModel.data!.news;
       setState(() {
@@ -89,7 +104,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
       });
       page += 1; // Increase _page by 1
       try {
-        final res = await http.get(Uri.parse("https://mobile.celebrityads.net/api/celebrity-page/${widget.pageUrl}?page=$page"));
+        final res = await http.get(Uri.parse(
+            "https://mobile.celebrityads.net/api/celebrity-page/${widget.pageUrl}?page=$page"));
         introModel newsModel = introModel.fromJson(jsonDecode(res.body));
         final List<News> fetchedNews = newsModel.data!.news!;
         if (fetchedNews.isNotEmpty) {
@@ -115,19 +131,82 @@ class _CelebrityHomeState extends State<CelebrityHome>
     }
   }
 
+  ///This function will be called when the app launches
+  void _firstLoadStudio(String pageUrl) async {
+    setState(() {
+      _isFirstLoadRunningStudio = true;
+    });
+    try {
+      final res = await http.get(Uri.parse(
+          "https://mobile.celebrityads.net/api/celebrity-page-studio/$pageUrl?page=$pageStudio"));
+      introModel studioModel = introModel.fromJson(jsonDecode(res.body));
+      var newStudio = studioModel.data!.studio;
+      setState(() {
+        _studio = newStudio as List;
+        print('Studio is $_studio');
+      });
+    } catch (err) {
+      if (kDebugMode) {
+        print('first load Something went wrong newStudio');
+      }
+    }
+    setState(() {
+      _isFirstLoadRunningStudio = false;
+    });
+  }
 
+  ///LoadMore Function will be triggered whenever the user scroll
+  void _loadMoreStudio() async {
+    if (_hasNextPageStudio == true &&
+        _isFirstLoadRunningStudio == false &&
+        _isLoadMoreRunningStudio == false &&
+        scrollControllerStudio.position.extentAfter < 300) {
+      setState(() {
+        _isLoadMoreRunningStudio = true; // Display a progress indicator at the bottom
+      });
+      pageStudio += 1; // Increase _page by 1
+      try {
+        final res = await http.get(Uri.parse(
+            "https://mobile.celebrityads.net/api/celebrity-page/${widget.pageUrl}?page=$pageStudio"));
+        introModel newsModelStudio = introModel.fromJson(jsonDecode(res.body));
+        final List<Studio> fetchedStudio = newsModelStudio.data!.studio!;
+        if (fetchedStudio.isNotEmpty) {
+          setState(() {
+            _studio.addAll(fetchedStudio);
+          });
+        } else {
+          // This means there is no more data
+          // and therefore, we will not send another GET request
+          setState(() {
+            _hasNextPageStudio = false;
+          });
+        }
+      } catch (err) {
+        if (kDebugMode) {
+          print('Something went wrong!777777777');
+        }
+      }
+
+      setState(() {
+        _isLoadMoreRunningStudio = false;
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
     celebrityHome = getSectionsData(widget.pageUrl!);
 
     _firstLoadNews(widget.pageUrl!);
+    _firstLoadStudio(widget.pageUrl!);
     scrollController = ScrollController()..addListener(_loadMoreNews);
+    scrollControllerStudio = ScrollController()..addListener(_loadMoreStudio);
   }
 
   @override
   void dispose() {
     scrollController.removeListener(_loadMoreNews);
+    scrollControllerStudio.removeListener(_loadMoreStudio);
     super.dispose();
   }
 
@@ -158,281 +237,226 @@ class _CelebrityHomeState extends State<CelebrityHome>
       textDirection: TextDirection.rtl,
       child: Scaffold(
         body: SingleChildScrollView(
-            child: FutureBuilder<introModel>(
-                future: celebrityHome,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: mainLoad(context));
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.active ||
-                      snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      //throw snapshot.error.toString();
-                      return Center(child: Text(snapshot.error.toString()));
-                      //---------------------------------------------------------------------------
-                    } else if (snapshot.hasData) {
-                      ///get the adv image from API and store it inside th list
-
-                      for (int i = 0;
-                          i < snapshot.data!.data!.adSpaceOrders!.length;
-                          i++) {
-                        advImage.contains(
-                                snapshot.data!.data!.adSpaceOrders![i].image!)
-                            ? null
-                            : advImage.add(
-                                snapshot.data!.data!.adSpaceOrders![i].image!);
-                      }
-                      return Column(
-                        children: [
-                          ///Stack for image and there information
-                          Column(
-                            children: [
-                              Stack(
-                                children: [
-                                  Container(
-                                    width: 500.w,
-                                    height: 400.h,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                              snapshot.data!.data!.celebrity!
-                                                  .image!,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            colorFilter: const ColorFilter.mode(
-                                                Colors.black54,
-                                                BlendMode.darken))),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(top: 30.h, right: 20.w),
-                                    child: Row(
-                                      children: [
-                                        ///back icon to the main screen
-                                        IconButton(
-                                          icon:
-                                              const Icon(Icons.arrow_back_ios),
-                                          color: white,
-                                          iconSize: 30,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Column(
+          child: FutureBuilder<introModel>(
+              future: celebrityHome,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: mainLoad(context));
+                } else if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    //throw snapshot.error.toString();
+                    return Center(child: Text(snapshot.error.toString()));
+                    //---------------------------------------------------------------------------
+                  } else if (snapshot.hasData) {
+                    ///get the adv image from API and store it inside th list
+                    for (int i = 0;
+                        i < snapshot.data!.data!.adSpaceOrders!.length;
+                        i++) {
+                      advImage.contains(
+                              snapshot.data!.data!.adSpaceOrders![i].image!)
+                          ? null
+                          : advImage.add(
+                              snapshot.data!.data!.adSpaceOrders![i].image!);
+                    }
+                    return Column(
+                      children: [
+                        ///Stack for image and there information
+                        Column(
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  width: 500.w,
+                                  height: 400.h,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                            snapshot
+                                                .data!.data!.celebrity!.image!,
+                                          ),
+                                          fit: BoxFit.cover,
+                                          colorFilter: const ColorFilter.mode(
+                                              Colors.black54,
+                                              BlendMode.darken))),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(top: 30.h, right: 20.w),
+                                  child: Row(
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 165.h, right: 25.w),
-                                        child: Row(children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 5.h),
-                                            child: Icon(
-                                              verified,
-                                              color: blue.withOpacity(0.6),
-                                              size: 27,
-                                            ),
+                                      ///back icon to the main screen
+                                      IconButton(
+                                        icon: const Icon(Icons.arrow_back_ios),
+                                        color: white,
+                                        iconSize: 30,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 165.h, right: 25.w),
+                                      child: Row(children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 5.h),
+                                          child: Icon(
+                                            verified,
+                                            color: blue.withOpacity(0.6),
+                                            size: 27,
+                                          ),
+                                        ),
+
+                                        ///SizedBox
+                                        SizedBox(
+                                          width: 6.w,
+                                        ),
+                                        text(
+                                            context,
+                                            snapshot
+                                                .data!.data!.celebrity!.name!,
+                                            35,
+                                            white,
+                                            fontWeight: FontWeight.bold),
+                                      ]),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 25.w),
+                                      child: Row(
+                                        children: [
+                                          text(
+                                              context,
+                                              snapshot.data!.data!.celebrity!
+                                                  .category!.name!,
+                                              14,
+                                              white),
+
+                                          ///SizedBox
+                                          SizedBox(
+                                            width: 7.w,
+                                          ),
+                                          CircleAvatar(
+                                            backgroundImage: Image.network(
+                                                    snapshot
+                                                        .data!
+                                                        .data!
+                                                        .celebrity!
+                                                        .country!
+                                                        .flag!)
+                                                .image,
+                                            radius: 10.r,
                                           ),
 
                                           ///SizedBox
                                           SizedBox(
-                                            width: 6.w,
+                                            width: 7.w,
                                           ),
                                           text(
                                               context,
-                                              snapshot
-                                                  .data!.data!.celebrity!.name!,
-                                              35,
-                                              white,
-                                              fontWeight: FontWeight.bold),
-                                        ]),
+                                              snapshot.data!.data!.celebrity!
+                                                  .country!.name!,
+                                              14,
+                                              white),
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 25.w),
-                                        child: Row(
-                                          children: [
-                                            text(
-                                                context,
-                                                snapshot.data!.data!.celebrity!
-                                                    .category!.name!,
-                                                14,
-                                                white),
-
-                                            ///SizedBox
-                                            SizedBox(
-                                              width: 7.w,
-                                            ),
-                                            CircleAvatar(
-                                              backgroundImage: Image.network(
-                                                      snapshot
-                                                          .data!
-                                                          .data!
-                                                          .celebrity!
-                                                          .country!
-                                                          .flag!)
-                                                  .image,
-                                              radius: 10.r,
-                                            ),
-
-                                            ///SizedBox
-                                            SizedBox(
-                                              width: 7.w,
-                                            ),
-                                            text(
-                                                context,
-                                                snapshot.data!.data!.celebrity!
-                                                    .country!.name!,
-                                                14,
-                                                white),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 12.h, right: 25.w, left: 25.w),
-                                        child: text(
-                                            context,
-                                            snapshot.data!.data!.celebrity!
-                                                .description!,
-                                            14,
-                                            white.withOpacity(0.7),
-                                            align: TextAlign.justify),
-                                      ),
-                                      Container(
-                                          alignment: Alignment.centerRight,
-                                          margin: EdgeInsets.only(right: 25.w),
-                                          child: InkWell(
-                                              onTap: () {
-                                                showDialogFunc(
-                                                    context,
-                                                    '',
-                                                    snapshot
-                                                        .data!
-                                                        .data!
-                                                        .celebrity!
-                                                        .advertisingPolicy!,
-                                                    snapshot
-                                                        .data!
-                                                        .data!
-                                                        .celebrity!
-                                                        .giftingPolicy!,
-                                                    snapshot
-                                                        .data!
-                                                        .data!
-                                                        .celebrity!
-                                                        .adSpacePolicy!);
-                                              },
-                                              child: text(
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 12.h, right: 25.w, left: 25.w),
+                                      child: text(
+                                          context,
+                                          snapshot.data!.data!.celebrity!
+                                              .description!,
+                                          14,
+                                          white.withOpacity(0.7),
+                                          align: TextAlign.justify),
+                                    ),
+                                    Container(
+                                        alignment: Alignment.centerRight,
+                                        margin: EdgeInsets.only(right: 25.w),
+                                        child: InkWell(
+                                            onTap: () {
+                                              showDialogFunc(
                                                   context,
-                                                  'سياسة التعامل مع ' +
-                                                      snapshot.data!.data!
-                                                          .celebrity!.name!,
-                                                  16,
-                                                  purple))),
+                                                  '',
+                                                  snapshot
+                                                      .data!
+                                                      .data!
+                                                      .celebrity!
+                                                      .advertisingPolicy!,
+                                                  snapshot
+                                                      .data!
+                                                      .data!
+                                                      .celebrity!
+                                                      .giftingPolicy!,
+                                                  snapshot
+                                                      .data!
+                                                      .data!
+                                                      .celebrity!
+                                                      .adSpacePolicy!);
+                                            },
+                                            child: text(
+                                                context,
+                                                'سياسة التعامل مع ' +
+                                                    snapshot.data!.data!
+                                                        .celebrity!.name!,
+                                                16,
+                                                purple))),
 
-                                      ///SizedBox
-                                      SizedBox(
-                                        height: 10.h,
-                                      ),
+                                    ///SizedBox
+                                    SizedBox(
+                                      height: 10.h,
+                                    ),
 
-                                      ///Social media icons
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 25.w),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 8.w),
-                                              child: SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child: InkWell(
-                                                  child: Image.asset(
-                                                    'assets/image/icon- faceboock.png',
-                                                  ),
-                                                  onTap: () async {
-                                                    var url = snapshot
-                                                        .data!
-                                                        .data!
-                                                        .celebrity!
-                                                        .facebook!;
-                                                    if (url == "") {
-                                                      ///Do nothing
-                                                    } else {
-                                                      await launch(url,
-                                                          forceWebView: true);
-                                                    }
-                                                  },
+                                    ///Social media icons
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 25.w),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 8.w),
+                                            child: SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child: InkWell(
+                                                child: Image.asset(
+                                                  'assets/image/icon- faceboock.png',
                                                 ),
+                                                onTap: () async {
+                                                  var url = snapshot.data!.data!
+                                                      .celebrity!.facebook!;
+                                                  if (url == "") {
+                                                    ///Do nothing
+                                                  } else {
+                                                    await launch(url,
+                                                        forceWebView: true);
+                                                  }
+                                                },
                                               ),
                                             ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 8.w),
-                                              child: SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child: InkWell(
-                                                    child: Image.asset(
-                                                      'assets/image/icon- insta.png',
-                                                    ),
-                                                    onTap: () async {
-                                                      var url = snapshot
-                                                          .data!
-                                                          .data!
-                                                          .celebrity!
-                                                          .instagram!;
-                                                      if (url == "") {
-                                                        ///Do nothing
-                                                      } else {
-                                                        await launch(url,
-                                                            forceWebView: true);
-                                                      }
-                                                    }),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 8.w),
-                                              child: SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child: InkWell(
-                                                    child: Image.asset(
-                                                      'assets/image/icon- snapchat.png',
-                                                    ),
-                                                    onTap: () async {
-                                                      var url = snapshot
-                                                          .data!
-                                                          .data!
-                                                          .celebrity!
-                                                          .snapchat!;
-                                                      if (url == "") {
-                                                        ///Do nothing
-                                                      } else {
-                                                        await launch(url,
-                                                            forceWebView: true);
-                                                      }
-                                                    }),
-                                              ),
-                                            ),
-                                            SizedBox(
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 8.w),
+                                            child: SizedBox(
                                               width: 30,
                                               height: 30,
                                               child: InkWell(
                                                   child: Image.asset(
-                                                    'assets/image/icon- twitter.png',
+                                                    'assets/image/icon- insta.png',
                                                   ),
                                                   onTap: () async {
                                                     var url = snapshot
                                                         .data!
                                                         .data!
                                                         .celebrity!
-                                                        .twitter!;
+                                                        .instagram!;
                                                     if (url == "") {
                                                       ///Do nothing
                                                     } else {
@@ -441,361 +465,398 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                     }
                                                   }),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(left: 8.w),
+                                            child: SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child: InkWell(
+                                                  child: Image.asset(
+                                                    'assets/image/icon- snapchat.png',
+                                                  ),
+                                                  onTap: () async {
+                                                    var url = snapshot
+                                                        .data!
+                                                        .data!
+                                                        .celebrity!
+                                                        .snapchat!;
+                                                    if (url == "") {
+                                                      ///Do nothing
+                                                    } else {
+                                                      await launch(url,
+                                                          forceWebView: true);
+                                                    }
+                                                  }),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 30,
+                                            height: 30,
+                                            child: InkWell(
+                                                child: Image.asset(
+                                                  'assets/image/icon- twitter.png',
+                                                ),
+                                                onTap: () async {
+                                                  var url = snapshot.data!.data!
+                                                      .celebrity!.twitter!;
+                                                  if (url == "") {
+                                                    ///Do nothing
+                                                  } else {
+                                                    await launch(url,
+                                                        forceWebView: true);
+                                                  }
+                                                }),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-
-                          ///SizedBox
-                          SizedBox(
-                            height: 10.h,
-                          ),
-
-                          ///horizontal listView for news
-                          _isFirstLoadRunning
-                              ? CircularProgressIndicator() : Visibility(
-                            visible: _news.isEmpty ? false : true,
-                                child: SizedBox(
-                                    height: 60.h,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      controller: scrollController,
-                                      itemCount: _news.length,
-                                      itemBuilder: (_, index) => Row(children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(right: 8.w),
-                                            child: Container(
-                                              height: 70.h,
-                                              width: 208.w,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(50.r),
-                                                  bottomRight:
-                                                      Radius.circular(50.r),
-                                                  topLeft: Radius.circular(15.r),
-                                                  bottomLeft:
-                                                      Radius.circular(15.r),
-                                                ),
-                                                gradient: const LinearGradient(
-                                                  begin: Alignment(0.7, 2.0),
-                                                  end: Alignment(-0.69, -1.0),
-                                                  colors: [
-                                                    Color(0xff0ab3d0),
-                                                    Color(0xffe468ca)
-                                                  ],
-                                                  stops: [0.0, 1.0],
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.only(right: 8.w),
-                                                child: Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      backgroundImage:
-                                                      Image.network(snapshot
-                                                          .data!
-                                                          .data!
-                                                          .celebrity!
-                                                          .image!)
-                                                          .image,
-                                                      radius: 30.r,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10.w,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 70.h,
-                                                      width: 110.w,
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                        children: [
-                                                          text(
-                                                            context,
-                                                            _news[index].description,
-                                                            11,
-                                                            white,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ))
-                                      ]),
                                     ),
-                                  ),
-                              ),
-                          // when the _loadMore function is running
-                          if (_isLoadMoreRunning == true)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10, bottom: 40),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-
-                          // When nothing else to load
-                          if (_hasNextPage == false)
-                            Container(
-                              padding:
-                                  const EdgeInsets.only(top: 30, bottom: 40),
-                              color: Colors.amber,
-                              child: const Center(
-                                child:
-                                    Text('You have fetched all of the content'),
-                              ),
-                            ),
-
-                          ///SizedBox
-                          SizedBox(
-                            height: 5.h,
-                          ),
-
-                          Visibility(
-                            visible: advImage.isEmpty ? false : true,
-                            child: Container(
-                                margin:
-                                    EdgeInsets.only(right: 10.w, left: 10.w),
-                                height: 150.h,
-                                decoration: BoxDecoration(
-                                    color: black,
-                                    borderRadius: BorderRadius.circular(7.r)),
-                                child: imageSlider(advImage)),
-                          ),
-
-                          SizedBox(
-                            height: 20.h,
-                          ),
-
-                          ///Container for celebrity store
-                          Container(
-                            margin: EdgeInsets.only(right: 10.w, left: 10.w),
-                            height: 90.h,
-                            width: 440.w,
-                            decoration: BoxDecoration(
-                                color: black,
-                                borderRadius: BorderRadius.circular(7.r)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(right: 10.w),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      text(context, 'قم بزيارة المتجر الان', 12,
-                                          white),
-                                      text(context, 'المتجر الخاص بمروان بابلو',
-                                          16, white),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 15.w),
-                                  child: InkWell(
-                                    child: gradientContainerNoborder2(
-                                        90,
-                                        30,
-                                        text(context, 'زيارة المتجر', 15, white,
-                                            align: TextAlign.center)),
-                                    onTap: () {
-                                      snapshot.data!.data!.celebrity!.brand!;
-                                    },
-                                  ),
-                                ),
+                                  ],
+                                )
                               ],
                             ),
-                          ),
+                          ],
+                        ),
 
-                          SizedBox(
-                            height: 10.h,
-                          ),
+                        ///SizedBox
+                        SizedBox(
+                          height: 20.h,
+                        ),
 
-                          ///studio
-                          Visibility(
-                            visible: snapshot.data!.data!.studio!.isEmpty
-                                ? false
-                                : true,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 10.w, left: 10.w),
-                              child: SizedBox(
-                                height: 350.h,
-                                width: 400.w,
-                                child: GridView.builder(
-                                  itemCount:
-                                      snapshot.data!.data!.studio!.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2, //عدد العناصر في كل صف
-                                    crossAxisSpacing: 15.h, // المسافات الراسية
-                                    childAspectRatio: 0.90, //حجم العناصر
-                                    mainAxisSpacing: 5.w,
-                                  ),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, i) {
-                                    ///play the celebrity video
-                                    return Card(
-                                      elevation: 10,
-                                      child: Stack(
-                                        children: [
-                                          snapshot.data!.data!.studio![i]
-                                                      .type! ==
-                                                  "image"
-                                              ? InkWell(
-                                                  child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4.r)),
-                                                          image:
-                                                              DecorationImage(
-                                                            image: NetworkImage(
-                                                              snapshot
-                                                                  .data!
-                                                                  .data!
-                                                                  .studio![i]
-                                                                  .image!,
-                                                            ),
-                                                            fit: BoxFit.cover,
-                                                          ))),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    ImageData(
-                                                                      image: snapshot
-                                                                          .data!
-                                                                          .data!
-                                                                          .studio![
-                                                                              i]
-                                                                          .image!,
-                                                                    )));
-                                                  },
-                                                )
-                                              : Stack(
-                                                  children: [
-                                                    ///Video
-                                                    VideoPlayer(
-                                                        VideoPlayerController
-                                                            .network(snapshot
+                        ///horizontal listView for news
+                        _isFirstLoadRunning
+                            ? mainLoad(context)
+                            : Visibility(
+                                visible: _news.isEmpty ? false : true,
+                                child: SizedBox(
+                                  height: 60.h,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    controller: scrollController,
+                                    itemCount: _news.length,
+                                    itemBuilder: (_, index) => Row(children: [
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 8.w),
+                                          child: Container(
+                                            height: 70.h,
+                                            width: 208.w,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(50.r),
+                                                bottomRight:
+                                                    Radius.circular(50.r),
+                                                topLeft: Radius.circular(15.r),
+                                                bottomLeft:
+                                                    Radius.circular(15.r),
+                                              ),
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.7, 2.0),
+                                                end: Alignment(-0.69, -1.0),
+                                                colors: [
+                                                  Color(0xff0ab3d0),
+                                                  Color(0xffe468ca)
+                                                ],
+                                                stops: [0.0, 1.0],
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 8.w),
+                                              child: Row(
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundImage:
+                                                        Image.network(snapshot
                                                                 .data!
                                                                 .data!
-                                                                .studio![i]
+                                                                .celebrity!
                                                                 .image!)
-                                                          ..initialize()),
-
-                                                    ///Play Icon
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
+                                                            .image,
+                                                    radius: 30.r,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10.w,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 70.h,
+                                                    width: 110.w,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
                                                               .center,
                                                       children: [
-                                                        ///play video
-                                                        Expanded(
-                                                          flex: 1,
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 10.h,
-                                                                    right:
-                                                                        55.w),
-                                                            child: IconButton(
-                                                              onPressed: () {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder: (context) =>
-                                                                            viewData(
-                                                                              video: snapshot.data!.data!.studio![i].image!,
-                                                                            )));
-                                                                print('Tap it');
-                                                              },
-                                                              icon: GradientIcon(
-                                                                  playViduo,
-                                                                  40.sp,
-                                                                  const LinearGradient(
-                                                                    begin:
-                                                                        Alignment(
-                                                                            0.7,
-                                                                            2.0),
-                                                                    end: Alignment(
-                                                                        -0.69,
-                                                                        -1.0),
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xff0ab3d0),
-                                                                      Color(
-                                                                          0xffe468ca)
-                                                                    ],
-                                                                    stops: [
-                                                                      0.0,
-                                                                      1.0
-                                                                    ],
-                                                                  )),
-                                                            ),
-                                                          ),
+                                                        text(
+                                                          context,
+                                                          _news[index]
+                                                              .description,
+                                                          11,
+                                                          white,
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                )
-                                        ],
-                                      ),
-                                    );
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ))
+                                    ]),
+                                  ),
+                                ),
+                              ),
+                        // when the _loadMore function is running
+                        if (_isLoadMoreRunning == true)
+                           //mainLoad(context),
+
+                        // When nothing else to load
+                        if (_hasNextPage == false)
+                          SizedBox(),
+
+                        ///SizedBox
+                        SizedBox(
+                          height: 20.h,
+                        ),
+
+                        Visibility(
+                          visible: advImage.isEmpty ? false : true,
+                          child: Container(
+                              margin: EdgeInsets.only(right: 10.w, left: 10.w),
+                              height: 150.h,
+                              decoration: BoxDecoration(
+                                  color: black,
+                                  borderRadius: BorderRadius.circular(7.r)),
+                              child: imageSlider(advImage)),
+                        ),
+
+                        SizedBox(
+                          height: 20.h,
+                        ),
+
+                        ///Container for celebrity store
+                        Container(
+                          margin: EdgeInsets.only(right: 10.w, left: 10.w),
+                          height: 90.h,
+                          width: 440.w,
+                          decoration: BoxDecoration(
+                              color: black,
+                              borderRadius: BorderRadius.circular(7.r)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 10.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    text(context, 'قم بزيارة المتجر الان', 12,
+                                        white),
+                                    text(context, 'المتجر الخاص بمروان بابلو',
+                                        16, white),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 15.w),
+                                child: InkWell(
+                                  child: gradientContainerNoborder2(
+                                      90,
+                                      30,
+                                      text(context, 'زيارة المتجر', 15, white,
+                                          align: TextAlign.center)),
+                                  onTap: () {
+                                    snapshot.data!.data!.celebrity!.brand!;
                                   },
                                 ),
                               ),
-                            ),
+                            ],
                           ),
+                        ),
 
-                          SizedBox(
-                            height: 10.h,
-                          ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
 
-                          padding(
-                            15,
-                            15,
-                            gradientContainerNoborder(
-                                getSize(context).width,
-                                buttoms(context, 'اطلب حالا', 20, white, () {
-                                  showBottomSheett(
-                                      context,
-                                      bottomSheetMenu(
-                                          snapshot.data!.data!.celebrity!.id!
-                                              .toString(),
-                                          snapshot
-                                              .data!.data!.celebrity!.image!,
-                                          snapshot.data!.data!.celebrity!.name!
-                                              .toString()));
-                                })),
-                          ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Center(child: Text('No info to show!!'));
-                    }
+                        ///studio
+                        _isFirstLoadRunningStudio
+                            ? CircularProgressIndicator()
+                            : Visibility(
+                                visible: _studio.isEmpty ? false : true,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(right: 10.w, left: 10.w),
+                                  child: SizedBox(
+                                    height: 350.h,
+                                    width: 400.w,
+                                    child: GridView.builder(
+                                      itemCount: _studio.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2, //عدد العناصر في كل صف
+                                        crossAxisSpacing: 15.h, // المسافات الراسية
+                                        childAspectRatio: 0.90, //حجم العناصر
+                                        mainAxisSpacing: 5.w,
+                                      ),
+                                      scrollDirection: Axis.horizontal,
+                                      controller: scrollControllerStudio,
+                                      itemBuilder: (context, i) {
+                                        ///play the celebrity video
+                                        return Card(
+                                          elevation: 10,
+                                          child: Stack(
+                                            children: [
+                                              _studio[i].type! == "image"
+                                                  ? InkWell(
+                                                      child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(4
+                                                                              .r)),
+                                                                  image:
+                                                                      DecorationImage(
+                                                                    image:
+                                                                        NetworkImage(
+                                                                      _studio[i]
+                                                                          .image!,
+                                                                    ),
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ))),
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ImageData(
+                                                                          image:
+                                                                              _studio[i].image!,
+                                                                        )));
+                                                      },
+                                                    )
+                                                  : Stack(
+                                                      children: [
+                                                        ///Video
+                                                        VideoPlayer(
+                                                            VideoPlayerController
+                                                                .network(
+                                                                    _studio[i]
+                                                                        .image!)
+                                                              ..initialize()),
+
+                                                        ///Play Icon
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            ///play video
+                                                            Expanded(
+                                                              flex: 1,
+                                                              child: Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        top: 10
+                                                                            .h,
+                                                                        right: 75
+                                                                            .w),
+                                                                child:
+                                                                    IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                            builder: (context) => viewData(
+                                                                                  video: _studio[i].image!,
+                                                                                )));
+                                                                    print(
+                                                                        'Tap it');
+                                                                  },
+                                                                  icon: GradientIcon(
+                                                                      playViduo,
+                                                                      40.sp,
+                                                                      const LinearGradient(
+                                                                        begin: Alignment(
+                                                                            0.7,
+                                                                            2.0),
+                                                                        end: Alignment(
+                                                                            -0.69,
+                                                                            -1.0),
+                                                                        colors: [
+                                                                          Color(
+                                                                              0xff0ab3d0),
+                                                                          Color(
+                                                                              0xffe468ca)
+                                                                        ],
+                                                                        stops: [
+                                                                          0.0,
+                                                                          1.0
+                                                                        ],
+                                                                      )),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        if (_isLoadMoreRunningStudio == true)
+                          SizedBox(),
+                          //  Padding(
+                          //   padding: EdgeInsets.only(top: 10, bottom: 40),
+                          //   child: Center(
+                          //     child: mainLoad(context),
+                          //   ),
+                          // ),
+
+                        // When nothing else to load
+                        if (_hasNextPageStudio == false)
+                         SizedBox(),
+
+                        SizedBox(
+                          height: 20.h,
+                        ),
+
+                        padding(
+                          15,
+                          15,
+                          gradientContainerNoborder(
+                              getSize(context).width,
+                              buttoms(context, 'اطلب حالا', 20, white, () {
+                                showBottomSheett(
+                                    context,
+                                    bottomSheetMenu(
+                                        snapshot.data!.data!.celebrity!.id!
+                                            .toString(),
+                                        snapshot.data!.data!.celebrity!.image!,
+                                        snapshot.data!.data!.celebrity!.name!
+                                            .toString()));
+                              })),
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
                   } else {
-                    return Center(
-                        child: Text('State: ${snapshot.connectionState}'));
+                    return const Center(child: Text('No info to show!!'));
                   }
-                })),
+                } else {
+                  return Center(
+                      child: Text('State: ${snapshot.connectionState}'));
+                }
+              }),
+        ),
       ),
     );
   }
@@ -1149,64 +1210,4 @@ class _CelebrityHomeState extends State<CelebrityHome>
       },
     );
   }
-
-  ///Pagination of news
-  // getNews(String pageUrl) async {
-  //   if(isLoading){
-  //     return ;
-  //   }
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //
-  //   ///page url check
-  //   String url = "https://mobile.celebrityads.net/api/celebrity-page/4OxvkYUSPB1GBViM?page=$basicPage";
-  //   if(basicPage == 1){
-  //     loadingRequestDialogue(context);
-  //   }
-  //
-  //   try{
-  //     final response = await http.get(Uri.parse(url), headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //
-  //     });
-  //     if(response.statusCode == 20){
-  //       final body = response.body;
-  //       introModel newsPagination = introModel.fromJson(jsonDecode(body));
-  //
-  //       var newNews = newsPagination.data!.news!;
-  //       pageCount = newsPagination.data!.newsPageCount!;
-  //       if (!mounted) return;
-  //       print('boooooodyyyyy: $body');
-  //       setState(() {
-  //         if(newNews.isNotEmpty){
-  //           isHasMore = newNews.isEmpty;
-  //           oldNews.addAll(newNews);
-  //
-  //           isLoading = false;
-  //           newItemLength = newNews.length;
-  //           if(basicPage == 1){
-  //             Navigator.pop(context);
-  //           }
-  //           basicPage++;
-  //         }else if(newNews.isEmpty && basicPage == 1){
-  //           if(basicPage == 1){
-  //             Navigator.pop(context);
-  //           }
-  //           setState(() {
-  //             empty = true;
-  //           });
-  //         }
-  //       });
-  //       return newsPagination;
-  //     }else{
-  //       return Future.error('error');
-  //     }
-  //   }catch (error){
-  //     if (basicPage == 1) {
-  //       Navigator.pop(context);
-  //     }
-  //   }
-  // }
 }

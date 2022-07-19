@@ -406,7 +406,7 @@ class _HomeBodyDiscountState extends State<HomeBodyDiscount> {
                                                                     ),
                                                                   ),
                                                                   Padding(
-                                                                    padding:  EdgeInsets.only(top: 10.h, right: 0.w),
+                                                                    padding:  EdgeInsets.only(top: 10.h, right: 120.w),
                                                                     child: TextButton(
                                                                         onPressed: () => setState(() {
                                                                           deleteDiscountCode(
@@ -446,6 +446,7 @@ class _HomeBodyDiscountState extends State<HomeBodyDiscount> {
                                 ),
                               ),
                             ],
+                            //if there is no data to show
                           ) : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,

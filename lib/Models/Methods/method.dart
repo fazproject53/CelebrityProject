@@ -5,8 +5,6 @@ import 'dart:io';
 import 'package:celepraty/Models/Methods/classes/GradientIcon.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
@@ -1025,7 +1023,7 @@ LinearGradient gradient() {
 Widget textFieldDescOnChange(context, String key, double fontSize,
     bool hintPass, TextEditingController mycontroller, myvali,
     {InputCounterWidgetBuilder? counter, int? maxLenth}) {
-  var expand = false;
+
   return SizedBox(
     height: 150.h,
     child: TextFormField(
