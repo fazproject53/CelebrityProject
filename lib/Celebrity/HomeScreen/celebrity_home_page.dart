@@ -16,6 +16,7 @@ import 'package:video_player/video_player.dart';
 import '../../ModelAPI/CelebrityScreenAPI.dart';
 import '../../Models/Methods/classes/GradientIcon.dart';
 
+import '../../celebrity/Activity/studio/studio.dart';
 import '../orders/advArea.dart';
 import '../orders/advForm.dart';
 import '../orders/gifttingForm.dart';
@@ -36,11 +37,9 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
   ///list of string to store the advertising area images
   List<String> advImage = [];
-
-  ///Pagination Variable Section
-  final baseUrl = 'https://mobile.celebrityads.net/api/celebrity-page';
+  ///---------------------------------------------------------------------------
+  ///Pagination Variable Section News
   int page = 1;
-
   // There is next page or not
   bool _hasNextPage = true;
 
@@ -53,31 +52,34 @@ class _CelebrityHomeState extends State<CelebrityHome>
   //This holds the news fetched from the server
   List _news = [];
   ScrollController scrollController = ScrollController();
+  ///---------------------------------------------------------------------------
+
+
 
   ///This function will be called when the app launches
-  void _firstLoad() async {
+  void _firstLoadNews(String pageUrl) async {
     setState(() {
       _isFirstLoadRunning = true;
     });
     try {
-      final res =
-          await http.get(Uri.parse("$baseUrl/$widget.pageUrl?page=$page"));
+      final res = await http.get(Uri.parse("https://mobile.celebrityads.net/api/celebrity-page/$pageUrl?page=$page"));
+      introModel newsModel = introModel.fromJson(jsonDecode(res.body));
+      var newNews = newsModel.data!.news;
       setState(() {
-        _news = json.decode(res.body);
+        _news = newNews!;
       });
     } catch (err) {
       if (kDebugMode) {
-        print('Something went wrong');
+        print('first load Something went wrong');
       }
     }
-
     setState(() {
       _isFirstLoadRunning = false;
     });
   }
 
   ///LoadMore Function will be triggered whenever the user scroll
-  void _loadMore() async {
+  void _loadMoreNews() async {
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
@@ -87,10 +89,9 @@ class _CelebrityHomeState extends State<CelebrityHome>
       });
       page += 1; // Increase _page by 1
       try {
-        final res =
-            await http.get(Uri.parse("$baseUrl/$widget.pageUrl?page=$page"));
-
-        final List fetchedNews = json.decode(res.body);
+        final res = await http.get(Uri.parse("https://mobile.celebrityads.net/api/celebrity-page/${widget.pageUrl}?page=$page"));
+        introModel newsModel = introModel.fromJson(jsonDecode(res.body));
+        final List<News> fetchedNews = newsModel.data!.news!;
         if (fetchedNews.isNotEmpty) {
           setState(() {
             _news.addAll(fetchedNews);
@@ -104,7 +105,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
         }
       } catch (err) {
         if (kDebugMode) {
-          print('Something went wrong!');
+          print('Something went wrong!2222');
         }
       }
 
@@ -114,18 +115,19 @@ class _CelebrityHomeState extends State<CelebrityHome>
     }
   }
 
+
   @override
   void initState() {
     super.initState();
     celebrityHome = getSectionsData(widget.pageUrl!);
 
-    _firstLoad();
-    scrollController = ScrollController()..addListener(_loadMore);
+    _firstLoadNews(widget.pageUrl!);
+    scrollController = ScrollController()..addListener(_loadMoreNews);
   }
 
   @override
   void dispose() {
-    scrollController.removeListener(_loadMore);
+    scrollController.removeListener(_loadMoreNews);
     super.dispose();
   }
 
@@ -451,86 +453,86 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
                           ///SizedBox
                           SizedBox(
-                            height: 5.h,
+                            height: 10.h,
                           ),
 
                           ///horizontal listView for news
                           _isFirstLoadRunning
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : SizedBox(
-                                  height: 60.h,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    controller: scrollController,
-                                    itemCount: 2,
-                                    itemBuilder: (_, index) => Row(children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(right: 8.w),
-                                          child: Container(
-                                            height: 70.h,
-                                            width: 208.w,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(50.r),
-                                                bottomRight:
-                                                    Radius.circular(50.r),
-                                                topLeft: Radius.circular(15.r),
-                                                bottomLeft:
-                                                    Radius.circular(15.r),
+                              ? CircularProgressIndicator() : Visibility(
+                            visible: _news.isEmpty ? false : true,
+                                child: SizedBox(
+                                    height: 60.h,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      controller: scrollController,
+                                      itemCount: _news.length,
+                                      itemBuilder: (_, index) => Row(children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(right: 8.w),
+                                            child: Container(
+                                              height: 70.h,
+                                              width: 208.w,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(50.r),
+                                                  bottomRight:
+                                                      Radius.circular(50.r),
+                                                  topLeft: Radius.circular(15.r),
+                                                  bottomLeft:
+                                                      Radius.circular(15.r),
+                                                ),
+                                                gradient: const LinearGradient(
+                                                  begin: Alignment(0.7, 2.0),
+                                                  end: Alignment(-0.69, -1.0),
+                                                  colors: [
+                                                    Color(0xff0ab3d0),
+                                                    Color(0xffe468ca)
+                                                  ],
+                                                  stops: [0.0, 1.0],
+                                                ),
                                               ),
-                                              gradient: const LinearGradient(
-                                                begin: Alignment(0.7, 2.0),
-                                                end: Alignment(-0.69, -1.0),
-                                                colors: [
-                                                  Color(0xff0ab3d0),
-                                                  Color(0xffe468ca)
-                                                ],
-                                                stops: [0.0, 1.0],
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.only(right: 8.w),
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    backgroundImage:
-                                                    Image.network(snapshot
-                                                        .data!
-                                                        .data!
-                                                        .celebrity!
-                                                        .image!)
-                                                        .image,
-                                                    radius: 30.r,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10.w,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 70.h,
-                                                    width: 110.w,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        text(
-                                                          context,
-                                                          'rayana',
-                                                          11,
-                                                          white,
-                                                        ),
-                                                      ],
+                                              child: Padding(
+                                                padding: EdgeInsets.only(right: 8.w),
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage:
+                                                      Image.network(snapshot
+                                                          .data!
+                                                          .data!
+                                                          .celebrity!
+                                                          .image!)
+                                                          .image,
+                                                      radius: 30.r,
                                                     ),
-                                                  ),
-                                                ],
+                                                    SizedBox(
+                                                      width: 10.w,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 70.h,
+                                                      width: 110.w,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                        children: [
+                                                          text(
+                                                            context,
+                                                            _news[index].description,
+                                                            11,
+                                                            white,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ))
-                                    ]),
+                                            ))
+                                      ]),
+                                    ),
                                   ),
-                                ),
+                              ),
                           // when the _loadMore function is running
                           if (_isLoadMoreRunning == true)
                             const Padding(

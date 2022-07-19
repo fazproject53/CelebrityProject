@@ -1,12 +1,11 @@
-
-class introModel {
+class StudioModel {
   bool? success;
   Data? data;
   Message? message;
 
-  introModel({this.success, this.data, this.message});
+  StudioModel({this.success, this.data, this.message});
 
-  introModel.fromJson(Map<String, dynamic> json) {
+  StudioModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
     message =
@@ -28,44 +27,21 @@ class introModel {
 
 class Data {
   Celebrity? celebrity;
-  int? newsPageCount;
-  List<News>? news;
   int? studioPageCount;
   List<Studio>? studio;
-  List<AdSpaceOrders>? adSpaceOrders;
   int? status;
 
-  Data(
-      {this.celebrity,
-        this.newsPageCount,
-        this.news,
-        this.studioPageCount,
-        this.studio,
-        this.adSpaceOrders,
-        this.status});
+  Data({this.celebrity, this.studioPageCount, this.studio, this.status});
 
   Data.fromJson(Map<String, dynamic> json) {
     celebrity = json['celebrity'] != null
         ? new Celebrity.fromJson(json['celebrity'])
         : null;
-    newsPageCount = json['news_page_count'];
-    if (json['news'] != null) {
-      news = <News>[];
-      json['news'].forEach((v) {
-        news!.add(new News.fromJson(v));
-      });
-    }
     studioPageCount = json['studio_page_count'];
     if (json['studio'] != null) {
       studio = <Studio>[];
       json['studio'].forEach((v) {
         studio!.add(new Studio.fromJson(v));
-      });
-    }
-    if (json['adSpaceOrders'] != null) {
-      adSpaceOrders = <AdSpaceOrders>[];
-      json['adSpaceOrders'].forEach((v) {
-        adSpaceOrders!.add(new AdSpaceOrders.fromJson(v));
       });
     }
     status = json['status'];
@@ -76,17 +52,9 @@ class Data {
     if (this.celebrity != null) {
       data['celebrity'] = this.celebrity!.toJson();
     }
-    data['news_page_count'] = this.newsPageCount;
-    if (this.news != null) {
-      data['news'] = this.news!.map((v) => v.toJson()).toList();
-    }
     data['studio_page_count'] = this.studioPageCount;
     if (this.studio != null) {
       data['studio'] = this.studio!.map((v) => v.toJson()).toList();
-    }
-    if (this.adSpaceOrders != null) {
-      data['adSpaceOrders'] =
-          this.adSpaceOrders!.map((v) => v.toJson()).toList();
     }
     data['status'] = this.status;
     return data;
@@ -268,28 +236,6 @@ class Category {
   }
 }
 
-class News {
-  int? id;
-  String? title;
-  String? description;
-
-  News({this.id, this.title, this.description});
-
-  News.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    description = json['description'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    return data;
-  }
-}
-
 class Studio {
   int? id;
   String? title;
@@ -327,142 +273,6 @@ class Studio {
     data['type'] = this.type;
     data['likes'] = this.likes;
     data['views'] = this.views;
-    return data;
-  }
-}
-
-class AdSpaceOrders {
-  int? id;
-  Celebrity? celebrity;
-  User? user;
-  String? date;
-  City? adType;
-  City? status;
-  int? price;
-  String? image;
-  String? link;
-  Null? rejectReson;
-  Null? celebrityPromoCode;
-
-  AdSpaceOrders(
-      {this.id,
-        this.celebrity,
-        this.user,
-        this.date,
-        this.adType,
-        this.status,
-        this.price,
-        this.image,
-        this.link,
-        this.rejectReson,
-        this.celebrityPromoCode});
-
-  AdSpaceOrders.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    celebrity = json['celebrity'] != null
-        ? new Celebrity.fromJson(json['celebrity'])
-        : null;
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    date = json['date'];
-    adType =
-    json['ad_type'] != null ? new City.fromJson(json['ad_type']) : null;
-    status = json['status'] != null ? new City.fromJson(json['status']) : null;
-    price = json['price'];
-    image = json['image'];
-    link = json['link'];
-    rejectReson = json['reject_reson'];
-    celebrityPromoCode = json['celebrity_promo_code'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    if (this.celebrity != null) {
-      data['celebrity'] = this.celebrity!.toJson();
-    }
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
-    }
-    data['date'] = this.date;
-    if (this.adType != null) {
-      data['ad_type'] = this.adType!.toJson();
-    }
-    if (this.status != null) {
-      data['status'] = this.status!.toJson();
-    }
-    data['price'] = this.price;
-    data['image'] = this.image;
-    data['link'] = this.link;
-    data['reject_reson'] = this.rejectReson;
-    data['celebrity_promo_code'] = this.celebrityPromoCode;
-    return data;
-  }
-}
-
-class User {
-  int? id;
-  String? username;
-  String? name;
-  String? image;
-  String? email;
-  String? phonenumber;
-  Country? country;
-  City? city;
-  City? gender;
-  City? accountStatus;
-  String? type;
-
-  User(
-      {this.id,
-        this.username,
-        this.name,
-        this.image,
-        this.email,
-        this.phonenumber,
-        this.country,
-        this.city,
-        this.gender,
-        this.accountStatus,
-        this.type});
-
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    username = json['username'];
-    name = json['name'];
-    image = json['image'];
-    email = json['email'];
-    phonenumber = json['phonenumber'];
-    country =
-    json['country'] != null ? new Country.fromJson(json['country']) : null;
-    city = json['city'] != null ? new City.fromJson(json['city']) : null;
-    gender = json['gender'] != null ? new City.fromJson(json['gender']) : null;
-    accountStatus = json['account_status'] != null
-        ? new City.fromJson(json['account_status'])
-        : null;
-    type = json['type'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['username'] = this.username;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    data['email'] = this.email;
-    data['phonenumber'] = this.phonenumber;
-    if (this.country != null) {
-      data['country'] = this.country!.toJson();
-    }
-    if (this.city != null) {
-      data['city'] = this.city!.toJson();
-    }
-    if (this.gender != null) {
-      data['gender'] = this.gender!.toJson();
-    }
-    if (this.accountStatus != null) {
-      data['account_status'] = this.accountStatus!.toJson();
-    }
-    data['type'] = this.type;
     return data;
   }
 }
