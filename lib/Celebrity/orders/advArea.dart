@@ -212,6 +212,7 @@ class _advAreaState extends State<advArea>{
 
                         addAdAreaOrder().then((value) => {
                           value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'?{
+                            Navigator.pop(context),
 
     Flushbar(
     flushbarPosition:
@@ -246,37 +247,50 @@ class _advAreaState extends State<advArea>{
     FontWeight.w200),
     ).show(context)
                           }:{
-                          goTopageReplacement(context, UserRequestMainPage()),
-                          Flushbar(
-                            flushbarPosition:
-                            FlushbarPosition.TOP,
-                            backgroundColor: white,
-                            margin:
-                            const EdgeInsets.all(5),
-                            flushbarStyle:
-                            FlushbarStyle.FLOATING,
-                            borderRadius:
-                            BorderRadius.circular(
-                                15.r),
-                            duration: const Duration(
-                                seconds: 5),
-                            icon: Padding(
-                              padding: const EdgeInsets.only(left: 18.0),
-                              child: Icon(
-                                done,
-                                color: green,
-                                size: 25.sp,
+                            value.contains('true')?
+                          goTopageReplacement(context, UserRequestMainPage()): Navigator.pop(context),
+                            Flushbar(
+                              flushbarPosition:
+                              FlushbarPosition.TOP,
+                              backgroundColor: white,
+                              margin:
+                              const EdgeInsets.all(5),
+                              flushbarStyle:
+                              FlushbarStyle.FLOATING,
+                              borderRadius:
+                              BorderRadius.circular(
+                                  15.r),
+                              duration: const Duration(
+                                  seconds: 5),
+                              icon: Padding(
+                                padding: const EdgeInsets
+                                    .only(left: 18.0),
+                                child: Icon(
+                                  value.contains('false')?error: done,
+                                  color: value.contains('false')
+                                      ? red! : green,
+                                  size: 25.sp,
+                                ),
                               ),
-                            ),
-                            titleText: text(context, 'تم التعديل بنجاح', 14, purple),
-                            messageText: text(
-                                context,
-                                value,
-                                14,
-                                black,
-                                fontWeight:
-                                FontWeight.w200),
-                          ).show(context)}
+
+                              messageText: text(
+                                  context,
+                                  value.contains('true')?
+                                  value.replaceAll('true', ''):
+                                  value.replaceAll('false', ''),
+                                  14,
+                                  black,
+                                  fontWeight:
+                                  FontWeight.w200),
+
+                              titleText: text(
+                                  context,
+                                  value.contains('false')?'خطا':'تم بنجاح' ,
+                                  14,
+                                  purple,
+                                  fontWeight:
+                                  FontWeight.w200),
+                            ).show(context),}
     });
                       return
                         Align(
@@ -341,7 +355,7 @@ class _advAreaState extends State<advArea>{
       var response = await request.send();
       http.Response respo = await http.Response.fromStream(response);
       print(jsonDecode(respo.body)['message']['ar']);
-      return jsonDecode(respo.body)['message']['ar'];
+      return jsonDecode(respo.body)['message']['ar'] +jsonDecode(respo.body)['success'].toString();
     }catch (e) {
       if (e is SocketException) {
         return 'SocketException';

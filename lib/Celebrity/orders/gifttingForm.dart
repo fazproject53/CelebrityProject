@@ -527,8 +527,8 @@ class _gifttingFormState extends State<gifttingForm>{
                                                 FontWeight.w200),
                                           ).show(context)
                                         } : {
-                                          goTopageReplacement(
-                                              context, UserRequestMainPage()),
+                                          value.contains('true')?
+                                          goTopageReplacement(context, UserRequestMainPage()): Navigator.pop(context),
                                           Flushbar(
                                             flushbarPosition:
                                             FlushbarPosition.TOP,
@@ -543,25 +543,34 @@ class _gifttingFormState extends State<gifttingForm>{
                                             duration: const Duration(
                                                 seconds: 5),
                                             icon: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 18.0),
+                                              padding: const EdgeInsets
+                                                  .only(left: 18.0),
                                               child: Icon(
-                                                done,
-                                                color: green,
+                                                value.contains('false')?error: done,
+                                                color: value.contains('false')
+                                                    ? red! : green,
                                                 size: 25.sp,
                                               ),
                                             ),
-                                            titleText: text(
-                                                context, 'تم التعديل بنجاح', 14,
-                                                purple),
+
                                             messageText: text(
                                                 context,
-                                                value,
+                                                value.contains('true')?
+                                                value.replaceAll('true', ''):
+                                                value.replaceAll('false', ''),
                                                 14,
                                                 black,
                                                 fontWeight:
                                                 FontWeight.w200),
-                                          ).show(context)}
+
+                                            titleText: text(
+                                                context,
+                                                value.contains('false')?'خطا':'تم بنجاح' ,
+                                                14,
+                                                purple,
+                                                fontWeight:
+                                                FontWeight.w200),
+                                          ).show(context),}
                                       });
                                   // == First dialog closed
 
@@ -631,7 +640,7 @@ class _gifttingFormState extends State<gifttingForm>{
         // If the server did return a 200 OK response,
         // then parse the JSON.
         print(response.body);
-        return jsonDecode(response.body)['message']['ar'];
+        return jsonDecode(response.body)['message']['ar']+jsonDecode(response.body)['success'].toString();
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.

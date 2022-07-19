@@ -218,7 +218,7 @@ class _advFormState extends State<advForm> {
 
                                     ///hint style
                                     boxTextstyle: TextStyle(
-                                        fontSize: 12.sp,
+                                        fontSize: 10.sp,
                                         fontWeight: FontWeight.w400,
                                         color: grey,
                                         fontFamily: 'Cairo'),
@@ -288,7 +288,7 @@ class _advFormState extends State<advForm> {
 
                                       ///hint style
                                       boxTextstyle: TextStyle(
-                                          fontSize: 12.sp,
+                                          fontSize: 11.sp,
                                           fontWeight: FontWeight.w400,
                                           color: grey,
                                           fontFamily: 'Cairo'),
@@ -828,8 +828,8 @@ class _advFormState extends State<advForm> {
                                             FontWeight.w200),
                                       ).show(context)
                                     } : {
-                                      goTopageReplacement(
-                                          context, UserRequestMainPage()),
+                                      value.contains('true')?
+                                      goTopageReplacement(context, UserRequestMainPage()): Navigator.pop(context),
                                       Flushbar(
                                         flushbarPosition:
                                         FlushbarPosition.TOP,
@@ -844,25 +844,34 @@ class _advFormState extends State<advForm> {
                                         duration: const Duration(
                                             seconds: 5),
                                         icon: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 18.0),
+                                          padding: const EdgeInsets
+                                              .only(left: 18.0),
                                           child: Icon(
-                                            done,
-                                            color: green,
+                                            value.contains('false')?error: done,
+                                            color: value.contains('false')
+                                                ? red! : green,
                                             size: 25.sp,
                                           ),
                                         ),
-                                        titleText: text(
-                                            context, 'تم التعديل بنجاح', 14,
-                                            purple),
+
                                         messageText: text(
                                             context,
-                                            value,
+                                            value.contains('true')?
+                                            value.replaceAll('true', ''):
+                                            value.replaceAll('false', ''),
                                             14,
                                             black,
                                             fontWeight:
                                             FontWeight.w200),
-                                      ).show(context)}
+
+                                        titleText: text(
+                                            context,
+                                            value.contains('false')?'خطا':'تم بنجاح' ,
+                                            14,
+                                            purple,
+                                            fontWeight:
+                                            FontWeight.w200),
+                                      ).show(context),}
                                   });
                                   // == First dialog closed
 
@@ -1035,7 +1044,7 @@ class _advFormState extends State<advForm> {
 
       http.Response respo = await http.Response.fromStream(response);
       print("Result: ${response.statusCode}");
-      return jsonDecode(respo.body)['message']['ar'];
+      return jsonDecode(respo.body)['message']['ar']+jsonDecode(respo.body)['success'].toString();
     } catch (e) {
       if (e is SocketException) {
         return 'SocketException';
