@@ -126,200 +126,201 @@ class _StudioState extends State<Studio> {
                                     text(context, 'لا توجد وسائط حاليا', 23, black),
                                   ],
                                 )),
-                              ): Column(
-                                children: [
-                                  paddingg(
-                                    10,
-                                    10,
-                                    0,
-                                    Container(
-                                      height: getSize(context).height,
-                                      child: ListView.builder(
-                                        itemCount: snapshot.data!.data!.studio!.length,
-                                        shrinkWrap: true,
-                                        physics: ScrollPhysics(),
-                                        itemBuilder: (context, index) {
+                              ): SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    paddingg(
+                                      10,
+                                      10,
+                                      0,
+                                      Container(
+                                        child: ListView.builder(
+                                          itemCount: snapshot.data!.data!.studio!.length,
+                                          shrinkWrap: true,
+                                          physics: ScrollPhysics(),
+                                          itemBuilder: (context, index) {
 
 
-                                          return paddingg(
-                                            5,
-                                            5,
-                                            5,
-                                            SizedBox(
-                                              height: 140.h,
-                                              width: 270.w,
-                                              child: Card(
-                                                elevation: 5,
-                                                color: white,
-                                                child: paddingg(
-                                                  0,
-                                                  0,
-                                                  0,
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          paddingg(
-                                                            5,
-                                                            2,
-                                                            0,
-                                                            Container(
-                                                              margin: EdgeInsets.only(bottom: 2.h, top: 2.h),
-                                                              alignment: Alignment
-                                                                  .centerRight,
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            2.0),
-                                                                child: snapshot.data!.data!.studio![index].type! == "image"? Image.network(
-                                                                  snapshot.data!.data!.studio![index].image!,
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                  height: double.infinity.h,
-                                                                  width: 125.w,
-                                                                ): Container(height: double.infinity.h,
-                                                                    width: 100.w,child: VideoPlayer( VideoPlayerController.network(snapshot.data!.data!.studio![index].image!)..initialize())),
-
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(width:3.w,),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 10.h,
-                                                              ),
-                                                              SingleChildScrollView(
-                                                                child: Container(
-                                                                  width: 180.w,
-                                                                  height: 100.h,
-                                                                  child: text(
-                                                                      context,
-                                                                      snapshot.data!.data!.studio![index].description!,
-                                                                      14,
-                                                                      black),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 10.h,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 10,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 20.h,
-                                                                left: 15.w),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
+                                            return paddingg(
+                                              5,
+                                              5,
+                                              5,
+                                              SizedBox(
+                                                height: 140.h,
+                                                width: 270.w,
+                                                child: Card(
+                                                  elevation: 5,
+                                                  color: white,
+                                                  child: paddingg(
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
                                                           children: [
-                                                            SizedBox(
-                                                              height: 30.h,
-                                                            ),
-                                                            InkWell(
-                                                              child: Container(
-                                                                child: Icon(
-                                                                  removeDiscount,
-                                                                  color: white,
-                                                                  size: 18,
-                                                                ),
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                50),
-                                                                        gradient:
-                                                                            const LinearGradient(
-                                                                          begin: Alignment(
-                                                                              0.7,
+                                                            paddingg(
+                                                              5,
+                                                              2,
+                                                              0,
+                                                              Container(
+                                                                margin: EdgeInsets.only(bottom: 2.h, top: 2.h),
+                                                                alignment: Alignment
+                                                                    .centerRight,
+                                                                child: ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
                                                                               2.0),
-                                                                          end: Alignment(
-                                                                              -0.69,
-                                                                              -1.0),
-                                                                          colors: [
-                                                                            Color(
-                                                                                0xff0ab3d0),
-                                                                            Color(
-                                                                                0xffe468ca)
-                                                                          ],
-                                                                          stops: [
-                                                                            0.0,
-                                                                            1.0
-                                                                          ],
-                                                                        )),
-                                                                height: 28.h,
-                                                                width: 32.w,
-                                                              ),
-                                                              onTap: (){
-                                                                showDialog<String>(
-                                                                    context: context,
-                                                                    builder: (BuildContext context) =>
-                                                                    AlertDialog(
-                                                                  title: Directionality(
-                                                                      textDirection: TextDirection.rtl,
-                                                                      child: text(context, 'حذف من الاستديو', 16, black,)),
-                                                                  content: Directionality(
-                                                                      textDirection: TextDirection.rtl,
-                                                                      child: text(context, 'هل انت متأكد من انك تريد الحذف ؟', 14, black,)),
-                                                                  actions: <Widget>[
-                                                                    Padding(
-                                                                      padding:  EdgeInsets.only(top: 0.h,),
-                                                                      child: TextButton(
-                                                                          onPressed: () =>
-                                                                              Navigator.pop(
-                                                                                  context,
-                                                                                  'الغاء'),
-                                                                          child: text(context, 'الغاء', 15, purple)
-                                                                      ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
-                                                                      child: TextButton(
-                                                                          onPressed: () => setState(() {
-                                                                            deleteStudio(snapshot.data!.data!.studio![index].id!);
-                                                                            Navigator.pop(
-                                                                                context,
-                                                                                'حذف');
+                                                                  child: snapshot.data!.data!.studio![index].type! == "image"? Image.network(
+                                                                    snapshot.data!.data!.studio![index].image!,
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    height: double.infinity.h,
+                                                                    width: 125.w,
+                                                                  ): Container(height: double.infinity.h,
+                                                                      width: 100.w,child: VideoPlayer( VideoPlayerController.network(snapshot.data!.data!.studio![index].image!)..initialize())),
 
-                                                                          }),
-                                                                          child: text(context, 'حذف', 15, purple)
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),);
-                                                               },
-                                                            )
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(width:3.w,),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 10.h,
+                                                                ),
+                                                                SingleChildScrollView(
+                                                                  child: Container(
+                                                                    width: 180.w,
+                                                                    height: 100.h,
+                                                                    child: text(
+                                                                        context,
+                                                                        snapshot.data!.data!.studio![index].description!,
+                                                                        14,
+                                                                        black),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 10.h,
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ],
                                                         ),
-                                                      ),
-                                                    ],
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  bottom: 20.h,
+                                                                  left: 15.w),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 30.h,
+                                                              ),
+                                                              InkWell(
+                                                                child: Container(
+                                                                  child: Icon(
+                                                                    removeDiscount,
+                                                                    color: white,
+                                                                    size: 18,
+                                                                  ),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(
+                                                                                  50),
+                                                                          gradient:
+                                                                              const LinearGradient(
+                                                                            begin: Alignment(
+                                                                                0.7,
+                                                                                2.0),
+                                                                            end: Alignment(
+                                                                                -0.69,
+                                                                                -1.0),
+                                                                            colors: [
+                                                                              Color(
+                                                                                  0xff0ab3d0),
+                                                                              Color(
+                                                                                  0xffe468ca)
+                                                                            ],
+                                                                            stops: [
+                                                                              0.0,
+                                                                              1.0
+                                                                            ],
+                                                                          )),
+                                                                  height: 28.h,
+                                                                  width: 32.w,
+                                                                ),
+                                                                onTap: (){
+                                                                  showDialog<String>(
+                                                                      context: context,
+                                                                      builder: (BuildContext context) =>
+                                                                      AlertDialog(
+                                                                    title: Directionality(
+                                                                        textDirection: TextDirection.rtl,
+                                                                        child: text(context, 'حذف من الاستديو', 16, black,)),
+                                                                    content: Directionality(
+                                                                        textDirection: TextDirection.rtl,
+                                                                        child: text(context, 'هل انت متأكد من انك تريد الحذف ؟', 14, black,)),
+                                                                    actions: <Widget>[
+                                                                      Padding(
+                                                                        padding:  EdgeInsets.only(top: 0.h,),
+                                                                        child: TextButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.pop(
+                                                                                    context,
+                                                                                    'الغاء'),
+                                                                            child: text(context, 'الغاء', 15, purple)
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
+                                                                        child: TextButton(
+                                                                            onPressed: () => setState(() {
+                                                                              deleteStudio(snapshot.data!.data!.studio![index].id!);
+                                                                              Navigator.pop(
+                                                                                  context,
+                                                                                  'حذف');
+
+                                                                            }),
+                                                                            child: text(context, 'حذف', 15, purple)
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),);
+                                                                 },
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             } else {
                               return const Center(child: Text('Empty data'));
