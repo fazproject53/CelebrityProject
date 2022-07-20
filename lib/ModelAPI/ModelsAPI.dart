@@ -21,8 +21,9 @@ class Section {
         data!.add(new DataSection.fromJson(v));
       });
     }
-    message =
-    json['message'] != null ? new MessageSection.fromJson(json['message']) : null;
+    message = json['message'] != null
+        ? new MessageSection.fromJson(json['message'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -49,12 +50,12 @@ class DataSection {
 
   DataSection(
       {this.sectionName,
-        this.title,
-        this.titleEn,
-        this.image,
-        this.link,
-        this.categoryId,
-        this.active});
+      this.title,
+      this.titleEn,
+      this.image,
+      this.link,
+      this.categoryId,
+      this.active});
 
   DataSection.fromJson(Map<String, dynamic> json) {
     sectionName = json['section_name'];
@@ -725,7 +726,6 @@ Future<Category> fetchCategories(int id, int pagNumber) async {
       Category category = Category.fromJson(jsonDecode(body));
       print("Reading category from network------------ ");
       getPagNumber.add(1);
-      print(body);
       return category;
     } else {
       return Future.error('حدثت مشكله في السيرفر');
@@ -738,5 +738,99 @@ Future<Category> fetchCategories(int id, int pagNumber) async {
     } else {
       return Future.error('حدثت مشكله في السيرفر');
     }
+  }
+}
+
+//-------------------------------------------------------------------------------
+class AllCelebrities {
+  bool? success;
+  AllCelebritiesData? data;
+  Message? message;
+
+  AllCelebrities({this.success, this.data, this.message});
+
+  AllCelebrities.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    data = json['data'] != null
+        ? new AllCelebritiesData.fromJson(json['data'])
+        : null;
+    message =
+        json['message'] != null ? new Message.fromJson(json['message']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    if (this.message != null) {
+      data['message'] = this.message!.toJson();
+    }
+    return data;
+  }
+}
+
+class AllCelebritiesData {
+  List<getAllCelebrities>? celebrities;
+
+  AllCelebritiesData({this.celebrities});
+
+  AllCelebritiesData.fromJson(Map<String, dynamic> json) {
+    if (json['celebrities'] != null) {
+      celebrities = <getAllCelebrities>[];
+      json['celebrities'].forEach((v) {
+        celebrities!.add(new getAllCelebrities.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.celebrities != null) {
+      data['celebrities'] = this.celebrities!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class getAllCelebrities {
+  String? name;
+  String? pageUrl;
+  getAllCelebrities({
+    this.name,
+    this.pageUrl,
+  });
+  getAllCelebrities.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    pageUrl = json['page_url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['name'] = this.name;
+
+    data['page_url'] = this.pageUrl;
+
+    return data;
+  }
+}
+class Message {
+  String? en;
+  String? ar;
+
+  Message({this.en, this.ar});
+
+  Message.fromJson(Map<String, dynamic> json) {
+    en = json['en'];
+    ar = json['ar'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['en'] = this.en;
+    data['ar'] = this.ar;
+    return data;
   }
 }

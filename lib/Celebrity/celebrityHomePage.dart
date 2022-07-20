@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:celepraty/Account/Singup.dart';
+import 'package:celepraty/Celebrity/CelebritySearch.dart';
 import 'package:celepraty/Celebrity/ShowMoreCelebraty.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -31,7 +32,8 @@ class celebrityHomePage extends StatefulWidget {
 class _celebrityHomePageState extends State<celebrityHomePage>
     with AutomaticKeepAliveClientMixin {
   Map<int, Future<Category>> category = HashMap<int, Future<Category>>();
-
+  List? nameList = [];
+  List? pagUrlList = [];
   int currentIndex = 0;
   bool isConnectSection = true;
   bool timeoutException = true;
@@ -41,6 +43,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   Future<link>? futureLinks;
   Future<header>? futureHeader;
   Future<Partner>? futurePartners;
+  List<getAllCelebrities> allCellbrity = [];
   bool isLoading = true;
   int page = 1;
   @override
@@ -49,6 +52,13 @@ class _celebrityHomePageState extends State<celebrityHomePage>
     futureLinks = fetchLinks();
     futureHeader = fetchHeader();
     futurePartners = fetchPartners();
+    getAllCelebrity().then((value) {
+      if (mounted) {
+        setState(() {
+          allCellbrity = value!;
+        });
+      }
+    });
 
     super.initState();
   }
@@ -100,6 +110,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return isConnectSection == false
         ? internetConnection(context, reload: () {
             setState(() {
@@ -257,18 +268,21 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                                                           .sectionName ==
                                                       'new_section')
                                                     newSection(
-                                                      snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .active,
-                                                      snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .image,
-                                                      snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .link),
+                                                        snapshot
+                                                            .data
+                                                            ?.data![
+                                                                sectionIndex]
+                                                            .active,
+                                                        snapshot
+                                                            .data
+                                                            ?.data![
+                                                                sectionIndex]
+                                                            .image,
+                                                        snapshot
+                                                            .data
+                                                            ?.data![
+                                                                sectionIndex]
+                                                            .link),
 //news ---------------------------------------------------------------------------
                                                   if (snapshot
                                                           .data!
@@ -276,18 +290,21 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                                                           .sectionName ==
                                                       'news')
                                                     newsSection(
-                                                      snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .active,
-                                                      snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .image,
-                                                      snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .link),
+                                                        snapshot
+                                                            .data
+                                                            ?.data![
+                                                                sectionIndex]
+                                                            .active,
+                                                        snapshot
+                                                            .data
+                                                            ?.data![
+                                                                sectionIndex]
+                                                            .image,
+                                                        snapshot
+                                                            .data
+                                                            ?.data![
+                                                                sectionIndex]
+                                                            .link),
 //partners--------------------------------------------------------------------------
                                                   if (snapshot
                                                           .data!
@@ -327,18 +344,47 @@ class _celebrityHomePageState extends State<celebrityHomePage>
     return Swiper(
       itemBuilder: (context, index) {
         return Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              //color: red,
-              image: DecorationImage(
-            image: NetworkImage(
-              image[index],
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5.r),
+              ),
             ),
-            fit: BoxFit.cover,
-          )),
-        );
+            child: Stack(
+              children: [
+// image------------------------------------------------------------------------------
+                ClipRRect(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.r),
+                  ),
+                  child: Image.network(
+                    image[index],
+                    fit: BoxFit.cover,
+                    height: double.infinity,
+                    width: double.infinity,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                          child: Lottie.asset('assets/lottie/grey.json',
+                              height: 70.h, width: 70.w));
+                    },
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Center(
+                          child: Icon(
+                        error,
+                        size: 50.r,
+                        color: red,
+                      ));
+                    },
+                  ),
+                ),
+              ],
+            ));
       },
       onIndexChanged: (int index) {
         setState(() {
@@ -354,42 +400,6 @@ class _celebrityHomePageState extends State<celebrityHomePage>
       control: SwiperControl(
           color: grey, padding: EdgeInsets.only(left: 20.w, right: 5.w)),
     );
-  }
-
-//+ icon + logo ------------------------------------------------------------
-  Widget heroLogo() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //mainAxisSize: MainAxisSize.min,
-        children: [
-          currentuser == 'user'
-              ? Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                  child: SizedBox(
-                      height: 60.h,
-                      width: 60.w,
-                      child: InkWell(
-                        child: GradientIcon(Icons.add, 40, gradient()),
-                        onTap: () {
-                          goTopagepush(context, buildAdvOrder());
-                        },
-                      )),
-                )
-              : const SizedBox(),
-          const Spacer(),
-          // Padding(
-          //   padding: EdgeInsets.only(top: 10.h, right: 10.w, left: 10.w),
-          //   child: SizedBox(
-          //       height: 105.h,
-          //       width: 190.w,
-          //       child: const Image(
-          //         image: AssetImage(
-          //           "assets/image/final-logo.png",
-          //         ),
-          //         fit: BoxFit.cover,
-          //       )),
-          // ),
-        ]);
   }
 
 //explorer bottom image--------------------------------------------------------------
@@ -413,17 +423,54 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 //--------------------------------------------------------------------------
   Widget showButton(String image, String link) {
     return Expanded(
-        child: Container(
-      decoration: BoxDecoration(
-          //color: red,
-          image: DecorationImage(image: NetworkImage(image), fit: BoxFit.fill)),
-      width: 105.w,
-      child: InkWell(
-        onTap: () async {
-          var url = link;
-          await launch(url.toString(), forceWebView: true);
-        },
-      ),
+        child: InkWell(
+      onTap: () async {
+        var url = link;
+        await launch(url.toString(), forceWebView: true);
+      },
+      child: Container(
+          width: 105.w,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(5.r),
+            ),
+          ),
+          child: Stack(
+            children: [
+// image------------------------------------------------------------------------------
+              ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5.r),
+                ),
+                child: Image.network(
+                  image,
+                  // color: black.withOpacity(0.4),
+                  // colorBlendMode: BlendMode.darken,
+                  fit: BoxFit.contain,
+                  height: double.infinity,
+                  width: double.infinity,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return Center(
+                        child: Lottie.asset('assets/lottie/grey.json',
+                            height: 70.h, width: 70.w));
+                  },
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace? stackTrace) {
+                    return Center(
+                        child: Icon(
+                      error,
+                      size: 30.r,
+                      color: red,
+                    ));
+                  },
+                ),
+              ),
+            ],
+          )),
     ));
   }
 
@@ -474,15 +521,37 @@ class _celebrityHomePageState extends State<celebrityHomePage>
         var url = link;
         await launch(url, forceWebView: true);
       },
-      child: Card(
-        //color: blue,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(3.0.r),
-          child: Image(
+      child: SizedBox(
+        height: 90.h,
+        width: 180.w,
+        child: Card(
+          //color: blue,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(3.0.r),
+            child: Image.network(
+              image,
               fit: BoxFit.contain,
-              image: NetworkImage(image),
-              height: 26.h,
-              width: 160.w),
+              height: 90.h,
+              width: 180.w,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                    child: Lottie.asset('assets/lottie/grey.json',
+                        height: 70.h, width: 70.w));
+              },
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                return Center(
+                    child: Icon(
+                  error,
+                  size: 40.r,
+                  color: red,
+                ));
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -581,9 +650,20 @@ class _celebrityHomePageState extends State<celebrityHomePage>
             future: category[categoryId],
             builder: ((context, AsyncSnapshot<Category> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox(
-                  height: 300.h,
-                child: waitingData(300, double.infinity),
+                return Padding(
+                  padding: EdgeInsets.only(
+                      left: 5.0.w, right: 5.0.w, top: 60.h, bottom: 4.h),
+                  child: SizedBox(
+                    height: 300.h,
+                    child: Shimmer(
+                        enabled: true,
+                        gradient: LinearGradient(
+                          tileMode: TileMode.mirror,
+                          colors: [mainGrey, Colors.white],
+                          stops: const [0.1, 0.88],
+                        ),
+                        child: shapeRow(300, width: 230.w)),
+                  ),
                 );
               } else if (snapshot.connectionState == ConnectionState.active ||
                   snapshot.connectionState == ConnectionState.done) {
@@ -607,8 +687,8 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 //category name-----------------------------------------------------------
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      left: 7.0.w,
-                                      right: 7.0.w,
+                                      left: 5.0.w,
+                                      right: 5.0.w,
                                       top: 20.h,
                                       bottom: 4.h),
                                   child: text(context, title!, 20, black,
@@ -723,20 +803,12 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                                                                               .center,
                                                                       children: [
                                                                         Icon(
-                                                                          Icons
-                                                                              .sync_problem,
+                                                                          error,
                                                                           size:
-                                                                              25.r,
+                                                                              40.r,
                                                                           color:
-                                                                              pink,
+                                                                              red,
                                                                         ),
-                                                                        text(
-                                                                          context,
-                                                                          '  اضغط لاعادة تحميل الصورة',
-                                                                          12,
-                                                                          Colors
-                                                                              .grey,
-                                                                        )
                                                                       ],
                                                                     ),
                                                                   );
@@ -920,7 +992,6 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 //slider image----------------------------------------------------
                               imageSlider(image),
 //icon+ logo------------------------------------------------------
-                              heroLogo()
                             ],
                           )),
                       SizedBox(
@@ -947,7 +1018,20 @@ class _celebrityHomePageState extends State<celebrityHomePage>
             future: futureLinks,
             builder: ((context, AsyncSnapshot<link> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return shapeRow(70);
+                return Padding(
+                  padding: EdgeInsets.only(top: 10.h, right: 5.w, left: 5.w),
+                  child: SizedBox(
+                    height: 70.h,
+                    child: Shimmer(
+                        enabled: true,
+                        gradient: LinearGradient(
+                          tileMode: TileMode.mirror,
+                          colors: [mainGrey, Colors.white],
+                          stops: const [0.1, 0.88],
+                        ),
+                        child: shapeRow(70)),
+                  ),
+                );
               } else if (snapshot.connectionState == ConnectionState.active ||
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
@@ -987,13 +1071,19 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   advertisingBannerSection(int? active, String? imageUrl, String? link) {
     return active == 1
         ? Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 3.5.w),
+            padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.w),
             child: InkWell(
               onTap: () async {
                 var url = link;
                 await launch(url!, forceWebView: true);
               },
-              child: SizedBox(
+              child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(4.r),
+                    ),
+                    color: white,
+                  ),
                   width: double.infinity,
                   height: 196.h,
                   child: ClipRRect(
@@ -1011,22 +1101,10 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace? stackTrace) {
                           return Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.sync_problem,
-                                  size: 25.r,
-                                  color: pink,
-                                ),
-                                text(
-                                  context,
-                                  '  اضغط لاعادة تحميل الصورة',
-                                  12,
-                                  Colors.grey,
-                                )
-                              ],
+                            child: Icon(
+                              error,
+                              size: 40.r,
+                              color: red!,
                             ),
                           );
                         },
@@ -1080,7 +1158,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
             future: futurePartners,
             builder: ((context, AsyncSnapshot<Partner> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center();
+                return linkShap(90, width: 175);
               } else if (snapshot.connectionState == ConnectionState.active ||
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
@@ -1094,7 +1172,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                   return Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(right: 8.w, left: 8.w),
+                        padding: EdgeInsets.only(right: 5.w, left: 5.w),
                         child: Align(
                             alignment: Alignment.centerRight,
                             child: text(context, "الرعاة الرسميين", 18, black,
@@ -1108,20 +1186,16 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                         child: SizedBox(
                             width: double.infinity,
                             height: 90.h,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 0.h, right: 0.h),
-                              child: ListView.builder(
-                                  itemCount:
-                                      snapshot.data!.data!.partners!.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, i) {
-                                    return sponsors(
-                                        snapshot
-                                            .data!.data!.partners![i].image!,
-                                        snapshot.data!.data!.partners![i].link!,
-                                        i);
-                                  }),
-                            )),
+                            child: ListView.builder(
+                                itemCount:
+                                    snapshot.data!.data!.partners!.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, i) {
+                                  return sponsors(
+                                      snapshot.data!.data!.partners![i].image!,
+                                      snapshot.data!.data!.partners![i].link!,
+                                      i);
+                                })),
                       ),
                       SizedBox(
                         height: 10.h,
@@ -1143,180 +1217,147 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 //new section----------------------------------------------------------------------
   newsSection(int? active, String? imageUrl, String? link) {
     return active == 1
-        ? imageUrl==''?const SizedBox():Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 3.5.w),
-            child: InkWell(
-              onTap: () async {
-                var url = link;
-                await launch(url!, forceWebView: true);
-              },
-              child: SizedBox(
-                  width: double.infinity,
-                  height: 196.h,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4.r),
+        ? imageUrl == ''
+            ? const SizedBox()
+            : Padding(
+                padding:
+                    EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.w),
+                child: InkWell(
+                  onTap: () async {
+                    var url = link;
+                    await launch(url!, forceWebView: true);
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4.r),
+                        ),
+                        color: white,
                       ),
-                      child: Image.network(
-                        imageUrl!,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return waitingData(196, double.infinity);
-                        },
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.sync_problem,
-                                  size: 25.r,
-                                  color: pink,
-                                ),
-                                text(
-                                  context,
-                                  '  اضغط لاعادة تحميل الصورة',
-                                  12,
-                                  Colors.grey,
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        fit: BoxFit.cover,
-                      ))),
-            ),
-          )
+                      width: double.infinity,
+                      height: 196.h,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(4.r),
+                          ),
+                          child: Image.network(
+                            imageUrl!,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              }
+                              return waitingData(196, double.infinity);
+                            },
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace? stackTrace) {
+                              return Icon(
+                                error,
+                                size: 40.r,
+                                color: red!,
+                              );
+                            },
+                            fit: BoxFit.cover,
+                          ))),
+                ),
+              )
         : const SizedBox();
   }
 
 //new section----------------------------------------------------------------------
   newSection(int? active, String? imageUrl, String? link) {
     return active == 1
-        ? imageUrl==''?const SizedBox():Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 3.5.w),
-            child: InkWell(
-              onTap: () async {
-                var url = link;
-                await launch(url!, forceWebView: true);
-              },
-              child: SizedBox(
-                  width: double.infinity,
-                  height: 196.h,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4.r),
+        ? imageUrl == ''
+            ? const SizedBox()
+            : Padding(
+                padding:
+                    EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.w),
+                child: InkWell(
+                  onTap: () async {
+                    var url = link;
+                    await launch(url!, forceWebView: true);
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4.r),
+                        ),
+                        color: white,
                       ),
-                      child: Image.network(
-                        imageUrl!,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return waitingData(196, double.infinity);
-                        },
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.sync_problem,
-                                  size: 25.r,
-                                  color: pink,
+                      width: double.infinity,
+                      height: 196.h,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(4.r),
+                          ),
+                          child: Image.network(
+                            imageUrl!,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              }
+                              return waitingData(196, double.infinity);
+                            },
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace? stackTrace) {
+                              return Center(
+                                child: Icon(
+                                  error,
+                                  size: 40.r,
+                                  color: red!,
                                 ),
-                                text(
-                                  context,
-                                  '  اضغط لاعادة تحميل الصورة',
-                                  12,
-                                  Colors.grey,
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                        fit: BoxFit.cover,
-                      ))),
-            ),
-          )
+                              );
+                            },
+                            fit: BoxFit.cover,
+                          ))),
+                ),
+              )
         : const SizedBox();
   }
 
 //loading methode---------------------------------------------------------------------------
   Widget lodeing() {
     return SizedBox(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            child: Shimmer(
-              enabled: true,
-              gradient: LinearGradient(
-                tileMode: TileMode.mirror,
-                // begin: Alignment(0.7, 2.0),
-                //end: Alignment(-0.69, -1.0),
-                colors: [mainGrey, Colors.white],
-                stops: const [0.1, 0.88],
-              ),
-
-              child: ListView.builder(
-                itemBuilder: (_, __) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    waitingData(350, double.infinity),
-                    SizedBox(
-                      height: 10.w,
-                    ),
-                    shapeRow(61),
-                    SizedBox(height: 10.h),
-                    shape(10, width: 90.w),
-                    SizedBox(height: 10.h),
-                    shapeRow(180),
-                    SizedBox(height: 10.h),
-                    shape(10, width: 90.w),
-                    shapeRow(180),
-                    SizedBox(height: 10.h),
-                    shape(196),
-                  ],
-                ),
-                itemCount: 1,
-              ),
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height,
+        child: Shimmer(
+            enabled: true,
+            gradient: LinearGradient(
+              tileMode: TileMode.mirror,
+              colors: [mainGrey, Colors.white],
+              stops: const [0.1, 0.88],
             ),
-          ),
-        ],
-      ),
-    );
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                waitingData(360, double.infinity),
+                //SizedBox(height: 5.h),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.h, right: 5.w, left: 5.w),
+                  child: SizedBox(
+                    height: 70.h,
+                    child: Shimmer(
+                        enabled: true,
+                        gradient: LinearGradient(
+                          tileMode: TileMode.mirror,
+                          colors: [mainGrey, Colors.white],
+                          stops: const [0.1, 0.88],
+                        ),
+                        child: shapeRow(70)),
+                  ),
+                ),
+                SizedBox(height: 30.h),
+                linkShap(180.0),
+                SizedBox(height: 10.h),
+                // linkShap(180.0),
+                // SizedBox(height: 10.h),
+                // linkShap(196.0),
+              ],
+            )));
   }
 
 //-------------------------------------------------------------------------------------
-  shape(int j, {double? width}) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(0.r))),
-          width: width ?? double.infinity,
-          height: j.h,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 2.0.h),
-        ),
-      ],
-    );
-  }
 
-//-------------------------------------------------------------------------------------
-
-  shapeRow(int j) {
+  shapeRow(double j, {double width = 354}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1325,7 +1366,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(5.r))),
-            width: 354.w,
+            width: width.w,
             height: j.h,
           ),
         ),
@@ -1357,12 +1398,30 @@ class _celebrityHomePageState extends State<celebrityHomePage>
     );
   }
 
+  linkShap(double height, {double width = 354}) {
+    return Padding(
+      padding: EdgeInsets.all(10.h),
+      child: SizedBox(
+        height: height.h,
+        child: Shimmer(
+            enabled: true,
+            gradient: LinearGradient(
+              tileMode: TileMode.mirror,
+              colors: [mainGrey, Colors.white],
+              stops: const [0.1, 0.88],
+            ),
+            child: shapeRow(height, width: width)),
+      ),
+    );
+  }
+
   Future onRefresh() async {
     setState(() {
       sections = getSectionsData();
       futureLinks = fetchLinks();
       futureHeader = fetchHeader();
       futurePartners = fetchPartners();
+      getAllCelebrity();
     });
   }
 
@@ -1373,9 +1432,10 @@ class _celebrityHomePageState extends State<celebrityHomePage>
         padding: EdgeInsets.only(top: 15.h),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
+              flex: 4,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
@@ -1389,7 +1449,11 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                     )),
               ),
             ),
+            SizedBox(
+              width: 5.w,
+            ),
             Expanded(
+              flex: 4,
               child: Container(
                 height: 35.h,
                 margin: EdgeInsets.only(left: 10.w),
@@ -1398,26 +1462,76 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                   border:
                       Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
                 ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    const Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    text(context, 'مالذي تبحث عنه؟', 12, Colors.grey)
-                  ],
+                child: InkWell(
+                  overlayColor:
+                      MaterialStateProperty.all(Colors.purple.withOpacity(0.5)),
+                  onTap: () {
+                    print('object');
+                    showSearch(
+                        context: context,
+                        delegate: CelebritySearch(allCellbrity,
+                           ));
+                  },
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      const Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      text(context, 'مالذي تبحث عنه؟', 12, Colors.grey)
+                    ],
+                  ),
                 ),
               ),
-            )
+            ),
+            //
+            currentuser == 'user'
+                ? Expanded(
+                    flex: 1,
+                    child: InkWell(
+                      child: GradientIcon(Icons.add, 40, gradient()),
+                      onTap: () {
+                        goTopagepush(context, buildAdvOrder());
+                      },
+                    ))
+                : const SizedBox()
+
+            //
           ],
         ),
       ),
     );
+  }
+
+  //--------------------------------------------------------
+  Future<List<getAllCelebrities>?> getAllCelebrity() async {
+    try {
+      var getSections = await http
+          .get(Uri.parse("https://mobile.celebrityads.net/api/celebrities"));
+      if (getSections.statusCode == 200) {
+        final body = getSections.body;
+        AllCelebrities celebrity = AllCelebrities.fromJson(jsonDecode(body));
+        return celebrity.data!.celebrities;
+      } else {
+        return Future.error('serverExceptions');
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        isConnectSection = false;
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        timeoutException = false;
+        return Future.error('TimeoutException');
+      } else {
+        serverExceptions = false;
+        return Future.error('serverExceptions');
+      }
+    }
   }
 }
