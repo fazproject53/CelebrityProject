@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:celepraty/celebrity/Activity/news/news.dart';
@@ -33,11 +35,34 @@ class _ActivityScreenMainState extends State<ActivityScreenMain> {
   int? isSelected = 1;
   bool grandientStudio=false;
   bool grandientnews=true;
-
+  bool ActiveConnection = false;
+  String T = "";
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CheckUserConnection();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column( children: [
+      body: ActiveConnection? Column( children: [
 
         SizedBox(
           height: 26.h,
@@ -72,7 +97,14 @@ class _ActivityScreenMainState extends State<ActivityScreenMain> {
               ?  Studio()
               : news()
         ),
-      ]),
+      ]):Center(
+          child:SizedBox(
+              height: 300.h,
+              width: 250.w,
+              child: internetConnection(
+                  context, reload: () {
+                CheckUserConnection();
+              })))
     );
   }
   drowRowButton(BuildContext context) {

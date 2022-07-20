@@ -26,7 +26,8 @@ class _StudioState extends State<Studio> {
   final _baseUrl ='https://mobile.celebrityads.net/api/celebrity/studio';
   int _page = 1;
 
-
+  bool ActiveConnection = false;
+  String T = "";
   // There is next page or not
   bool _hasNextPage = true;
 
@@ -101,10 +102,26 @@ class _StudioState extends State<Studio> {
           });
         }
   }
-
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
+    CheckUserConnection();
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
@@ -166,9 +183,27 @@ class _StudioState extends State<Studio> {
             : SingleChildScrollView(
           controller: _controller,
           child: _isFirstLoadRunning
-              ?  Center(
+              ?  ActiveConnection?Center(
             child: mainLoad(context),
-          )
+          ):Center(
+              child:SizedBox(
+                  height: 300.h,
+                  width: 250.w,
+                  child: internetConnection(
+                      context, reload: () {
+                    CheckUserConnection();
+                    _posts.clear();
+                    _page = 1;
+                    // There is next page or not
+                    _hasNextPage = true;
+
+                    // Used to display loading indicators when _firstLoad function is running
+                    _isFirstLoadRunning = false;
+
+                    // Used to display loading indicators when _loadMore function is running
+                    _isLoadMoreRunning = false;
+                    fetchStudio();
+                  })))
               : _posts.isEmpty ? Padding(
             padding: EdgeInsets.only(top: getSize(context).height / 7),
             child: Center(child: Column(
@@ -409,7 +444,7 @@ class _StudioState extends State<Studio> {
           ),
 
 
-        ),
+        )
 
 
       ),
@@ -458,8 +493,6 @@ void fetchStudio() async {
 
   }
 
-
-
   Future<http.Response> deleteStudio(int id) async {
     String token2 =
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOWVjZjA0OGYxODVkOGZjYjQ5YTI3ZTgyYjQxYjBmNTg3OTMwYTA3NDY3YTc3ZjQwOGZlYWFmNjliNGYxMDQ4ZjEzMjgxMWU4MWNhMDJlNjYiLCJpYXQiOjE2NTAxOTc4MTIuNjUzNTQ5OTA5NTkxNjc0ODA0Njg3NSwibmJmIjoxNjUwMTk3ODEyLjY1MzU1MzAwOTAzMzIwMzEyNSwiZXhwIjoxNjgxNzMzODEyLjY0Mzg2NjA2MjE2NDMwNjY0MDYyNSwic3ViIjoiMTEiLCJzY29wZXMiOltdfQ.toMOLVGTbNRcIqD801Xs3gJujhMvisCzAHHQC_P8UYp3lmzlG3rwadB4M0rooMIVt82AB2CyZfT37tVVWrjAgNq4diKayoQC5wPT7QQrAp5MERuTTM7zH2n3anZh7uargXP1Mxz3X9PzzTRSvojDlfCMsX1PrTLAs0fGQOVVa-u3lkaKpWkVVa1lls0S755KhZXCAt1lKBNcm7GHF657QCh4_daSEOt4WSF4yq-F6i2sJH-oMaYndass7HMj05wT9Z2KkeIFcZ21ZEAKNstraKUfLzwLr2_buHFNmnziJPG1qFDgHLOUo6Omdw3f0ciPLiLD7FnCrqo_zRZQw9V_tPb1-o8MEZJmAH2dfQWQBey4zZgUiScAwZAiPNcTPBWXmSGQHxYVjubKzN18tq-w1EPxgFJ43sRRuIUHNU15rhMio_prjwqM9M061IzYWgzl3LW1NfckIP65l5tmFOMSgGaPDk18ikJNmxWxpFeBamL6tTsct7-BkEuYEU6GEP5D1L-uwu8GGI_T6f0VSW9sal_5Zo0lEsUuR2nO1yrSF8ppooEkFHlPJF25rlezmaUm0MIicaekbjwKdja5J5ZgNacpoAnoXe4arklcR6djnj_bRcxhWiYa-0GSITGvoWLcbc90G32BBe2Pz3RyoaiHkAYA_BNA_0qmjAYJMwB_e8U';
@@ -474,6 +507,16 @@ void fetchStudio() async {
     );
 
     setState(() {
+      _posts.clear();
+      _page = 1;
+      // There is next page or not
+      _hasNextPage = true;
+
+      // Used to display loading indicators when _firstLoad function is running
+       _isFirstLoadRunning = false;
+
+      // Used to display loading indicators when _loadMore function is running
+       _isLoadMoreRunning = false;
       fetchStudio();
     });
     return response;

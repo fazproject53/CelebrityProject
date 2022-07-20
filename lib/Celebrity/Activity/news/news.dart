@@ -21,7 +21,8 @@ class _newsState extends State<news> {
 
   final _baseUrl ='https://mobile.celebrityads.net/api/celebrity/news';
   int _page = 1;
-
+  bool ActiveConnection = false;
+  String T = "";
 
   // There is next page or not
   bool _hasNextPage = true;
@@ -99,9 +100,27 @@ String? userToken;
       });
     }
   }
+
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
+
   @override
   void initState() {
-    super.initState();
+    CheckUserConnection();
    DatabaseHelper.getToken().then((value) {
      setState(() {
        userToken = value;
@@ -109,7 +128,7 @@ String? userToken;
      });
    });
    _controller.addListener(_loadMore);
-
+   super.initState();
 }
 
   @override
@@ -128,9 +147,27 @@ String? userToken;
             ? addNews()
             : SafeArea(
                 child:_isFirstLoadRunning
-                    ?  Center(
+                    ?  ActiveConnection?Center(
                   child: mainLoad(context),
-                )
+                ):Center(
+                    child:SizedBox(
+                        height: 300.h,
+                        width: 250.w,
+                        child: internetConnection(
+                            context, reload: () {
+                          CheckUserConnection();
+                          _posts.clear();
+                          _page = 1;
+                          // There is next page or not
+                          _hasNextPage = true;
+
+                          // Used to display loading indicators when _firstLoad function is running
+                          _isFirstLoadRunning = false;
+
+                          // Used to display loading indicators when _loadMore function is running
+                          _isLoadMoreRunning = false;
+                          fetchNews(userToken!);
+                        })))
                     : SingleChildScrollView(
                   controller: _controller,
                 child: Column(
@@ -512,7 +549,7 @@ String? userToken;
                   ],
                 ),
     ),
-      ),
+      )
       )
     );
   }
@@ -531,10 +568,21 @@ String? userToken;
     );
 
     setState(() {
+      _posts.clear();
+      _page = 1;
+      // There is next page or not
+      _hasNextPage = true;
+
+      // Used to display loading indicators when _firstLoad function is running
+      _isFirstLoadRunning = false;
+
+      // Used to display loading indicators when _loadMore function is running
+      _isLoadMoreRunning = false;
        fetchNews(userToken!);
     });
     return response;
   }
+
   void fetchNews(String tokenn) async {
 
       setState(() {
