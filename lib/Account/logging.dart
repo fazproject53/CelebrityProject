@@ -13,6 +13,7 @@ import 'LoggingSingUpAPI.dart';
 import 'Singup.dart';
 import 'TheUser.dart';
 import 'UserForm.dart';
+import 'VerifyUser.dart';
 
 class Logging extends StatefulWidget {
   static TheUser? theUser;
@@ -173,7 +174,21 @@ class _LoggingState extends State<Logging> {
                                           ' لايوجد اتصال بالانترنت في الوقت الحالي ');
                                     } else if (result == "TimeoutException") {
                                       Navigator.pop(context);
-                                      showMassage(context, 'مشكلة في الخادم', 'TimeoutException');
+                                      showMassage(context, 'مشكلة في الخادم',
+                                          'TimeoutException');
+                                    } else if (result == "User not verified") {
+                                      Navigator.pop(context);
+
+                                      failureDialog(
+                                          context,
+                                          'عليك ادخال الرمز المرسل الي بريدك الالكتروني للدخول الي المنصة ',
+                                          "assets/lottie/Failuer.json",
+                                          'تحقق', () {
+                                        Navigator.pop(context);
+                                        goTopagepush(context, VerifyUser(username:isFoundEmail));
+                                      },);
+
+                                      //showMassage(context, 'لم يتم التحقق من البريد الالكتروني بعد, لقد تم ارسال رمز التحقق الي البريد المدخل', 'اكمال اجراء');
                                     } else {
                                       Navigator.pop(context);
                                       showMassage(context, 'مشكلة في الخادم',
@@ -216,7 +231,9 @@ class _LoggingState extends State<Logging> {
                                           'خطأ في كلمة المرور او اسم المستخدم');
                                     } else {
                                       Navigator.pop(context);
-                                      showMassage(context, 'حقول فارغة او غير صحيحة',
+                                      showMassage(
+                                          context,
+                                          'حقول فارغة او غير صحيحة',
                                           'تاكد من تعبئة كل الحقول بصورة صحيحة');
                                     }
                                   }

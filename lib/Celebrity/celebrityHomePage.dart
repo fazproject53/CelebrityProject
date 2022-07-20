@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Account/LoggingSingUpAPI.dart';
 import '../MainScreen/main_screen_navigation.dart';
@@ -62,6 +63,18 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 
     super.initState();
   }
+//search history------------------------------
+  Future<void> _showSearch() async {
+     await showSearch(
+      context: context,
+      delegate: CelebritySearch(
+        allCelbrity: allCellbrity,
+        onSearchChanged: getRecentSearchesCelebrity,
+      ),
+    );
+
+  }
+
 
   @override
   bool get wantKeepAlive => true;
@@ -1467,10 +1480,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                       MaterialStateProperty.all(Colors.purple.withOpacity(0.5)),
                   onTap: () {
                     print('object');
-                    showSearch(
-                        context: context,
-                        delegate: CelebritySearch(allCellbrity,
-                           ));
+                    _showSearch();
                   },
                   child: Row(
                     children: [
@@ -1534,4 +1544,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
       }
     }
   }
+
+  //get Recent Searches Celebrity--------------------------------------------------------
+
 }

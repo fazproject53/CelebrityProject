@@ -11,6 +11,7 @@ import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 //===============================Text===============================
@@ -1443,7 +1444,7 @@ successfullyDialog(
           titlePadding: EdgeInsets.zero,
           elevation: 5,
           backgroundColor: white,
-          contentPadding: EdgeInsets.only(top: 30.h),
+          contentPadding: EdgeInsets.only(top: 30.h,right: 10.w,left: 10.w),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
             height: height ?? 200.h,
@@ -1474,6 +1475,56 @@ successfullyDialog(
       });
 }
 
+failureDialog(
+    context, String massage, String lottie, String bottomName, action,
+    {double? height}) {
+  return showDialog(
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.70),
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          titlePadding: EdgeInsets.zero,
+          elevation: 5,
+          backgroundColor: white,
+          contentPadding: EdgeInsets.only(top: 30.h,right: 10.w,left: 10.w),
+          actionsPadding: EdgeInsets.zero,
+          content: SizedBox(
+            height: height ?? 200.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                text(context, massage, 18, black, align: TextAlign.center),
+                Expanded(
+                  child: Lottie.asset(
+                    lottie,
+                    fit: BoxFit.cover,
+                    //height: 90.h
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.h,left: 10.w,right: 10.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  buttoms(context, 'الغاء', 18, Colors.grey, (){
+                    Navigator.pop(context);
+                  },
+                      backgrounColor: white),
+                  buttoms(context, bottomName, 18, Colors.grey,action ,
+                      backgrounColor: white)
+                ],
+              ),
+            )
+          ],
+        );
+      });
+}
 //snackBar------------------------------------------------------------------------------------
 SnackBar snackBar(context, String title, Color? color, IconData? icon) {
   return SnackBar(
@@ -1650,4 +1701,23 @@ Widget waitingData(double height, double width) {
           ),
         )),
   );
+}
+Future<List<String>> getRecentSearchesCelebrity(String query) async {
+  final pref = await SharedPreferences.getInstance();
+  final allSearches = pref.getStringList("recentSearches");
+  return allSearches!.where(( String search)=> search.startsWith(query)).toList();
+}
+
+//save To Recent Searches Celebrity--------------------------------------------------------
+Future<void> saveToRecentSearchesCelebrity(String searchText) async {
+  if (searchText == null) return; //Should not be null
+  final pref = await SharedPreferences.getInstance();
+
+  //Use `Set` to avoid duplication of recentSearches
+  Set<String> allSearches =
+      pref.getStringList("recentSearches")?.toSet() ?? {};
+
+  //Place it at first in the set
+  allSearches = {searchText, ...allSearches};
+  pref.setStringList("recentSearches", allSearches.toList());
 }

@@ -54,6 +54,8 @@ class DatabaseHelper {
         }
       } else if (message == "Invalid Credentials") {
         return "Invalid Credentials";
+      } else if (message == "User not verified") {
+        return "User not verified";
       }
     } catch (e) {
       if (e is SocketException) {

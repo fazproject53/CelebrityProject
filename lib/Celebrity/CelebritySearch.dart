@@ -10,22 +10,35 @@ import 'package:http/http.dart' as http;
 import '../ModelAPI/ModelsAPI.dart';
 import 'HomeScreen/celebrity_home_page.dart';
 
+typedef OnSearchChanged = Future<List<String>> Function(String);
+
 class CelebritySearch extends SearchDelegate {
   // onSubmitted: (String _) {
   //   widget.delegate.showResults(context);
   // },
-
+  List<getAllCelebrities> _oldFilters =  [];
   final List<getAllCelebrities> allCelbrity;
   List<getAllCelebrities>? listSearch;
   String? pagIndex;
-  CelebritySearch(
-    this.allCelbrity, {
-    String hintText = "البحث عن مشهور",
-  }) : super(
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.search,
-          // searchFieldDecorationTheme:
-        );
+
+  final OnSearchChanged onSearchChanged;
+
+  CelebritySearch({required this.allCelbrity, required this.onSearchChanged})
+      : super( keyboardType: TextInputType.text,
+    textInputAction: TextInputAction.done,);
+
+
+
+
+
+  // CelebritySearch(
+  //   this.allCelbrity, this.onSearchChanged, {
+  //   String hintText = "البحث عن مشهور",
+  // }) : super(
+  //         keyboardType: TextInputType.text,
+  //         textInputAction: TextInputAction.search,
+  //         // searchFieldDecorationTheme:
+  //       );
   // CelebritySearch(this.list);
 
   @override
@@ -56,9 +69,14 @@ class CelebritySearch extends SearchDelegate {
   }
 
   @override
-  Widget buildResults(BuildContext context) => Container(
+  Widget buildResults(BuildContext context){
+    showSuggestions(context);
+     saveToRecentSearchesCelebrity(query);
+    return Container(
       //child: Center(child: Text(query),),
-      );
+    );
+
+  }
 
   @override
   void showResults(BuildContext context) {
@@ -67,17 +85,16 @@ class CelebritySearch extends SearchDelegate {
         CelebrityHome(
           pageUrl: '$pagIndex',
         ));
-    print(query);
-    //showSuggestions(context);
+    query = '';
     super.showResults(context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     listSearch = query.isEmpty
-        ?
-        allCelbrity
-        //[]
+        ?allCelbrity
+    //_oldFilters
+       // []
         : allCelbrity.where((getAllCelebrities name) {
             // print('name ${name.name}');
             final nameLower = name.name!.toLowerCase();
@@ -88,7 +105,85 @@ class CelebritySearch extends SearchDelegate {
           }).toList();
     return buildSuggetion(listSearch!);
   }
-
+  Widget buildSuggetion(List<getAllCelebrities> suggestions) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Column(
+        children: [
+          suggestions.isEmpty
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 22.w, top: 15.h),
+                child: Align(
+                    alignment: Alignment.topRight,
+                    child: Text(
+                      "عمليات البحث الأخيرة",
+                      style: TextStyle(
+                          fontSize: 17.sp,
+                          color: black,
+                          fontFamily: 'Cairo'),
+                    )),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 22.w, top: 15.h),
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'مسح',
+                      style: TextStyle(
+                          fontSize: 17.sp,
+                          color: black,
+                          fontFamily: 'Cairo'),
+                    )),
+              ),
+            ],
+          )
+              : SizedBox(),
+          Expanded(
+            child: ListView.builder(
+                itemCount: suggestions.length,
+                itemBuilder: (context, index) {
+                  final suggestion = suggestions[index];
+                  final queryText = suggestion.name?.substring(0, query.length);
+                  final remainingText =
+                  suggestion.name?.substring(query.length);
+                  return ListTile(
+                    minLeadingWidth: 5.w,
+                    onTap: () {
+                      query = suggestion.name!;
+                      pagIndex = suggestion.pageUrl;
+                      showResults(context);
+                    },
+                    leading: Icon(suggestions.isEmpty ? Icons.history : Icons.search),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                              text: queryText,
+                              style: Theme.of(context).textTheme.titleMedium,
+                              children: [
+                                TextSpan(
+                                    text: remainingText,
+                                    style: const TextStyle(color: Colors.grey)),
+                              ]),
+                        ),
+                        Icon(
+                          Icons.north_west,
+                          color: grey,
+                          size: 22.sp,
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
+  }
   @override
   ThemeData appBarTheme(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -152,83 +247,26 @@ class CelebritySearch extends SearchDelegate {
   @override
   String get searchFieldLabel => "البحث عن مشهور";
 
-  Widget buildSuggetion(List<getAllCelebrities> suggestions, {int? pagindex}) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Column(
-        children: [
-          query.isEmpty
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 22.w, top: 15.h),
-                      child: Align(
-                          alignment: Alignment.topRight,
-                          child: Text(
-                            "عمليات البحث الأخيرة",
-                            style: TextStyle(
-                                fontSize: 17.sp,
-                                color: black,
-                                fontFamily: 'Cairo'),
-                          )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 22.w, top: 15.h),
-                      child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'مسح',
-                            style: TextStyle(
-                                fontSize: 17.sp,
-                                color: black,
-                                fontFamily: 'Cairo'),
-                          )),
-                    ),
-                  ],
-                )
-              : SizedBox(),
-          Expanded(
-            child: ListView.builder(
-                itemCount: suggestions.length,
-                itemBuilder: (context, index) {
-                  final suggestion = suggestions[index];
-                  final queryText = suggestion.name?.substring(0, query.length);
-                  final remainingText =
-                      suggestion.name?.substring(query.length);
-                  return ListTile(
-                    minLeadingWidth: 5.w,
-                    onTap: () {
-                      query = suggestion.name!;
-                      pagIndex =suggestion.pageUrl;
-                      showResults(context);
-                    },
-                    leading: Icon(query.isEmpty ? Icons.history : Icons.search),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                              text: queryText,
-                              style: Theme.of(context).textTheme.titleMedium,
-                              children: [
-                                TextSpan(
-                                    text: remainingText,
-                                    style: const TextStyle(color: Colors.grey)),
-                              ]),
-                        ),
-                        Icon(
-                          Icons.north_west,
-                          color: grey,
-                          size: 22.sp,
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-          ),
-        ],
-      ),
+
+//--------------------------------------------------------------------
+  getHistory() {
+    return FutureBuilder<List<String>>(
+      future: onSearchChanged != null ? onSearchChanged(query) : null,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          //_oldFilters=snapshot.data!;
+          return ListView.builder(
+          itemCount: _oldFilters.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: Icon(Icons.restore),
+              title: Text("${_oldFilters[index].name}"),
+              onTap: () => close(context, _oldFilters[index]),
+            );
+          },
+        );
+        }return CircularProgressIndicator();
+      },
     );
   }
 }
