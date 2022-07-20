@@ -209,328 +209,330 @@ String? userToken;
                                     8,
                                     8,
                                     5,
-                                    SizedBox(
-                                      height: edit && theindex == index
-                                          ? 180.h
-                                          : 150,
-                                      width: 300.w,
-                                      child: Card(
-                                        elevation: 5,
-                                        color: white,
-                                        child: paddingg(
-                                          0,
-                                          0,
-                                          8,
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  paddingg(
-                                                    5,
-                                                    5,
-                                                    0,
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(2.0),
-                                                        child: Image.network(
-                                                          Logging.theUser!.image!,
-                                                          fit: BoxFit.fill,
-                                                          height: edit
-                                                              ? 150.h
-                                                              : 130.h,
-                                                          width: 100.w,
+                                    SingleChildScrollView(
+                                      child: SizedBox(
+                                        height: edit && theindex == index
+                                            ? 180.h
+                                            : 150,
+                                        width: 300.w,
+                                        child: Card(
+                                          elevation: 5,
+                                          color: white,
+                                          child: paddingg(
+                                            0,
+                                            0,
+                                            8,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    // paddingg(
+                                                    //   5,
+                                                    //   5,
+                                                    //   0,
+                                                    //   Container(
+                                                    //     alignment:
+                                                    //         Alignment.centerRight,
+                                                    //     child: ClipRRect(
+                                                    //       borderRadius:
+                                                    //           BorderRadius
+                                                    //               .circular(2.0),
+                                                    //       child: Image.network(
+                                                    //         Logging.theUser!.image!,
+                                                    //         fit: BoxFit.fill,
+                                                    //         height: edit
+                                                    //             ? 150.h
+                                                    //             : 130.h,
+                                                    //         width: 100.w,
+                                                    //       ),
+                                                    //     ),
+                                                    //     margin: EdgeInsets.only(
+                                                    //         bottom: 5.h),
+                                                    //   ),
+                                                    // ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 10.h,
                                                         ),
-                                                      ),
-                                                      margin: EdgeInsets.only(
-                                                          bottom: 5.h),
+                                                        Container(
+                                                          width: 190.w,
+                                                          height: 35.h,
+                                                          child:
+                                                              edit &&
+                                                                      theindex ==
+                                                                          index
+                                                                  ? TextFormField(
+                                                                      cursorColor:
+                                                                          black,
+                                                                      controller:
+                                                                          newstitle,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              black,
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontFamily:
+                                                                              'Cairo'),
+                                                                      decoration: InputDecoration(
+                                                                          fillColor:
+                                                                              lightGrey,
+                                                                          focusedBorder: UnderlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                  color:
+                                                                                      pink)),
+                                                                          contentPadding:
+                                                                              EdgeInsets.all(0.h)),
+                                                                    )
+                                                                  : text(
+                                                                      context,
+                                                                      tempTitle.containsKey(_posts[index].id!)?
+                                                                      tempTitle[_posts[index].id!]! :_posts[index].title!,
+                                                                      14,
+                                                                      black),
+                                                        ),
+                                                        SizedBox(
+                                                          height: edit &&
+                                                                  theindex ==
+                                                                      index
+                                                              ? 8.h
+                                                              : 0.h,
+                                                        ),
+                                                        Container(
+                                                          width: 190.w,
+                                                          child:
+                                                              edit &&
+                                                                      theindex ==
+                                                                          index
+                                                                  ? TextFormField(
+                                                                      cursorColor:
+                                                                          black,
+                                                                      controller:
+                                                                          newsdesc,
+                                                                      maxLines: 3,
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              black,
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontFamily:
+                                                                              'Cairo'),
+                                                                      decoration: InputDecoration(
+                                                                          fillColor:
+                                                                              lightGrey,
+                                                                          focusedBorder: UnderlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                  color:
+                                                                                      pink)),
+                                                                          contentPadding:
+                                                                              EdgeInsets.all(0.h)),
+                                                                    )
+                                                                  : text(
+                                                                      context,
+                                                                  tempDesc.containsKey(_posts[index].id!)?
+                                                                  tempDesc[_posts[index].id!]! :_posts[index].description!,
+                                                                      14,
+                                                                      black),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 10.h,
-                                                      ),
-                                                      Container(
-                                                        width: 190.w,
-                                                        height: 35.h,
-                                                        child:
-                                                            edit &&
-                                                                    theindex ==
-                                                                        index
-                                                                ? TextFormField(
-                                                                    cursorColor:
-                                                                        black,
-                                                                    controller:
-                                                                        newstitle,
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                            black,
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontFamily:
-                                                                            'Cairo'),
-                                                                    decoration: InputDecoration(
-                                                                        fillColor:
-                                                                            lightGrey,
-                                                                        focusedBorder: UnderlineInputBorder(
-                                                                            borderSide: BorderSide(
-                                                                                color:
-                                                                                    pink)),
-                                                                        contentPadding:
-                                                                            EdgeInsets.all(0.h)),
-                                                                  )
-                                                                : text(
-                                                                    context,
-                                                                    tempTitle.containsKey(_posts[index].id!)?
-                                                                    tempTitle[_posts[index].id!]! :_posts[index].title!,
-                                                                    14,
-                                                                    black),
-                                                      ),
-                                                      SizedBox(
-                                                        height: edit &&
-                                                                theindex ==
-                                                                    index
-                                                            ? 8.h
-                                                            : 0.h,
-                                                      ),
-                                                      Container(
-                                                        width: 190.w,
-                                                        child:
-                                                            edit &&
-                                                                    theindex ==
-                                                                        index
-                                                                ? TextFormField(
-                                                                    cursorColor:
-                                                                        black,
-                                                                    controller:
-                                                                        newsdesc,
-                                                                    maxLines: 3,
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                            black,
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontFamily:
-                                                                            'Cairo'),
-                                                                    decoration: InputDecoration(
-                                                                        fillColor:
-                                                                            lightGrey,
-                                                                        focusedBorder: UnderlineInputBorder(
-                                                                            borderSide: BorderSide(
-                                                                                color:
-                                                                                    pink)),
-                                                                        contentPadding:
-                                                                            EdgeInsets.all(0.h)),
-                                                                  )
-                                                                : text(
-                                                                    context,
-                                                                tempDesc.containsKey(_posts[index].id!)?
-                                                                tempDesc[_posts[index].id!]! :_posts[index].description!,
-                                                                    14,
-                                                                    black),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              edit && theindex == index
-                                                  ? Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 110.0.h,
-                                                          left: 15.w,
-                                                          right: 15.w),
-                                                      child: InkWell(
-                                                        child: Container(
-                                                          child: Icon(
-                                                            save,
-                                                            color: white,
-                                                            size: 18,
+                                                  ],
+                                                ),
+                                                edit && theindex == index
+                                                    ? Padding(
+                                                        padding: EdgeInsets.only(
+                                                            top: 110.0.h,
+                                                            left: 15.w,
+                                                            right: 15.w),
+                                                        child: InkWell(
+                                                          child: Container(
+                                                            child: Icon(
+                                                              save,
+                                                              color: white,
+                                                              size: 18,
+                                                            ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                50),
+                                                                    gradient:
+                                                                        const LinearGradient(
+                                                                      begin:
+                                                                          Alignment(
+                                                                              0.7,
+                                                                              2.0),
+                                                                      end: Alignment(
+                                                                          -0.69,
+                                                                          -1.0),
+                                                                      colors: [
+                                                                        Color(
+                                                                            0xff0ab3d0),
+                                                                        Color(
+                                                                            0xffe468ca)
+                                                                      ],
+                                                                      stops: [
+                                                                        0.0,
+                                                                        1.0
+                                                                      ],
+                                                                    )),
+                                                            height: 28.h,
+                                                            width: 32.w,
                                                           ),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              50),
-                                                                  gradient:
-                                                                      const LinearGradient(
-                                                                    begin:
-                                                                        Alignment(
-                                                                            0.7,
-                                                                            2.0),
-                                                                    end: Alignment(
-                                                                        -0.69,
-                                                                        -1.0),
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xff0ab3d0),
-                                                                      Color(
-                                                                          0xffe468ca)
-                                                                    ],
-                                                                    stops: [
-                                                                      0.0,
-                                                                      1.0
-                                                                    ],
-                                                                  )),
-                                                          height: 28.h,
-                                                          width: 32.w,
+                                                          onTap: () {
+                                                            setState(() {
+                                                              tempTitle.putIfAbsent(_posts[index].id!, () => newstitle.text);
+                                                              tempDesc.putIfAbsent(_posts[index].id!, () => newsdesc.text);
+                                                              updateNews(_posts[index].id!, userToken!);
+                                                              edit = false;
+
+                                                            });
+                                                          },
                                                         ),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            tempTitle.putIfAbsent(_posts[index].id!, () => newstitle.text);
-                                                            tempDesc.putIfAbsent(_posts[index].id!, () => newsdesc.text);
-                                                            updateNews(_posts[index].id!, userToken!);
-                                                            edit = false;
-
-                                                          });
-                                                        },
-                                                      ),
-                                                    )
-                                                  : Padding(
-                                                      padding: EdgeInsets.only(
-                                                          top: 30.0.h,
-                                                          left: 10.w,
-                                                          right: 15.w),
-                                                      child: Column(
-                                                        children: [
-                                                          InkWell(
-                                                            child: Container(
-                                                              child: Icon(
-                                                                editDiscount,
-                                                                color: white,
-                                                                size: 18,
+                                                      )
+                                                    : Padding(
+                                                        padding: EdgeInsets.only(
+                                                            top: 30.0.h,
+                                                            left: 10.w,
+                                                            right: 15.w),
+                                                        child: Column(
+                                                          children: [
+                                                            InkWell(
+                                                              child: Container(
+                                                                child: Icon(
+                                                                  editDiscount,
+                                                                  color: white,
+                                                                  size: 18,
+                                                                ),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                50),
+                                                                        gradient:
+                                                                            const LinearGradient(
+                                                                          begin: Alignment(
+                                                                              0.7,
+                                                                              2.0),
+                                                                          end: Alignment(
+                                                                              -0.69,
+                                                                              -1.0),
+                                                                          colors: [
+                                                                            Color(
+                                                                                0xff0ab3d0),
+                                                                            Color(
+                                                                                0xffe468ca)
+                                                                          ],
+                                                                          stops: [
+                                                                            0.0,
+                                                                            1.0
+                                                                          ],
+                                                                        )),
+                                                                height: 28.h,
+                                                                width: 32.w,
                                                               ),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              50),
-                                                                      gradient:
-                                                                          const LinearGradient(
-                                                                        begin: Alignment(
-                                                                            0.7,
-                                                                            2.0),
-                                                                        end: Alignment(
-                                                                            -0.69,
-                                                                            -1.0),
-                                                                        colors: [
-                                                                          Color(
-                                                                              0xff0ab3d0),
-                                                                          Color(
-                                                                              0xffe468ca)
-                                                                        ],
-                                                                        stops: [
-                                                                          0.0,
-                                                                          1.0
-                                                                        ],
-                                                                      )),
-                                                              height: 28.h,
-                                                              width: 32.w,
-                                                            ),
-                                                            onTap: () {
-                                                              setState(() {
-                                                                newstitle.text = tempTitle.containsKey(_posts[index].id!)?
-                                                                tempTitle[_posts[index].id!]! : _posts[index].title!;
-                                                                newsdesc.text = tempDesc.containsKey(_posts[index].id!)?
-                                                                tempDesc[_posts[index].id!]! : _posts[index].description!;
-                                                                edit = true;
-                                                                theindex =
-                                                                    index;
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  newstitle.text = tempTitle.containsKey(_posts[index].id!)?
+                                                                  tempTitle[_posts[index].id!]! : _posts[index].title!;
+                                                                  newsdesc.text = tempDesc.containsKey(_posts[index].id!)?
+                                                                  tempDesc[_posts[index].id!]! : _posts[index].description!;
+                                                                  edit = true;
+                                                                  theindex =
+                                                                      index;
 
-                                                              });
-                                                            },
-                                                          ),
-                                                          SizedBox(
-                                                            height: 15.h,
-                                                          ),
-                                                          InkWell(
-                                                            child: Container(
-                                                              child: Icon(
-                                                                removeDiscount,
-                                                                color: white,
-                                                                size: 18,
-                                                              ),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              50),
-                                                                      gradient:
-                                                                          const LinearGradient(
-                                                                        begin: Alignment(
-                                                                            0.7,
-                                                                            2.0),
-                                                                        end: Alignment(
-                                                                            -0.69,
-                                                                            -1.0),
-                                                                        colors: [
-                                                                          Color(
-                                                                              0xff0ab3d0),
-                                                                          Color(
-                                                                              0xffe468ca)
-                                                                        ],
-                                                                        stops: [
-                                                                          0.0,
-                                                                          1.0
-                                                                        ],
-                                                                      )),
-                                                              height: 28.h,
-                                                              width: 32.w,
+                                                                });
+                                                              },
                                                             ),
-                                                            onTap: (){
-                                                              setState(() {
-                                                                showDialog<String>(
-                                                                  context: context,
-                                                                  builder: (BuildContext context) =>
-                                                                      AlertDialog(
-                                                                        title: Directionality(
-                                                                            textDirection: TextDirection.rtl,
-                                                                            child: text(context, 'حذف خبر', 16, black,)),
-                                                                        content: Directionality(
-                                                                            textDirection: TextDirection.rtl,
-                                                                            child: text(context, 'هل انت متأكد من انك تريد حذف الخبر ؟', 14, black,)),
-                                                                        actions: <Widget>[
-                                                                          Padding(
-                                                                            padding:  EdgeInsets.only(top: 0.h,),
-                                                                            child: TextButton(
-                                                                                onPressed: () =>
+                                                            SizedBox(
+                                                              height: 15.h,
+                                                            ),
+                                                            InkWell(
+                                                              child: Container(
+                                                                child: Icon(
+                                                                  removeDiscount,
+                                                                  color: white,
+                                                                  size: 18,
+                                                                ),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                50),
+                                                                        gradient:
+                                                                            const LinearGradient(
+                                                                          begin: Alignment(
+                                                                              0.7,
+                                                                              2.0),
+                                                                          end: Alignment(
+                                                                              -0.69,
+                                                                              -1.0),
+                                                                          colors: [
+                                                                            Color(
+                                                                                0xff0ab3d0),
+                                                                            Color(
+                                                                                0xffe468ca)
+                                                                          ],
+                                                                          stops: [
+                                                                            0.0,
+                                                                            1.0
+                                                                          ],
+                                                                        )),
+                                                                height: 28.h,
+                                                                width: 32.w,
+                                                              ),
+                                                              onTap: (){
+                                                                setState(() {
+                                                                  showDialog<String>(
+                                                                    context: context,
+                                                                    builder: (BuildContext context) =>
+                                                                        AlertDialog(
+                                                                          title: Directionality(
+                                                                              textDirection: TextDirection.rtl,
+                                                                              child: text(context, 'حذف خبر', 16, black,)),
+                                                                          content: Directionality(
+                                                                              textDirection: TextDirection.rtl,
+                                                                              child: text(context, 'هل انت متأكد من انك تريد حذف الخبر ؟', 14, black,)),
+                                                                          actions: <Widget>[
+                                                                            Padding(
+                                                                              padding:  EdgeInsets.only(top: 0.h,),
+                                                                              child: TextButton(
+                                                                                  onPressed: () =>
+                                                                                      Navigator.pop(
+                                                                                          context,
+                                                                                          'الغاء'),
+                                                                                  child: text(context, 'الغاء', 15, purple)
+                                                                              ),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
+                                                                              child: TextButton(
+                                                                                  onPressed: () => setState(() {
+                                                                                    deleteNew(_posts[index].id!, userToken!);
                                                                                     Navigator.pop(
                                                                                         context,
-                                                                                        'الغاء'),
-                                                                                child: text(context, 'الغاء', 15, purple)
-                                                                            ),
-                                                                          ),
-                                                                          Padding(
-                                                                            padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
-                                                                            child: TextButton(
-                                                                                onPressed: () => setState(() {
-                                                                                  deleteNew(_posts[index].id!, userToken!);
-                                                                                  Navigator.pop(
-                                                                                      context,
-                                                                                      'حذف');
+                                                                                        'حذف');
 
-                                                                                }),
-                                                                                child: text(context, 'حذف', 15, purple)
+                                                                                  }),
+                                                                                  child: text(context, 'حذف', 15, purple)
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                        ],
-                                                                      ),);
+                                                                          ],
+                                                                        ),);
 
-                                                            });}
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                            ],
+                                                              });}
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -585,6 +587,7 @@ String? userToken;
 
   void fetchNews(String tokenn) async {
 
+    var token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDI4MTY3ZWY1YWE0ZDBjZWQ0MDBjOTViMzBmNWQwZGFiNmY4MzgxMWU3YTUwMWUyMmYwMmMyZGU2YjRjOTIwOGI0MjFjNmZjZGM3YWMzZjUiLCJpYXQiOjE2NTM5ODg2MjAuNjgyMDE4OTk1Mjg1MDM0MTc5Njg3NSwibmJmIjoxNjUzOTg4NjIwLjY4MjAyNDk1NTc0OTUxMTcxODc1LCJleHAiOjE2ODU1MjQ2MjAuNjczNjY3OTA3NzE0ODQzNzUsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.OguFfzEWNOyCU4xSZ_PbLwg1xmyEbIMYAQ-J9wRApGKMq0qo1aEiM1OvcfvEaopxRiKngk-ckebhhcl7MRtGopNZcNjJwp9jWS7yZuyH7DBvct0O6tys47HL4eBU0QLwgmxMmh8nLkADARdIvVdZJFw9vLp-7X-4Huj6I2E1SFjeYnV6l7Fu_c1BYMAJmXpBwIALxTvwxg8tbxuhKmFBtLnnY3K25Tedra9IMc0nR_nXV3ifXdp4v7fsvbCLLYNr5ihc3ElE_QWczOvkkYeOPTP4yFMFlZFpWUNeER5wiEdbcO6WzzxzCRkLXriedWDI3G6qOrMAUAjiAUxS51--_7x9iI0qHalXHyGxgudUnAHGNsYpvLJ8JVCM2k_dtGazmZtA5w5wDSTI8gSuWUZxf2OpQNCmyt8k80Pbi_Olz2xDMSuDKYmiomWrUhwIwunk_gsU9lC5oLcEzJ2BLcaiiuwFex9xraMbbC1ZyipSIZZhW1l1CppYeYmPSxLC8hEIywRy5Lbvw-WQ25CpurNgEMiHefGooDxCsHqnkfWCQ1MnFAGiEs2hPtG7DVp8RArzCyXXaVrtVi2wbBFrCPDK52yNQxQjs3z8JBNlDwEFR2uDa-VRup61j2WESvyUKPMloD7gL7FsthAl6IZquYh7XujHWEcf1Lnprd6D5J6CPWM';
       setState(() {
         _isFirstLoadRunning = true;
       });
@@ -594,7 +597,7 @@ String? userToken;
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': 'Bearer $userToken'
+              'Authorization': 'Bearer $token'
             });
         if (response.statusCode == 200) {
           // If the server did return a 200 OK response,
