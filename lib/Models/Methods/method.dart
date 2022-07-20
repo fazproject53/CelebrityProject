@@ -1533,15 +1533,15 @@ Widget internetConnection(context, {reload}) {
       Spacer(),
       SizedBox(
           height: MediaQuery.of(context).size.height / 5,
-          width: MediaQuery.of(context).size.height / 5,
-          child: Lottie.asset('assets/lottie/connection.json')),
+          width: MediaQuery.of(context).size.height / 6,
+          child: Lottie.asset('assets/lottie/internetConection.json')),
       SizedBox(
         height: 10.h,
       ),
-      text(context, 'لايوجد اتصال بالانترنت في الوقت الحالي', 20, black,
+      text(context, 'لايوجد اتصال بالانترنت في الوقت الحالي', 16, black,
           align: TextAlign.center),
       SizedBox(
-        height: 20.h,
+        height: 25.h,
       ),
       buttoms(context, 'إعادة تحميل', 14, black, reload,
           backgrounColor: grey!, horizontal: 20),

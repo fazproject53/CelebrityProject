@@ -1,5 +1,7 @@
 ///import section
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:celepraty/Celebrity/Pricing/ModelPricing.dart';
 import 'package:celepraty/Models/Methods/classes/GradientIcon.dart';
@@ -59,6 +61,11 @@ class _PricingHomeState extends State<PricingHome> {
 
   String? toolTipAreaSpace;
 
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -84,7 +91,24 @@ class _PricingHomeState extends State<PricingHome> {
                 } else if (snapshot.connectionState == ConnectionState.active ||
                     snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
+                    if (snapshot.error.toString() ==
+                        'SocketException') {
+                      return Center(
+                          child: SizedBox(
+                              height: 500.h,
+                              width: 250.w,
+                              child: internetConnection(context,
+                                  reload: () {
+                                    setState(() {
+                                      pricing = fetchCelebrityPricing(userToken!);
+                                      isConnectSection = true;
+                                    });
+                                  })));
+                    } else {
+                      return const Center(
+                          child: Text(
+                              'حدث خطا ما اثناء استرجاع البيانات'));
+                    }
                     //---------------------------------------------------------------------------
                   } else if (snapshot.hasData) {
                     if (helper == 0) {
@@ -601,8 +625,7 @@ class _PricingHomeState extends State<PricingHome> {
                                     //from
                                     var ad = int.parse(pricingAd.text);
 
-                                    _formKey.currentState!.validate()
-                                        ? {
+                                    _formKey.currentState!.validate() ? {
                                             ///var c = int. parse(b);
                                             //to < from
                                             ad1 < ad
@@ -625,11 +648,7 @@ class _PricingHomeState extends State<PricingHome> {
                                                   14,
                                                   black,
                                                   fontWeight: FontWeight.w200),
-                                            ).show(context)
-
-
-
-                                                : postFunction(userToken!)
+                                            ).show(context) : postFunction(userToken!)
                                                     .whenComplete(() => {
                                                           Flushbar(
                                                             flushbarPosition:
@@ -695,52 +714,90 @@ class _PricingHomeState extends State<PricingHome> {
 
   ///Get
   Future<Pricing> fetchCelebrityPricing(String token) async {
-    final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/celebrity/price'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
+    try{
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/celebrity/price'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        //print(response.body);
+        return Pricing.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(error){
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
         });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //print(response.body);
-      return Pricing.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 
   ///Post
   Future<http.Response> postFunction(String token) async {
-    final response = await http.post(
-      Uri.parse('https://mobile.celebrityads.net/api/celebrity/price/update'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'advertising_price_from': pricingAd.text,
-        'advertising_price_to': pricingAd1.text,
-        'gift_image_price': pricingGiftPhoto.text,
-        'gift_vedio_price': pricingGiftVideo.text,
-        'gift_voice_price': pricingGiftVoice.text,
-        'ad_space_price': pricingArea.text
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return response;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+    try{
+      final response = await http.post(
+        Uri.parse('https://mobile.celebrityads.net/api/celebrity/price/update'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'advertising_price_from': pricingAd.text,
+          'advertising_price_to': pricingAd1.text,
+          'gift_image_price': pricingGiftPhoto.text,
+          'gift_vedio_price': pricingGiftVideo.text,
+          'gift_voice_price': pricingGiftVoice.text,
+          'ad_space_price': pricingArea.text
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return response;
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(error){
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 }

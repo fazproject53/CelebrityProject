@@ -1,5 +1,7 @@
 ///import section
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:celepraty/Celebrity/Calendar/CalenderModel.dart';
 import 'package:celepraty/Celebrity/Calendar/pdfClass.dart';
@@ -41,6 +43,10 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
   Future<CalenderModel>? calender;
 
   String? userToken;
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -82,12 +88,27 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                               ConnectionState.active ||
                           snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasError) {
-                          return Center(child: Text(snapshot.error.toString()));
+                          if (snapshot.error.toString() == 'SocketException') {
+                            return Center(
+                                child: SizedBox(
+                                    height: 500.h,
+                                    width: 250.w,
+                                    child:
+                                        internetConnection(context, reload: () {
+                                      setState(() {
+                                        calender = fetchCalender(userToken!);
+                                        isConnectSection = true;
+                                      });
+                                    })));
+                          } else {
+                            return const Center(
+                                child:
+                                    Text('حدث خطا ما اثناء استرجاع البيانات'));
+                          }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {
                           return snapshot.data!.data!.orders!.isNotEmpty
-                              ? Column(
-                                children:[
+                              ? Column(children: [
                                   Container(
                                     alignment: Alignment.topRight,
                                     child: Padding(
@@ -106,7 +127,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                   Expanded(
                                     child: ListView.builder(
                                       itemCount:
-                                      snapshot.data!.data!.orders!.length,
+                                          snapshot.data!.data!.orders!.length,
                                       itemBuilder: (context, index) {
                                         dateFormat = DateTime.parse(snapshot
                                             .data!.data!.orders![index].date!);
@@ -176,8 +197,8 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                     ///Row to store all info
                                                     Row(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         paddingg(
                                                             10,
@@ -188,48 +209,48 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                 Container(
                                                                   ///the box of date
                                                                   alignment:
-                                                                  Alignment
-                                                                      .center,
+                                                                      Alignment
+                                                                          .center,
                                                                   height: 80.h,
                                                                   width: 80.w,
                                                                   decoration:
-                                                                  BoxDecoration(
-                                                                      gradient:
-                                                                      LinearGradient(
-                                                                        begin:
-                                                                        const Alignment(0.8, 2.0),
-                                                                        end:
-                                                                        const Alignment(-0.69, -1.0),
-                                                                        colors: [
-                                                                          const Color(0xff0ab3d0).withOpacity(0.90),
-                                                                          const Color(0xffe468ca).withOpacity(0.90)
-                                                                        ],
-                                                                        stops: const [
-                                                                          0.0,
-                                                                          1.0
-                                                                        ],
-                                                                      ),
-                                                                      borderRadius:
-                                                                      BorderRadius.only(
-                                                                        bottomLeft:
-                                                                        Radius.circular(10.r),
-                                                                        bottomRight:
-                                                                        Radius.circular(10.r),
-                                                                        topRight:
-                                                                        Radius.circular(10.r),
-                                                                        topLeft:
-                                                                        Radius.circular(10.r),
-                                                                      )),
+                                                                      BoxDecoration(
+                                                                          gradient:
+                                                                              LinearGradient(
+                                                                            begin:
+                                                                                const Alignment(0.8, 2.0),
+                                                                            end:
+                                                                                const Alignment(-0.69, -1.0),
+                                                                            colors: [
+                                                                              const Color(0xff0ab3d0).withOpacity(0.90),
+                                                                              const Color(0xffe468ca).withOpacity(0.90)
+                                                                            ],
+                                                                            stops: const [
+                                                                              0.0,
+                                                                              1.0
+                                                                            ],
+                                                                          ),
+                                                                          borderRadius:
+                                                                              BorderRadius.only(
+                                                                            bottomLeft:
+                                                                                Radius.circular(10.r),
+                                                                            bottomRight:
+                                                                                Radius.circular(10.r),
+                                                                            topRight:
+                                                                                Radius.circular(10.r),
+                                                                            topLeft:
+                                                                                Radius.circular(10.r),
+                                                                          )),
 
                                                                   ///Text
                                                                   child: Column(
                                                                     mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
+                                                                        MainAxisAlignment
+                                                                            .center,
                                                                     children: [
                                                                       Row(
                                                                         mainAxisAlignment:
-                                                                        MainAxisAlignment.center,
+                                                                            MainAxisAlignment.center,
                                                                         children: [
                                                                           text(
                                                                               context,
@@ -239,7 +260,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                               fontWeight: FontWeight.bold),
                                                                           SizedBox(
                                                                             width:
-                                                                            5.w,
+                                                                                5.w,
                                                                           ),
                                                                           text(
                                                                               context,
@@ -252,7 +273,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                       Padding(
                                                                         padding: EdgeInsets.only(
                                                                             left:
-                                                                            10.w,
+                                                                                10.w,
                                                                             right: 10.w),
                                                                         child: text(
                                                                             context,
@@ -261,7 +282,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                             16,
                                                                             white,
                                                                             fontWeight:
-                                                                            FontWeight.bold),
+                                                                                FontWeight.bold),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -276,12 +297,12 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                 Center(
                                                                   child: Column(
                                                                     crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       SizedBox(
                                                                         height:
-                                                                        10.h,
+                                                                            10.h,
                                                                       ),
                                                                       text(
                                                                           context,
@@ -310,8 +331,8 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                             )),
                                                         Padding(
                                                           padding:
-                                                          EdgeInsets.only(
-                                                              left: 7.w),
+                                                              EdgeInsets.only(
+                                                                  left: 7.w),
                                                           child: Row(children: [
                                                             InkWell(
                                                               child: Icon(
@@ -327,26 +348,26 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .user!
                                                                         .name!,
                                                                     snapshot
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .id!,
                                                                     snapshot
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .date!,
                                                                     snapshot
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .adType!
                                                                         .name!);
                                                               },
@@ -356,18 +377,18 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                             ),
                                                             InkWell(
                                                               child:
-                                                              GradientIcon(
+                                                                  GradientIcon(
                                                                 share,
                                                                 25.w,
                                                                 const LinearGradient(
                                                                   begin:
-                                                                  Alignment(
-                                                                      0.7,
-                                                                      2.0),
+                                                                      Alignment(
+                                                                          0.7,
+                                                                          2.0),
                                                                   end:
-                                                                  Alignment(
-                                                                      -0.69,
-                                                                      -1.0),
+                                                                      Alignment(
+                                                                          -0.69,
+                                                                          -1.0),
                                                                   colors: [
                                                                     Color(
                                                                         0xff0ab3d0),
@@ -390,33 +411,33 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .user!
                                                                         .name!,
                                                                     snapshot
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .id!
                                                                         .toString(),
                                                                     snapshot
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .date!
                                                                         .toString(),
                                                                     snapshot
                                                                         .data!
                                                                         .data!
                                                                         .orders![
-                                                                    index]
+                                                                            index]
                                                                         .adType!
                                                                         .name!);
                                                                 PdfClass
                                                                     .openFile(
-                                                                    pdf);
+                                                                        pdf);
                                                               },
                                                             ),
                                                           ]),
@@ -432,8 +453,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                       },
                                     ),
                                   ),
-                                ]
-                              )
+                                ])
                               : Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -472,28 +492,47 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
 
   ///GET
   Future<CalenderModel> fetchCalender(String token) async {
-    final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/celebrity/schedule'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
+    try{
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/celebrity/schedule'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        // print(response.body);
+        return CalenderModel.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(error){
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
         });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      // print(response.body);
-      return CalenderModel.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 }
 
-///This is a block of Model Dialog
-showDialogFunc(context, personalName, invoices, date2, typeOfOrder) {
+  ///This is a block of Model Dialog
+  showDialogFunc(context, personalName, invoices, date2, typeOfOrder) {
   return showDialog(
     context: context,
     builder: (context) {

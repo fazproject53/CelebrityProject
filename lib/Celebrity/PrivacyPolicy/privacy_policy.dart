@@ -1,5 +1,7 @@
 ///import section
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:celepraty/Celebrity/PrivacyPolicy/ModelPrivicyPolicy.dart';
 import 'package:celepraty/Models/Methods/classes/GradientIcon.dart';
@@ -10,7 +12,6 @@ import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import '../../Account/LoggingSingUpAPI.dart';
-import '../setting/profileInformation.dart';
 
 class PrivacyPolicyMain extends StatelessWidget {
   const PrivacyPolicyMain({Key? key}) : super(key: key);
@@ -56,6 +57,11 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
 
   final _formKey = GlobalKey<FormState>();
   String? userToken;
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -93,7 +99,24 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                 snapshot.connectionState ==
                                     ConnectionState.done) {
                               if (snapshot.hasError) {
-                                return Text(snapshot.error.toString());
+                                if (snapshot.error.toString() ==
+                                    'SocketException') {
+                                  return Center(
+                                      child: SizedBox(
+                                          height: 500.h,
+                                          width: 250.w,
+                                          child: internetConnection(context,
+                                              reload: () {
+                                            setState(() {
+                                              pp = fetchCelebritie(userToken!);
+                                              isConnectSection = true;
+                                            });
+                                          })));
+                                } else {
+                                  return const Center(
+                                      child: Text(
+                                          'حدث خطا ما اثناء استرجاع البيانات'));
+                                }
                                 //---------------------------------------------------------------------------
                               } else if (snapshot.hasData) {
                                 if (helper == 0) {
@@ -402,7 +425,8 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                 padding:
                                                     EdgeInsets.only(left: 20.w),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
                                                   children: [
                                                     ElevatedButton(
                                                         style: ButtonStyle(
@@ -426,51 +450,29 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                         child: text(context,
                                                             'حفظ', 12, purple),
                                                         onPressed: () {
-                                                          _formKey.currentState!.validate()
-                                                              ? postFunction(userToken!)
-                                                              .whenComplete(() => {
-                                                            Flushbar(
-                                                              flushbarPosition:
-                                                              FlushbarPosition
-                                                                  .TOP,
-                                                              backgroundColor:
-                                                              white,
-                                                              margin:
-                                                              const EdgeInsets
-                                                                  .all(5),
-                                                              flushbarStyle:
-                                                              FlushbarStyle
-                                                                  .FLOATING,
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  10.r),
-                                                              duration:
-                                                              const Duration(
-                                                                  seconds: 5),
-                                                              icon: Icon(
-                                                                right,
-                                                                color: green,
-                                                                size: 30,
-                                                              ),
-                                                              titleText: text(
-                                                                  context,
-                                                                  'تم الحفظ',
-                                                                  16,
-                                                                  purple),
-                                                              messageText: text(
-                                                                  context,
-                                                                  'تم حفظ المدخلات بنجاح',
-                                                                  14,
-                                                                  black,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w200),
-                                                            ).show(context)
-
-                                                          })
+                                                          _formKey.currentState!
+                                                                  .validate()
+                                                              ? postFunction(
+                                                                      userToken!)
+                                                                  .whenComplete(
+                                                                      () => {
+                                                                            Flushbar(
+                                                                              flushbarPosition: FlushbarPosition.TOP,
+                                                                              backgroundColor: white,
+                                                                              margin: const EdgeInsets.all(5),
+                                                                              flushbarStyle: FlushbarStyle.FLOATING,
+                                                                              borderRadius: BorderRadius.circular(10.r),
+                                                                              duration: const Duration(seconds: 5),
+                                                                              icon: Icon(
+                                                                                right,
+                                                                                color: green,
+                                                                                size: 30,
+                                                                              ),
+                                                                              titleText: text(context, 'تم الحفظ', 16, purple),
+                                                                              messageText: text(context, 'تم حفظ المدخلات بنجاح', 14, black, fontWeight: FontWeight.w200),
+                                                                            ).show(context)
+                                                                          })
                                                               : null;
-
                                                         }),
                                                   ],
                                                 ),
@@ -502,53 +504,88 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
 
   ///Get
   Future<PrivacyPolicy> fetchCelebritie(String token) async {
-
-    final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/celebrity/profile'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
+    try {
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/celebrity/profile'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return PrivacyPolicy.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    } catch (error) {
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
         });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return PrivacyPolicy.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 
   ///Post
   Future<http.Response> postFunction(String token) async {
-
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/terms-and-conditions/update',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'advertising_policy': addYourAdvPP.text,
-        'ad_space_policy': addYourAdvAreaPP.text,
-        'gifting_policy': addYourGiftingPP.text
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      print(response.body);
-      return response;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+    try {
+      final response = await http.post(
+        Uri.parse('https://mobile.celebrityads.net/api/celebrity/terms-and-conditions/update',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'advertising_policy': addYourAdvPP.text,
+          'ad_space_policy': addYourAdvAreaPP.text,
+          'gifting_policy': addYourGiftingPP.text
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print(response.body);
+        return response;
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    } catch (error) {
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 

@@ -1,5 +1,7 @@
 ///import section
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
@@ -9,7 +11,6 @@ import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 
-import '../../celebrity/DiscountCodes/discount_codes_main.dart';
 import 'ModelDiscountCode.dart';
 
 ///CreateNewDiscountCodeHome
@@ -68,6 +69,10 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
 
   String? userToken;
 
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -100,7 +105,24 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                           ConnectionState.active ||
                       snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError) {
-                      return Center(child: Text(snapshot.error.toString()));
+                      if (snapshot.error.toString() ==
+                          'SocketException') {
+                        return Center(
+                            child: SizedBox(
+                                height: 500.h,
+                                width: 250.w,
+                                child: internetConnection(
+                                    context, reload: () {
+                                  setState(() {
+                                    discount = fetchDiscountCode(userToken!);
+                                    isConnectSection = true;
+                                  });
+                                })));
+                      } else {
+                        return const Center(
+                            child: Text(
+                                'حدث خطا ما اثناء استرجاع البيانات'));
+                      }
 
                       ///if has data
                     } else if (snapshot.hasData) {
@@ -804,96 +826,153 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
 
   ///POST
   Future<http.Response> createNewDiscountCode(String token) async {
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/promo-codes/add',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'code': discountCode.text,
-        'discount_type': isValue1 == false ? 'مبلغ ثابت' : 'نسبة مئوية',
-        'discount': discountValue.text,
-        'num_of_person': numberOfUsers.text,
-        'description': description.text,
-        'ad_type_ids': saveList,
-        'date_from': currentStart.toString(),
-        'date_to': currentEnd.toString()
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
+   try{
+     final response = await http.post(
+       Uri.parse(
+         'https://mobile.celebrityads.net/api/celebrity/promo-codes/add',
+       ),
+       headers: {
+         'Content-Type': 'application/json',
+         'Accept': 'application/json',
+         'Authorization': 'Bearer $token'
+       },
+       body: jsonEncode(<String, dynamic>{
+         'code': discountCode.text,
+         'discount_type': isValue1 == false ? 'مبلغ ثابت' : 'نسبة مئوية',
+         'discount': discountValue.text,
+         'num_of_person': numberOfUsers.text,
+         'description': description.text,
+         'ad_type_ids': saveList,
+         'date_from': currentStart.toString(),
+         'date_to': currentEnd.toString()
+       }),
+     );
+     if (response.statusCode == 200) {
+       // If the server did return a 200 OK response,
+       // then parse the JSON.
 
-      // print(response.body);
-      return response;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
-    }
+       // print(response.body);
+       return response;
+     } else {
+       // If the server did not return a 200 OK response,
+       // then throw an exception.
+       throw Exception('Failed to load activity');
+     }
+   }catch(error){
+     if (error is SocketException) {
+       setState(() {
+         isConnectSection = false;
+       });
+       return Future.error('SocketException');
+     } else if (error is TimeoutException) {
+       setState(() {
+         timeoutException = false;
+       });
+       return Future.error('TimeoutException');
+     } else {
+       setState(() {
+         serverExceptions = false;
+       });
+       return Future.error('serverExceptions');
+     }
+   }
   }
 
   ///GET
   Future<DiscountModel> fetchDiscountCode(String token) async {
-    final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/celebrity/promo-codes'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
+    try{
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/celebrity/promo-codes'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          });
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        // print(response.body);
+        return DiscountModel.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(error){
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
         });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      // print(response.body);
-
-      return DiscountModel.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
+
   }
 
   ///UPDATE
   Future<http.Response> updateDiscountCode(String token, int id) async {
-    final response = await http.post(
-      Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/promo-codes/update/$id',
-      ),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: jsonEncode(<String, dynamic>{
-        'code': discountCode.text,
-        'discount_type': _value == 1 ? 'مبلغ ثابت' : 'نسبة مئوية',
-        'discount': discountValue.text,
-        'num_of_person': numberOfUsers.text,
-        'description': description.text,
-        'ad_type_ids': saveList,
-        'date_from': currentStart.toString(),
-        'date_to': currentEnd.toString()
-      }),
-    );
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
+    try{
+      final response = await http.post(
+        Uri.parse(
+          'https://mobile.celebrityads.net/api/celebrity/promo-codes/update/$id',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'code': discountCode.text,
+          'discount_type': _value == 1 ? 'مبلغ ثابت' : 'نسبة مئوية',
+          'discount': discountValue.text,
+          'num_of_person': numberOfUsers.text,
+          'description': description.text,
+          'ad_type_ids': saveList,
+          'date_from': currentStart.toString(),
+          'date_to': currentEnd.toString()
+        }),
+      );
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
 
-      print(response.body);
-      setState(() {
-        discount = fetchDiscountCode(userToken!);
-      });
-      return response;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+        print(response.body);
+        setState(() {
+          discount = fetchDiscountCode(userToken!);
+        });
+        return response;
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch(error){
+      if (error is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (error is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 }

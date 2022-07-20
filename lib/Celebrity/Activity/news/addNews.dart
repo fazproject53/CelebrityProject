@@ -93,9 +93,10 @@ class _addNewsState extends State<addNews> {
                                   if (_formKey.currentState!.validate()) {
                                       addNews(userToken!).then((value) =>
                                       {
-                                        value == ''?{
+                                        value == '' ?{
                                         goTopageReplacement(
                                             context, ActivityScreen()),
+                                          //done
                                         Flushbar(
                                           flushbarPosition:
                                           FlushbarPosition.TOP,
@@ -128,6 +129,8 @@ class _addNewsState extends State<addNews> {
                                               fontWeight:
                                               FontWeight.w200),
                                         ).show(context)}:
+
+
                                         Flushbar(
                                           flushbarPosition:
                                           FlushbarPosition.TOP,

@@ -621,6 +621,7 @@ String? userToken;
         _isFirstLoadRunning = false;
       });
   }
+
   Future<http.Response> updateNews(int id, String token) async {
    final response = await http.post(
       Uri.parse(
