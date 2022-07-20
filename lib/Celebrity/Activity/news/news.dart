@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:celepraty/Celebrity/Activity/news/addNews.dart';
 import 'package:celepraty/Models/Methods/method.dart';
@@ -18,6 +19,23 @@ class news extends StatefulWidget {
 
 class _newsState extends State<news> {
 
+  final _baseUrl ='https://mobile.celebrityads.net/api/celebrity/news';
+  int _page = 1;
+
+
+  // There is next page or not
+  bool _hasNextPage = true;
+
+  // Used to display loading indicators when _firstLoad function is running
+  bool _isFirstLoadRunning = false;
+
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunning = false;
+
+  // This holds the posts fetched from the server
+  List _posts = [];
+  ScrollController _controller = ScrollController();
+
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
@@ -30,34 +48,91 @@ String? userToken;
  Map<int, String> tempDesc = HashMap<int, String>();
   int? theindex;
   bool? temp;
-  final _baseUrl = 'https://jsonplaceholder.typicode.com/posts';
+
   TextEditingController newstitle = new TextEditingController();
   TextEditingController newsdesc = new TextEditingController();
 
+  void _loadMore() async {
+
+    print('#########################################################');
+
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false && _controller.position.maxScrollExtent ==
+        _controller.offset ) {
+
+      setState(() {
+        _isLoadMoreRunning = true; // Display a progress indicator at the bottom
+      });
+      _page += 1;
+      try {
+        final res =
+        await http.get(Uri.parse("$_baseUrl?page=$_page"), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
+        });
+
+        if (GeneralNews
+            .fromJson(jsonDecode(res.body))
+            .data!.news!
+            .isNotEmpty) {
+          setState(() {
+            _posts.addAll(GeneralNews
+                .fromJson(jsonDecode(res.body))
+                .data!
+                .news!);
+          });
+        } else {
+          setState(() {
+            _hasNextPage = false;
+          });
+        }
+      } catch (err) {
+        if (kDebugMode) {
+          print('Something went wrong!');
+        }
+      }
+
+      setState(() {
+        _isLoadMoreRunning = false;
+      });
+    }
+  }
   @override
   void initState() {
+    super.initState();
    DatabaseHelper.getToken().then((value) {
      setState(() {
        userToken = value;
-       getNews = fetchNews(userToken!);
+       fetchNews(userToken!);
      });
    });
-    super.initState();
+   _controller.addListener(_loadMore);
+
+}
+
+  @override
+  void dispose() {
+    _controller.removeListener(_loadMore);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    // setState(() {
-    //   getNews = fetchNews();
-    // });
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         body: add
             ? addNews()
             : SafeArea(
-                child: SingleChildScrollView(
+                child:_isFirstLoadRunning
+                    ?  Center(
+                  child: mainLoad(context),
+                )
+                    : SingleChildScrollView(
+                  controller: _controller,
                 child: Column(
                   children: [
                     Row(
@@ -75,37 +150,7 @@ String? userToken;
                             })),
                       ],
                     ),
-                    FutureBuilder<GeneralNews>(
-                      future: getNews,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return mainLoad(context);
-                        } else if (snapshot.connectionState ==
-                                ConnectionState.active ||
-                            snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            if (snapshot.error.toString() ==
-                                'SocketException') {
-                              return Center(
-                                  child: SizedBox(
-                                      height: 500.h,
-                                      width: 250.w,
-                                      child: internetConnection(
-                                          context, reload: () {
-                                        setState(() {
-                                          getNews = fetchNews(userToken!);
-                                          isConnectSection = true;
-                                        });
-                                      })));
-                            } else {
-                              return const Center(
-                                  child: Text(
-                                      'حدث خطا ما اثناء استرجاع البيانات'));
-                            }
-                            //---------------------------------------------------------------------------
-                          } else if (snapshot.hasData) {
-                            return snapshot.data!.data!.news!.isEmpty? Padding(
+                    _posts.isEmpty? Padding(
                               padding: EdgeInsets.only(top:getSize(context).height/7),
                               child: Center(child: Column(
                                 children: [
@@ -118,7 +163,7 @@ String? userToken;
                               10,
                               20,
                               ListView.builder(
-                                itemCount: snapshot.data!.data!.news!.length,
+                                itemCount: _posts.length,
                                 shrinkWrap: true,
                                 physics: ScrollPhysics(),
                                 itemBuilder: (context, index) {
@@ -208,8 +253,8 @@ String? userToken;
                                                                   )
                                                                 : text(
                                                                     context,
-                                                                    tempTitle.containsKey(snapshot.data!.data!.news![index].id!)?
-                                                                    tempTitle[snapshot.data!.data!.news![index].id!]! :snapshot.data!.data!.news![index].title!,
+                                                                    tempTitle.containsKey(_posts[index].id!)?
+                                                                    tempTitle[_posts[index].id!]! :_posts[index].title!,
                                                                     14,
                                                                     black),
                                                       ),
@@ -251,8 +296,8 @@ String? userToken;
                                                                   )
                                                                 : text(
                                                                     context,
-                                                                tempDesc.containsKey(snapshot.data!.data!.news![index].id!)?
-                                                                tempDesc[snapshot.data!.data!.news![index].id!]! :snapshot.data!.data!.news![index].description!,
+                                                                tempDesc.containsKey(_posts[index].id!)?
+                                                                tempDesc[_posts[index].id!]! :_posts[index].description!,
                                                                     14,
                                                                     black),
                                                       ),
@@ -304,9 +349,9 @@ String? userToken;
                                                         ),
                                                         onTap: () {
                                                           setState(() {
-                                                            tempTitle.putIfAbsent(snapshot.data!.data!.news![index].id!, () => newstitle.text);
-                                                            tempDesc.putIfAbsent(snapshot.data!.data!.news![index].id!, () => newsdesc.text);
-                                                            updateNews(snapshot.data!.data!.news![index].id!, userToken!);
+                                                            tempTitle.putIfAbsent(_posts[index].id!, () => newstitle.text);
+                                                            tempDesc.putIfAbsent(_posts[index].id!, () => newsdesc.text);
+                                                            updateNews(_posts[index].id!, userToken!);
                                                             edit = false;
 
                                                           });
@@ -356,10 +401,10 @@ String? userToken;
                                                             ),
                                                             onTap: () {
                                                               setState(() {
-                                                                newstitle.text = tempTitle.containsKey(snapshot.data!.data!.news![index].id!)?
-                                                                tempTitle[snapshot.data!.data!.news![index].id!]! : snapshot.data!.data!.news![index].title!;
-                                                                newsdesc.text = tempDesc.containsKey(snapshot.data!.data!.news![index].id!)?
-                                                                tempDesc[snapshot.data!.data!.news![index].id!]! : snapshot.data!.data!.news![index].description!;
+                                                                newstitle.text = tempTitle.containsKey(_posts[index].id!)?
+                                                                tempTitle[_posts[index].id!]! : _posts[index].title!;
+                                                                newsdesc.text = tempDesc.containsKey(_posts[index].id!)?
+                                                                tempDesc[_posts[index].id!]! : _posts[index].description!;
                                                                 edit = true;
                                                                 theindex =
                                                                     index;
@@ -431,7 +476,7 @@ String? userToken;
                                                                             padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
                                                                             child: TextButton(
                                                                                 onPressed: () => setState(() {
-                                                                                  deleteNew(snapshot.data!.data!.news![index].id!, userToken!);
+                                                                                  deleteNew(_posts[index].id!, userToken!);
                                                                                   Navigator.pop(
                                                                                       context,
                                                                                       'حذف');
@@ -456,21 +501,19 @@ String? userToken;
                                   );
                                 },
                               ),
-                            );
-                          } else {
-                            return const Center(child: Text('Empty data'));
-                          }
-                        } else {
-                          return Center(
-                              child:
-                                  Text('State: ${snapshot.connectionState}'));
-                        }
-                      },
-                    )
+                    ),
+                    if (_isLoadMoreRunning == true)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 40),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
                   ],
                 ),
-              )),
+    ),
       ),
+      )
     );
   }
 
@@ -488,48 +531,47 @@ String? userToken;
     );
 
     setState(() {
-      getNews = fetchNews(userToken!);
+       fetchNews(userToken!);
     });
     return response;
   }
-  Future<GeneralNews> fetchNews(String tokenn) async {
+  void fetchNews(String tokenn) async {
 
-    try {
-      final response = await http.get(
-          Uri.parse('https://mobile.celebrityads.net/api/celebrity/news'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $tokenn'
+      setState(() {
+        _isFirstLoadRunning = true;
+      });
+      try {
+        final response = await http.get(
+            Uri.parse('$_baseUrl?page=$_page'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $userToken'
+            });
+        if (response.statusCode == 200) {
+          // If the server did return a 200 OK response,
+          // then parse the JSON.
+          setState(() {
+            _posts = GeneralNews
+                .fromJson(jsonDecode(response.body))
+                .data!
+                .news!;
           });
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        print(response.body);
-        return GeneralNews.fromJson(jsonDecode(response.body));
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to load activity');
+          print(response.body);
+
+        } else {
+          // If the server did not return a 200 OK response,
+          // then throw an exception.
+          throw Exception('Failed to load activity');
+        }
+      }catch (err) {
+        if (kDebugMode) {
+          print('first load Something went wrong');
+        }
       }
-    }catch(e){
-      if (e is SocketException) {
-        setState(() {
-          isConnectSection = false;
-        });
-        return Future.error('SocketException');
-      } else if (e is TimeoutException) {
-        setState(() {
-          timeoutException = false;
-        });
-        return Future.error('TimeoutException');
-      } else {
-        setState(() {
-          serverExceptions = false;
-        });
-        return Future.error('serverExceptions');
-      }
-    }
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
   }
   Future<http.Response> updateNews(int id, String token) async {
    final response = await http.post(

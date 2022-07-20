@@ -56,14 +56,14 @@ class _StudioState extends State<Studio> {
   void _loadMore() async {
 
     print('#########################################################');
-    // Increase _page by 1
+
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
-        _isLoadMoreRunning == false ) {
+        _isLoadMoreRunning == false && _controller.position.maxScrollExtent ==
+        _controller.offset ) {
 
         setState(() {
-          _isLoadMoreRunning =
-          true; // Display a progress indicator at the bottom
+          _isLoadMoreRunning = true; // Display a progress indicator at the bottom
         });
         _page += 1;
         try {
@@ -80,7 +80,6 @@ class _StudioState extends State<Studio> {
               .studio!
               .isNotEmpty) {
             setState(() {
-              _posts.clear();
               _posts.addAll(TheStudio
                   .fromJson(jsonDecode(res.body))
                   .data!
@@ -102,6 +101,7 @@ class _StudioState extends State<Studio> {
           });
         }
   }
+
   @override
   void initState() {
     super.initState();
@@ -109,12 +109,10 @@ class _StudioState extends State<Studio> {
       setState(() {
         userToken = value;
         fetchStudio();
-        _controller = ScrollController()..addListener(_loadMore);
       });
 
     });
-
-
+    _controller.addListener(_loadMore);
   }
 
   @override
@@ -168,8 +166,8 @@ class _StudioState extends State<Studio> {
             : SingleChildScrollView(
           controller: _controller,
           child: _isFirstLoadRunning
-              ? const Center(
-            child: const CircularProgressIndicator(),
+              ?  Center(
+            child: mainLoad(context),
           )
               : _posts.isEmpty ? Padding(
             padding: EdgeInsets.only(top: getSize(context).height / 7),
@@ -187,7 +185,6 @@ class _StudioState extends State<Studio> {
                 10,
                 0,
                  ListView.builder(
-                    controller: _controller,
                     itemCount: _posts.length,
                     shrinkWrap: true,
                     physics: ScrollPhysics(),
@@ -407,14 +404,7 @@ class _StudioState extends State<Studio> {
                 ),
 
               // When nothing else to load
-              if (_hasNextPage == false)
-                Container(
-                  padding: const EdgeInsets.only(top: 30, bottom: 40),
-                  color: white,
-                  child: const Center(
-                    child: Text(''),
-                  ),
-                )
+
             ],
           ),
 
@@ -463,6 +453,7 @@ void fetchStudio() async {
     }
     setState(() {
       _isFirstLoadRunning = false;
+      print(_isFirstLoadRunning.toString()+'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     });
 
   }
