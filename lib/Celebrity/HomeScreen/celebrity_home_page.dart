@@ -1,5 +1,6 @@
 ///import section
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:card_swiper/card_swiper.dart';
 import 'package:celepraty/Models/Methods/method.dart';
@@ -37,6 +38,13 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
   ///list of string to store the advertising area images
   List<String> advImage = [];
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
+  bool activeConnection = false;
+  String T = "";
 
   ///---------------------------------------------------------------------------
   ///Pagination Variable Section News
@@ -233,9 +241,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
   @override
   Widget build(BuildContext context) {
+    checkUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
+      child: activeConnection ? Scaffold(
         body: SingleChildScrollView(
           child: FutureBuilder<introModel>(
               future: celebrityHome,
@@ -246,7 +255,21 @@ class _CelebrityHomeState extends State<CelebrityHome>
                     snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
                     //throw snapshot.error.toString();
-                    return Center(child: Text(snapshot.error.toString()));
+                    if (snapshot.error.toString() == 'SocketException') {
+                      return Center(
+                          child: SizedBox(
+                              height: 500.h,
+                              width: 250.w,
+                              child: internetConnection(context, reload: () {
+                                setState(() {
+                                  celebrityHome = getSectionsData(widget.pageUrl!);
+                                  isConnectSection = true;
+                                });
+                              })));
+                    } else {
+                      return const Center(
+                          child: Text('حدث خطا ما اثناء استرجاع البيانات'));
+                    }
                     //---------------------------------------------------------------------------
                   } else if (snapshot.hasData) {
                     ///get the adv image from API and store it inside th list
@@ -812,12 +835,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                               ),
                         if (_isLoadMoreRunningStudio == true)
                           SizedBox(),
-                          //  Padding(
-                          //   padding: EdgeInsets.only(top: 10, bottom: 40),
-                          //   child: Center(
-                          //     child: mainLoad(context),
-                          //   ),
-                          // ),
+
 
                         // When nothing else to load
                         if (_hasNextPageStudio == false)
@@ -857,13 +875,38 @@ class _CelebrityHomeState extends State<CelebrityHome>
                 }
               }),
         ),
-      ),
+      ) : Center(
+          child: SizedBox(
+              height: 300.h,
+              width: 250.w,
+              child: internetConnection(
+                  context, reload: () {
+                checkUserConnection();
+                celebrityHome = getSectionsData(widget.pageUrl!);
+              }))),
     );
   }
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          activeConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
 
   ///image slider
   Widget imageSlider(List adImage) {

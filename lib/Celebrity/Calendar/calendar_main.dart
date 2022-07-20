@@ -47,6 +47,10 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
+
+  bool activeConnection = false;
+  String T = "";
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -69,7 +73,8 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    checkUserConnection();
+    return activeConnection ? SafeArea(
       child: Column(children: [
         Expanded(
           child: Stack(children: [
@@ -487,7 +492,32 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
           ]),
         ),
       ]),
-    );
+    ) : Center(
+        child: SizedBox(
+            height: 300.h,
+            width: 250.w,
+            child: internetConnection(
+                context, reload: () {
+              checkUserConnection();
+              calender = fetchCalender(userToken!);
+            })));
+  }
+
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          activeConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
   }
 
   ///GET

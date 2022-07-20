@@ -15,7 +15,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../Account/LoggingSingUpAPI.dart';
 
-
 class PricingMain extends StatelessWidget {
   const PricingMain({Key? key}) : super(key: key);
 
@@ -61,11 +60,12 @@ class _PricingHomeState extends State<PricingHome> {
 
   String? toolTipAreaSpace;
 
-
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
 
+  bool activeConnection = false;
+  String T = "";
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -80,8 +80,11 @@ class _PricingHomeState extends State<PricingHome> {
 
   @override
   Widget build(BuildContext context) {
+    checkUserConnection();
     return GestureDetector(
-      child: SafeArea(
+
+      child: activeConnection ? SafeArea(
+
         child: SingleChildScrollView(
           child: FutureBuilder<Pricing>(
               future: pricing,
@@ -91,55 +94,57 @@ class _PricingHomeState extends State<PricingHome> {
                 } else if (snapshot.connectionState == ConnectionState.active ||
                     snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError) {
-                    if (snapshot.error.toString() ==
-                        'SocketException') {
+                    if (snapshot.error.toString() == 'SocketException') {
                       return Center(
                           child: SizedBox(
                               height: 500.h,
                               width: 250.w,
-                              child: internetConnection(context,
-                                  reload: () {
-                                    setState(() {
-                                      pricing = fetchCelebrityPricing(userToken!);
-                                      isConnectSection = true;
-                                    });
-                                  })));
+                              child: internetConnection(context, reload: () {
+                                setState(() {
+                                  pricing = fetchCelebrityPricing(userToken!);
+                                  isConnectSection = true;
+                                });
+                              })));
                     } else {
                       return const Center(
-                          child: Text(
-                              'حدث خطا ما اثناء استرجاع البيانات'));
+                          child: Text('حدث خطا ما اثناء استرجاع البيانات'));
                     }
                     //---------------------------------------------------------------------------
                   } else if (snapshot.hasData) {
                     if (helper == 0) {
                       ///get data and fill controller
-                      snapshot.data!.data != null ? {
-                      pricingAd.text = snapshot.data!.data!.price!.advertisingPriceFrom!.toString(),
-                      pricingAd1.text =
-                          snapshot.data!.data!.price!.advertisingPriceTo!
-                              .toString(),
-
-                      pricingGiftPhoto.text =
-                          snapshot.data!.data!.price!.giftImagePrice!
-                              .toString(),
-                      pricingGiftVideo.text =
-                          snapshot.data!.data!.price!.giftVedioPrice!
-                              .toString(),
-                      pricingGiftVoice.text = snapshot.data!.data!.price!.giftVoicePrice!
-                              .toString(),
-
-                      pricingArea.text = snapshot.data!.data!.price!.adSpacePrice!.toString(),
-
-                        toolTipPhoto = snapshot.data!.data!.comments![0].value!,
-                        toolTipVideo = snapshot.data!.data!.comments![1].value!,
-                        toolTipVoice = snapshot.data!.data!.comments![2].value!,
-
-                        toolTipAreaSpace = snapshot.data!.data!.comments![3].value!,
-
-                        helper = 1,
-                    } :  SizedBox();
-
-          }
+                      snapshot.data!.data != null
+                          ? {
+                              pricingAd.text = snapshot
+                                  .data!.data!.price!.advertisingPriceFrom!
+                                  .toString(),
+                              pricingAd1.text = snapshot
+                                  .data!.data!.price!.advertisingPriceTo!
+                                  .toString(),
+                              pricingGiftPhoto.text = snapshot
+                                  .data!.data!.price!.giftImagePrice!
+                                  .toString(),
+                              pricingGiftVideo.text = snapshot
+                                  .data!.data!.price!.giftVedioPrice!
+                                  .toString(),
+                              pricingGiftVoice.text = snapshot
+                                  .data!.data!.price!.giftVoicePrice!
+                                  .toString(),
+                              pricingArea.text = snapshot
+                                  .data!.data!.price!.adSpacePrice!
+                                  .toString(),
+                              toolTipPhoto =
+                                  snapshot.data!.data!.comments![0].value!,
+                              toolTipVideo =
+                                  snapshot.data!.data!.comments![1].value!,
+                              toolTipVoice =
+                                  snapshot.data!.data!.comments![2].value!,
+                              toolTipAreaSpace =
+                                  snapshot.data!.data!.comments![3].value!,
+                              helper = 1,
+                            }
+                          : const SizedBox();
+                    }
 
                     return Form(
                       key: _formKey,
@@ -368,7 +373,8 @@ class _PricingHomeState extends State<PricingHome> {
                                                   .digitsOnly
                                             ],
                                             suffixIcon: MyTooltip(
-                                                message: toolTipPhoto.toString(),
+                                                message:
+                                                    toolTipPhoto.toString(),
                                                 child: Icon(
                                                   infoIcon,
                                                   size: 15,
@@ -421,7 +427,8 @@ class _PricingHomeState extends State<PricingHome> {
                                                   .digitsOnly
                                             ],
                                             suffixIcon: MyTooltip(
-                                                message: toolTipVideo.toString(),
+                                                message:
+                                                    toolTipVideo.toString(),
                                                 child: Icon(
                                                   infoIcon,
                                                   size: 15,
@@ -474,7 +481,8 @@ class _PricingHomeState extends State<PricingHome> {
                                                   .digitsOnly
                                             ],
                                             suffixIcon: MyTooltip(
-                                                message: toolTipVoice.toString(),
+                                                message:
+                                                    toolTipVoice.toString(),
                                                 child: Icon(
                                                   infoIcon,
                                                   size: 15,
@@ -581,7 +589,8 @@ class _PricingHomeState extends State<PricingHome> {
                                                   .digitsOnly
                                             ],
                                             suffixIcon: MyTooltip(
-                                                message: toolTipAreaSpace.toString(),
+                                                message:
+                                                    toolTipAreaSpace.toString(),
                                                 child: Icon(
                                                   infoIcon,
                                                   size: 15,
@@ -626,70 +635,70 @@ class _PricingHomeState extends State<PricingHome> {
                                     var ad = int.parse(pricingAd.text);
 
                                     _formKey.currentState!.validate() ? {
-                                            ///var c = int. parse(b);
-                                            //to < from
-                                            ad1 < ad
-                                                ? Flushbar(
-                                              flushbarPosition: FlushbarPosition.TOP,
-                                              backgroundColor: white,
-                                              margin: const EdgeInsets.all(5),
-                                              flushbarStyle: FlushbarStyle.FLOATING,
-                                              borderRadius: BorderRadius.circular(10.r),
-                                              duration: const Duration(seconds: 5),
-                                              icon: Icon(
-                                                error,
-                                                color: red!,
-                                                size: 25.sp,
-                                              ),
-                                              titleText: text(context, 'خطأ', 16, purple),
-                                              messageText: text(
-                                                  context,
-                                                  'يجب ان يكون الحد الاعلى للإعلان أكبر',
-                                                  14,
-                                                  black,
-                                                  fontWeight: FontWeight.w200),
-                                            ).show(context) : postFunction(userToken!)
-                                                    .whenComplete(() => {
-                                                          Flushbar(
-                                                            flushbarPosition:
-                                                                FlushbarPosition
-                                                                    .TOP,
-                                                            backgroundColor:
-                                                                white,
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .all(5),
-                                                            flushbarStyle:
-                                                                FlushbarStyle
-                                                                    .FLOATING,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.r),
-                                                            duration:
-                                                                const Duration(
-                                                                    seconds: 5),
-                                                            icon: Icon(
-                                                              right,
-                                                              color: green,
-                                                              size: 30,
-                                                            ),
-                                                            titleText: text(
-                                                                context,
-                                                                'تم الحفظ',
-                                                                16,
-                                                                purple),
-                                                            messageText: text(
-                                                                context,
-                                                                'تم حفظ المدخلات بنجاح',
-                                                                14,
-                                                                black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w200),
-                                                          ).show(context)
-                                                        })
-                                          }
+                                      ///var c = int. parse(b);
+                                      //to < from
+                                      ad1 < ad
+                                          ? Flushbar(
+                                        flushbarPosition: FlushbarPosition.TOP,
+                                        backgroundColor: white,
+                                        margin: const EdgeInsets.all(5),
+                                        flushbarStyle: FlushbarStyle.FLOATING,
+                                        borderRadius: BorderRadius.circular(10.r),
+                                        duration: const Duration(seconds: 5),
+                                        icon: Icon(
+                                          error,
+                                          color: red!,
+                                          size: 25.sp,
+                                        ),
+                                        titleText: text(context, 'خطأ', 16, purple),
+                                        messageText: text(
+                                            context,
+                                            'يجب ان يكون الحد الاعلى للإعلان أكبر',
+                                            14,
+                                            black,
+                                            fontWeight: FontWeight.w200),
+                                      ).show(context) : postFunction(userToken!)
+                                          .whenComplete(() => {
+                                        Flushbar(
+                                          flushbarPosition:
+                                          FlushbarPosition
+                                              .TOP,
+                                          backgroundColor:
+                                          white,
+                                          margin:
+                                          const EdgeInsets
+                                              .all(5),
+                                          flushbarStyle:
+                                          FlushbarStyle
+                                              .FLOATING,
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                              10.r),
+                                          duration:
+                                          const Duration(
+                                              seconds: 5),
+                                          icon: Icon(
+                                            right,
+                                            color: green,
+                                            size: 30,
+                                          ),
+                                          titleText: text(
+                                              context,
+                                              'تم الحفظ',
+                                              16,
+                                              purple),
+                                          messageText: text(
+                                              context,
+                                              'تم حفظ المدخلات بنجاح',
+                                              14,
+                                              black,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w200),
+                                        ).show(context)
+                                      })
+                                    }
                                         : null;
                                   },
                                 ),
@@ -708,13 +717,37 @@ class _PricingHomeState extends State<PricingHome> {
                 }
               }),
         ),
-      ),
+      ) : Center(
+          child: SizedBox(
+              height: 300.h,
+              width: 250.w,
+              child: internetConnection(
+                  context, reload: () {
+                checkUserConnection();
+                pricing = fetchCelebrityPricing(userToken!);
+              }))),
     );
+  }
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          activeConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
   }
 
   ///Get
   Future<Pricing> fetchCelebrityPricing(String token) async {
-    try{
+    try {
       final response = await http.get(
           Uri.parse('https://mobile.celebrityads.net/api/celebrity/price'),
           headers: {
@@ -732,7 +765,7 @@ class _PricingHomeState extends State<PricingHome> {
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    }catch(error){
+    } catch (error) {
       if (error is SocketException) {
         setState(() {
           isConnectSection = false;
@@ -754,7 +787,7 @@ class _PricingHomeState extends State<PricingHome> {
 
   ///Post
   Future<http.Response> postFunction(String token) async {
-    try{
+    try {
       final response = await http.post(
         Uri.parse('https://mobile.celebrityads.net/api/celebrity/price/update'),
         headers: {
@@ -774,14 +807,13 @@ class _PricingHomeState extends State<PricingHome> {
       if (response.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        print(response.body);
         return response;
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    }catch(error){
+    } catch (error) {
       if (error is SocketException) {
         setState(() {
           isConnectSection = false;

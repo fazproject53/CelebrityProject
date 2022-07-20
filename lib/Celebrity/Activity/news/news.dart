@@ -221,37 +221,37 @@ String? userToken;
                                           child: paddingg(
                                             0,
                                             0,
-                                            8,
+                                            5,
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Row(
                                                   children: [
-                                                    // paddingg(
-                                                    //   5,
-                                                    //   5,
-                                                    //   0,
-                                                    //   Container(
-                                                    //     alignment:
-                                                    //         Alignment.centerRight,
-                                                    //     child: ClipRRect(
-                                                    //       borderRadius:
-                                                    //           BorderRadius
-                                                    //               .circular(2.0),
-                                                    //       child: Image.network(
-                                                    //         Logging.theUser!.image!,
-                                                    //         fit: BoxFit.fill,
-                                                    //         height: edit
-                                                    //             ? 150.h
-                                                    //             : 130.h,
-                                                    //         width: 100.w,
-                                                    //       ),
-                                                    //     ),
-                                                    //     margin: EdgeInsets.only(
-                                                    //         bottom: 5.h),
-                                                    //   ),
-                                                    // ),
+                                                    paddingg(
+                                                      5,
+                                                      5,
+                                                      0,
+                                                      Container(
+                                                        alignment:
+                                                            Alignment.centerRight,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(2.0),
+                                                          child: Image.network(
+                                                            Logging.theUser!.image!,
+                                                            fit: BoxFit.fill,
+                                                            height: edit
+                                                                ? 150.h
+                                                                : 130.h,
+                                                            width: 100.w,
+                                                          ),
+                                                        ),
+                                                        margin: EdgeInsets.only(
+                                                            bottom: 5.h),
+                                                      ),
+                                                    ),
                                                     Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment

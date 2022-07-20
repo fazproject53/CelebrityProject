@@ -11,6 +11,7 @@ import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 
+import '../setting/celebratyProfile.dart';
 import 'ModelDiscountCode.dart';
 
 ///CreateNewDiscountCodeHome
@@ -73,6 +74,9 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
   bool timeoutException = true;
   bool serverExceptions = true;
 
+  bool activeConnection = false;
+  String T = "";
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -88,13 +92,14 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
 
   @override
   Widget build(BuildContext context) {
+    checkUserConnection();
     return Directionality(
         textDirection: TextDirection.rtl,
-        child: Scaffold(
+        child:  Scaffold(
           appBar: drowAppBar(
               widget.isUpdate ? 'تعديل كود الخصم' : 'إنشاء كود خصم جديد',
               context),
-          body: SafeArea(
+          body: activeConnection ? SafeArea(
             child: FutureBuilder<DiscountModel>(
                 future: discount,
                 builder: (BuildContext context,
@@ -485,13 +490,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                   maxLenth: 50,
                                                   keyboardType:
                                                       TextInputType.multiline,
-                                                  inputFormatters: [
-                                                    ///letters and numbers only
-                                                    FilteringTextInputFormatter(
-                                                        RegExp(
-                                                            r'[a-zA-Z]|[0-9]'),
-                                                        allow: true)
-                                                  ]),
+                                                 ),
                                             ),
 
                                             ///Check box
@@ -781,6 +780,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                                               ).show(context),
                                                                             }
                                                                             ),
+                                                            goTopageReplacement(context, celebratyProfile())
                                                           }
                                                         else {
                                                             ///these text fields and is required
@@ -816,8 +816,32 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                         child: Text('State: ${snapshot.connectionState}'));
                   }
                 }),
-          ),
+          ) :  Center(
+        child: SizedBox(
+        height: 300.h,
+            width: 250.w,
+            child: internetConnection(
+                context, reload: () {
+              checkUserConnection();
+              discount = fetchDiscountCode(userToken!);
+            }))),
         ));
+  }
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          activeConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
   }
 
   @override

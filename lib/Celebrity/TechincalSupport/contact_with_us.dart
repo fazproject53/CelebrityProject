@@ -1,5 +1,6 @@
 ///import section
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,10 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
   }
 
   String? userToken;
+
+  bool activeConnection = false;
+  String T = "";
+
   @override
   void initState() {
     _dropdownTestItems = buildDropdownTestItems(complaintList);
@@ -82,11 +87,12 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
 
   @override
   Widget build(BuildContext context) {
+    checkUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
+      child:  Scaffold(
         appBar: drowAppBar("الدعم الفني", context),
-        body: SafeArea(
+        body: activeConnection ? SafeArea(
           bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -444,9 +450,34 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
               ),
             ],
           ),
-        ),
-      ),
+        ) : Center(
+            child: SizedBox(
+                height: 300.h,
+                width: 250.w,
+                child: internetConnection(
+                    context, reload: () {
+                  checkUserConnection();
+                  contactModel = getComplaintTypes();
+                }))),
+      ) ,
     );
+  }
+
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          activeConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
   }
 
   ///Get Complaint Types

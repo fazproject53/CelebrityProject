@@ -81,9 +81,8 @@ class _addphotoState extends State<addphoto> {
                                   builder: (BuildContext context) {
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
-                                    addPhoto(userToken!).then((value) =>
-                                    value == ''?
-                                    {goTopageReplacement(context, ActivityScreen()),
+                                    addPhoto(userToken!).then((value) => value == '' ? {
+                                      goTopageReplacement(context, ActivityScreen()),
 
                                       Flushbar(
                                         flushbarPosition:

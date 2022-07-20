@@ -91,8 +91,7 @@ class _addNewsState extends State<addNews> {
                                 context).width,
                                 buttoms(context, 'اضافة الخبر', 15, white, () {
                                   if (_formKey.currentState!.validate()) {
-                                      addNews(userToken!).then((value) =>
-                                      {
+                                      addNews(userToken!).then((value) => {
                                         value == '' ?{
                                         goTopageReplacement(
                                             context, ActivityScreen()),

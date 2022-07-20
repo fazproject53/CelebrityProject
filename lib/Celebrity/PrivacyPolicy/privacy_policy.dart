@@ -62,6 +62,9 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
   bool timeoutException = true;
   bool serverExceptions = true;
 
+  bool activeConnection = false;
+  String T = "";
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -77,8 +80,9 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
 
   @override
   Widget build(BuildContext context) {
+    checkUserConnection();
     return GestureDetector(
-      child: SafeArea(
+      child: activeConnection ? SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -114,8 +118,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                           })));
                                 } else {
                                   return const Center(
-                                      child: Text(
-                                          'حدث خطا ما اثناء استرجاع البيانات'));
+                                      child: Text('حدث خطا ما اثناء استرجاع البيانات'));
                                 }
                                 //---------------------------------------------------------------------------
                               } else if (snapshot.hasData) {
@@ -451,27 +454,27 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                             'حفظ', 12, purple),
                                                         onPressed: () {
                                                           _formKey.currentState!
-                                                                  .validate()
+                                                              .validate()
                                                               ? postFunction(
-                                                                      userToken!)
-                                                                  .whenComplete(
-                                                                      () => {
-                                                                            Flushbar(
-                                                                              flushbarPosition: FlushbarPosition.TOP,
-                                                                              backgroundColor: white,
-                                                                              margin: const EdgeInsets.all(5),
-                                                                              flushbarStyle: FlushbarStyle.FLOATING,
-                                                                              borderRadius: BorderRadius.circular(10.r),
-                                                                              duration: const Duration(seconds: 5),
-                                                                              icon: Icon(
-                                                                                right,
-                                                                                color: green,
-                                                                                size: 30,
-                                                                              ),
-                                                                              titleText: text(context, 'تم الحفظ', 16, purple),
-                                                                              messageText: text(context, 'تم حفظ المدخلات بنجاح', 14, black, fontWeight: FontWeight.w200),
-                                                                            ).show(context)
-                                                                          })
+                                                              userToken!)
+                                                              .whenComplete(
+                                                                  () => {
+                                                                Flushbar(
+                                                                  flushbarPosition: FlushbarPosition.TOP,
+                                                                  backgroundColor: white,
+                                                                  margin: const EdgeInsets.all(5),
+                                                                  flushbarStyle: FlushbarStyle.FLOATING,
+                                                                  borderRadius: BorderRadius.circular(10.r),
+                                                                  duration: const Duration(seconds: 5),
+                                                                  icon: Icon(
+                                                                    right,
+                                                                    color: green,
+                                                                    size: 30,
+                                                                  ),
+                                                                  titleText: text(context, 'تم الحفظ', 16, purple),
+                                                                  messageText: text(context, 'تم حفظ المدخلات بنجاح', 14, black, fontWeight: FontWeight.w200),
+                                                                ).show(context)
+                                                              })
                                                               : null;
                                                         }),
                                                   ],
@@ -498,8 +501,34 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
             )
           ],
         ),
-      ),
+      ) : Center(
+          child: SizedBox(
+              height: 300.h,
+              width: 250.w,
+              child: internetConnection(
+                  context, reload: () {
+                checkUserConnection();
+                pp = fetchCelebritie(userToken!);
+              }))),
     );
+  }
+
+
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          activeConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        activeConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
   }
 
   ///Get
