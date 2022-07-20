@@ -205,7 +205,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: isCompleted ? null : drowAppBar('انشاء طلب اعلان', context),
-        body:ActiveConnection?Stepper(
+        body:ActiveConnection? Stepper(
                 margin: EdgeInsets.symmetric(horizontal: 24),
                 steps: getSteps(),
                 type: StepperType.horizontal,
@@ -222,40 +222,86 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       FocusManager.instance.primaryFocus
           ?.unfocus();
       addAdOrder().then((value) => {
-        goTopageReplacement(context, UserRequestMainPage()),
-      print(value),
-        Flushbar(
-          flushbarPosition:
-          FlushbarPosition.TOP,
-          backgroundColor: white,
-          margin:
-          const EdgeInsets.all(5),
-          flushbarStyle:
-          FlushbarStyle.FLOATING,
-          borderRadius:
-          BorderRadius.circular(
-              15.r),
-          duration: const Duration(
-              seconds: 5),
-          icon: Padding(
-            padding: const EdgeInsets.only(left: 18.0),
-            child: Icon(
-              done,
-              color: green,
-              size: 25.sp,
+        value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'?{
+          Navigator.pop(context),
+
+          Flushbar(
+            flushbarPosition:
+            FlushbarPosition.TOP,
+            backgroundColor: white,
+            margin:
+            const EdgeInsets.all(5),
+            flushbarStyle:
+            FlushbarStyle.FLOATING,
+            borderRadius:
+            BorderRadius.circular(
+                15.r),
+            duration: const Duration(
+                seconds: 5),
+            icon: Padding(
+              padding: const EdgeInsets.only(
+                  left: 18.0),
+              child: Icon(
+                error,
+                color: red,
+                size: 25.sp,
+              ),
             ),
-          ),
-          titleText: text(context, 'تم التعديل بنجاح', 14, purple),
-          messageText: text(
-              context,
-              value,
-              14,
-              black,
-              fontWeight:
-              FontWeight.w200),
-        ).show(context),
+            titleText: text(
+                context, 'قشل الاتصال بالانترنت', 14, purple),
+            messageText: text(
+                context,
+                'قشل الاتصال بالانترنت حاول لاحقا',
+                14,
+                black,
+                fontWeight:
+                FontWeight.w200),
+          ).show(context)
+        }:{
+          value.contains('true')?
+          goTopageReplacement(context, UserRequestMainPage()): Navigator.pop(context),
+          Flushbar(
+            flushbarPosition:
+            FlushbarPosition.TOP,
+            backgroundColor: white,
+            margin:
+            const EdgeInsets.all(5),
+            flushbarStyle:
+            FlushbarStyle.FLOATING,
+            borderRadius:
+            BorderRadius.circular(
+                15.r),
+            duration: const Duration(
+                seconds: 5),
+            icon: Padding(
+              padding: const EdgeInsets
+                  .only(left: 18.0),
+              child: Icon(
+                value.contains('false')?error: done,
+                color: value.contains('false')
+                    ? red! : green,
+                size: 25.sp,
+              ),
+            ),
 
+            messageText: text(
+                context,
+                value.contains('true')?
+                value.replaceAll('true', ''):
+                value.replaceAll('false', ''),
+                14,
+                black,
+                fontWeight:
+                FontWeight.w200),
 
+            titleText: text(
+                context,
+                value.contains('false')?'خطا':'تم بنجاح' ,
+                14,
+                purple,
+                fontWeight:
+                FontWeight.w200),
+          ).show(context),}
 
       });
         // == First dialog closed
@@ -359,7 +405,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
         isActive: current >= 0,
       ),
       Step(
-        state: current > 1 ? StepState.complete : StepState.indexed,
+        state: current > 0 ? StepState.complete : StepState.indexed,
         title: Text('خطوة 2'),
         content: stepTwo(),
         isActive: current >= 1,
@@ -441,52 +487,65 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
   }
 
   Future<String> addAdOrder() async {
-    var stream;
-    var length;
-    var uri;
-    var request;
-    Map<String, String> headers;
-    var response ;
+    try {
+      var stream;
+      var length;
+      var uri;
+      var request;
+      Map<String, String> headers;
+      var response;
 
-    stream = await http.ByteStream(DelegatingStream.typed(file!.openRead()));
-    // get file length
-    length = await file!.length();
+      stream = await http.ByteStream(DelegatingStream.typed(file!.openRead()));
+      // get file length
+      length = await file!.length();
 
-    // string to uri
-    uri = Uri.parse("https://mobile.celebrityads.net/api/order/advertising/add");
+      // string to uri
+      uri = Uri.parse(
+          "https://mobile.celebrityads.net/api/order/advertising/add");
 
-    headers = {
-      "Accept": "application/json",
-      "Authorization": "Bearer $userToken"
-    };
-    // create multipart request
-    request = http.MultipartRequest("POST", uri);
-    var multipartFile = new http.MultipartFile('file', stream, length,
-        filename: Path.basename(file!.path));
-    // multipart that takes file
-    // multipartFile = new http.MultipartFile('file', file!.bytes.toList(), length,
-    //     filename: file!.name),
-    print('the id is = ' + celebrityId.toString());
-    // listen for response
-    request.files.add(multipartFile);
-    request.headers.addAll(headers);
-    request.fields["celebrity_id"] =celebrityId != null?celebrityId.toString(): null;
-    request.fields["date"]= date.toString();
-    request.fields["description"]= desc.text;
-    request.fields[" platform_id"]= platformlist.indexOf(_selectedTest4).toString();
-    request.fields["celebrity_promo_code_id"]= couponcode.text;
-    request.fields["ad_owner_id"]= _value.toString();
-    request.fields["ad_feature_id"]= _value2.toString();
-    request.fields["ad_timing_id"]= _value4.toString();
-    request.fields["advertising_ad_type_id"]= _value3.toString();
-    request.fields["advertising_name"]= subject.text;
-    request.fields["advertising_link"]= pageLink.text;
+      headers = {
+        "Accept": "application/json",
+        "Authorization": "Bearer $userToken"
+      };
+      // create multipart request
+      request = http.MultipartRequest("POST", uri);
+      var multipartFile = new http.MultipartFile('file', stream, length,
+          filename: Path.basename(file!.path));
+      // multipart that takes file
+      // multipartFile = new http.MultipartFile('file', file!.bytes.toList(), length,
+      //     filename: file!.name),
+      print('the id is = ' + celebrityId.toString());
+      // listen for response
+      request.files.add(multipartFile);
+      request.headers.addAll(headers);
+      request.fields["celebrity_id"] =
+      celebrityId != null ? celebrityId.toString() : null;
+      request.fields["date"] = date.toString();
+      request.fields["description"] = desc.text;
+      request.fields[" platform_id"] =
+          platformlist.indexOf(_selectedTest4).toString();
+      request.fields["celebrity_promo_code_id"] = couponcode.text;
+      request.fields["ad_owner_id"] = _value.toString();
+      request.fields["ad_feature_id"] = _value2.toString();
+      request.fields["ad_timing_id"] = _value4.toString();
+      request.fields["advertising_ad_type_id"] = _value3.toString();
+      request.fields["advertising_name"] = subject.text;
+      request.fields["advertising_link"] = pageLink.text;
 
-    response = await request.send();
-    http.Response respo = await http.Response.fromStream(response);
-    print(respo.body);
-    return jsonDecode(respo.body)['message']['ar'];
+      response = await request.send();
+      http.Response respo = await http.Response.fromStream(response);
+      print(respo.body);
+      return jsonDecode(respo.body)['message']['ar']+jsonDecode(respo.body)['success'].toString();
+    }catch (e) {
+      if (e is SocketException) {
+        return 'SocketException';
+      } else if(e is TimeoutException) {
+        return 'TimeoutException';
+      } else {
+        return 'serverException';
 
+      }
+    }
   }
 
   stepOne() {
@@ -1148,12 +1207,13 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                               boxWidth: 500.w,
                               boxHeight: 45.h,
                               boxDecoration: BoxDecoration(
-                                  color: textFieldBlack2.withOpacity(0.70),
+                                  border:  Border.all(color: newGrey, width: 0.5),
+                                  color: lightGrey.withOpacity(0.10),
                                   borderRadius: BorderRadius.circular(8.r)),
                               ///Icons
                               icon: const Icon(
                                 Icons.arrow_drop_down,
-                                color: Colors.white54,
+                                color: Colors.grey,
                               ),
                               hint:  Text(
                                 platform,
@@ -1167,7 +1227,17 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                         } else if (snapshot.connectionState == ConnectionState.active ||
                             snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasError) {
-                            return Center(child: Text(snapshot.error.toString()));
+
+                            if (snapshot.error.toString() ==
+                                'SocketException') {
+                              CheckUserConnection();
+                              return SizedBox();
+                            } else {
+                              return const Center(
+                                  child: Text(
+                                      ''));
+                            }
+                            //---------------------------------------------------------------------------
                             //---------------------------------------------------------------------------
                           } else if (snapshot.hasData) {
                             _dropdownTestItems4.isEmpty?{
@@ -1666,6 +1736,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       });
     }
   }
+
   buildCompleted(context) {
    goTopagepush(context, MainScreen());
   }
