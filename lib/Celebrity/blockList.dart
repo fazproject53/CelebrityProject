@@ -62,9 +62,13 @@ class _blockListState extends State<blockList> {
                               });
                             })));
                   } else {
-                    return const Center(
-                        child: Text(
-                            'حدث خطا ما اثناء استرجاع البيانات'));
+                    if(snapshot.error.toString() ==
+                        'ServerException'){
+                      Center(
+                          child: serverError(context));
+                    }
+                    return  Center(
+                        child: serverError(context));
                   }
                   //---------------------------------------------------------------------------
                 } else if (snapshot.hasData) {

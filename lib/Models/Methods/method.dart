@@ -1550,6 +1550,30 @@ Widget internetConnection(context, {reload}) {
   );
 }
 
+Widget serverError(context, {reload}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Spacer(),
+      SizedBox(
+          // height: MediaQuery.of(context).size.height / 5,
+          // width: MediaQuery.of(context).size.height / 6,
+          child: Lottie.asset('assets/lottie/srver.json', height: 200.h, width: 500.w)),
+      SizedBox(
+        height: 10.h,
+      ),
+      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا', 16, black,
+          align: TextAlign.center),
+      SizedBox(
+        height: 15.h,
+      ),
+
+      Spacer(),
+    ],
+  );
+}
+
 //check server Exception--------------------------------------------------------------------------
 Widget checkServerException(context, {reload}) {
   return Column(

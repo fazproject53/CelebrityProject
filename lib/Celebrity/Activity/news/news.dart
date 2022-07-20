@@ -597,7 +597,7 @@ String? userToken;
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': 'Bearer $token'
+              'Authorization': 'Bearer $userToken'
             });
         if (response.statusCode == 200) {
           // If the server did return a 200 OK response,
