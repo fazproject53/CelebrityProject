@@ -61,6 +61,7 @@ class _ActivityScreenMainState extends State<ActivityScreenMain> {
   }
   @override
   Widget build(BuildContext context) {
+    CheckUserConnection();
     return Scaffold(
       body: ActiveConnection? Column( children: [
 

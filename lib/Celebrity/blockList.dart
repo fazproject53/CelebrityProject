@@ -232,13 +232,14 @@ class _blockListState extends State<blockList> {
 
   Future<Block> getBlockList(String tokenn) async {
 
+    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMjI0NWFmM2Q1YzJmNGYzMDg4MWQ4MjFlMWUyMjc0MDRlYTRlOWM0YjU5YmIzNTllMGIxMzE0M2I2NWNhNjExMmFhYzEzMzVhODNjYWQyMGUiLCJpYXQiOjE2NTgzMTcxNzkuMzM2OTM5MDk2NDUwODA1NjY0MDYyNSwibmJmIjoxNjU4MzE3MTc5LjMzNjk0NjAxMDU4OTU5OTYwOTM3NSwiZXhwIjoxNjg5ODUzMTc5LjMyOTMxMDg5NDAxMjQ1MTE3MTg3NSwic3ViIjoiNTMiLCJzY29wZXMiOltdfQ.eg16dIb4Buu3z6n_8BY241Ey2y09B2WUc5nA1zTxQkQVzslyGoDj7A55FWfwt4WSvn5Xxtva8j389VftbQsCO_9B67sJb8vbQVWRA6tekYE17P7GHxQzNrZttruH9TIBMPEjLmBtAxaUtkPB0uHxBAn1EadsFVGmJhL4rFY_s3UWXntpmQECrdju6hj6cRhcU1el2TMcTSYBctO6sFoykpNMTXAkuhrTS9SUTu-YAnodbLjPIttDi6qEDhlL5c3teDOy11VPSsUu9eRd4QYi5aGhUhhobjyIErERc9bZWdLSpkSafvIPzAsumct8d31-2o68h-FAad6MtzdqRtDGmbsvzLCRblaBeWdbzsb72215c7kBUrrGY8dsyFPKr53HoP-HziPdDr8h3eQRtpH7UN80gd_cI0_DhnOQGRns5snRRhyo0dkGHLEn_nTZXaqlP1Z7RN4SDJPISyDrMldk4flzBHoDkErEj2mqYgTkJS5mmM3PRP6TLBYmPl_Pp84OF9wCYMNfBYShQinFu-F7UTMTCqxReUmaZ3U-tOcU9pe_TjZ2pYkhHYSTQLT-2NMtQBi2Q92d203SZj0B89_xKFNQsl6SUvqw3yL_eSI6LVBwPgbb8TNinVVyLOzAQ8m37_YdHg3G40WAw8ed_g8FItNbfQOHt88oyOo_cG90LPY' ;
     try {
       final response = await http.get(
           Uri.parse('https://mobile.celebrityads.net/api/celebrity/black-list'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer $tokenn'
+            'Authorization': 'Bearer $token'
           });
 
 
