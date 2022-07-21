@@ -639,7 +639,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
                             ///hint style
                             boxTextstyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w400,
                                 color: black,
                                 fontFamily: 'Cairo'),
@@ -728,7 +728,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
                             ///hint style
                             boxTextstyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w400,
                                 color: black,
                                 fontFamily: 'Cairo'),
@@ -818,7 +818,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
                             ///hint style
                             boxTextstyle: TextStyle(
-                                fontSize: 12.sp,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w400,
                                 color: black,
                                 fontFamily: 'Cairo'),
