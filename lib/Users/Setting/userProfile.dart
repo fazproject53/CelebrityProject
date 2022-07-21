@@ -387,7 +387,7 @@ class _userProfileState extends State<userProfile>
                                 //     width: 30,
                                 //     height: 30,
                                 //     color: white,
-                                //     child: SvgPicture.asset('assets/Svg/icon-tiktok.svg',width: 30,
+                                //     child: SvgPicture.asset('assets/Svg/tt.svg',width: 30,
                                 //       height: 30,),
                                 //   ),
                                 // ),

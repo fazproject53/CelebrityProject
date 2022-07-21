@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:celepraty/Users/Setting/userProfile.dart';
 import 'package:celepraty/celebrity/setting/profileInformation.dart' as info;
 import 'package:flutter_flushbar/flutter_flushbar.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
@@ -101,7 +102,6 @@ class _celebratyProfileState extends State<celebratyProfile> {
   void initState() {
     super.initState();
     CheckUserConnection();
-
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
@@ -422,7 +422,18 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                 ),
                               ),
                             ),
+                            // padding(
+                            //   8,
+                            //   8,
+                            //   Container(
+                            //     width: 30,
+                            //     height: 30,
+                            //     child: SvgPicture.asset('assets/Svg/tt.svg',width: 30,
+                            //       height: 30,),
+                            //   ),
+                            // ),
                           ]),
+
 
                       paddingg(
                         8,
