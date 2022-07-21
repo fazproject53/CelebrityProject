@@ -144,7 +144,7 @@ class _VerifyUserState extends State<VerifyUser> {
                               onTap: () {
                                 //print(widget.username);
                                 loadingDialogue(context);
-                                resendCode('tatooo7331@gmail.com')
+                                resendCode(widget.username!)
                                     .then((result) {
                                   if (result == true) {
                                     Navigator.pop(context);
@@ -197,7 +197,7 @@ class _VerifyUserState extends State<VerifyUser> {
                         FocusManager.instance.primaryFocus?.unfocus();
                         if (codeKey.currentState?.validate() == true) {
                           loadingDialogue(context);
-                          verifyUserCode('tatooo7331@gmail.com',
+                          verifyUserCode(widget.username!,
                                   int.parse(codeController.text))
                               .then((result) {
                             if (result == true) {

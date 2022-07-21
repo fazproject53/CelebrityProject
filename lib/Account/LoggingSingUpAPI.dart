@@ -19,7 +19,7 @@ class DatabaseHelper {
       final respons = await http
           .post(Uri.parse(url), body: data)
           .timeout(const Duration(seconds: 8));
-   //--------------------------------------
+      //--------------------------------------
       var message = jsonDecode(respons.body)["message"]["en"];
       var state = jsonDecode(respons.body)["data"]?["status"];
       print('logging respons: $message');
@@ -60,11 +60,10 @@ class DatabaseHelper {
     } catch (e) {
       if (e is SocketException) {
         return 'SocketException';
-      } else if(e is TimeoutException) {
+      } else if (e is TimeoutException) {
         return 'TimeoutException';
       } else {
         return 'serverException';
-
       }
     }
     return "";
@@ -92,9 +91,9 @@ class DatabaseHelper {
 
       //--------------------------------------------------------
       if (status == 200) {
-        token = jsonDecode(respons.body)['data']['token'];
+        //token = jsonDecode(respons.body)['data']['token'];
         userType = jsonDecode(respons.body)['data']?['user']?['type'];
-        saveToken(token);
+        //saveToken(token);
         saveRememberUserEmail(email);
         //print(userType);
         return '$userType';
@@ -115,11 +114,10 @@ class DatabaseHelper {
     } catch (e) {
       if (e is SocketException) {
         return 'SocketException';
-      } else if(e is TimeoutException) {
+      } else if (e is TimeoutException) {
         return 'TimeoutException';
       } else {
         return 'serverException';
-
       }
     }
     return "";
@@ -148,9 +146,9 @@ class DatabaseHelper {
 
       //--------------------------------------------------------
       if (status == 200) {
-        token = jsonDecode(respons.body)['data']['token'];
+        //token = jsonDecode(respons.body)['data']['token'];
         userType = jsonDecode(respons.body)['data']?['celebrity']?['type'];
-        saveToken(token);
+        //saveToken(token);
         saveRememberUserEmail(email);
         // print('respons body: ${jsonDecode(respons.body)}');
         // print(userType);
@@ -172,11 +170,10 @@ class DatabaseHelper {
     } catch (e) {
       if (e is SocketException) {
         return 'SocketException';
-      } else if(e is TimeoutException) {
+      } else if (e is TimeoutException) {
         return 'TimeoutException';
       } else {
         return 'serverException';
-
       }
     }
     return "";

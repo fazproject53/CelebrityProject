@@ -28,6 +28,7 @@ class _LoggingState extends State<Logging> {
   bool isChckid = true;
   late Image image1;
   String isFoundEmail = '';
+  String getEmail = '';
   TextEditingController lgoingEmailConttroller = TextEditingController();
   final TextEditingController lgoingPassConttroller = TextEditingController();
   GlobalKey<FormState> logKey = GlobalKey();
@@ -38,12 +39,13 @@ class _LoggingState extends State<Logging> {
     image1 = Image.asset("assets/image/singup.jpg");
     DatabaseHelper.getRememberUserEmail().then((email) {
       setState(() {
+        getEmail = email;
         isFoundEmail = email;
         lgoingEmailConttroller =
             TextEditingController(text: isFoundEmail == '' ? '' : isFoundEmail);
       });
     });
-    print('email:$isFoundEmail');
+    print('email:$getEmail');
   }
 
   @override
@@ -180,13 +182,16 @@ class _LoggingState extends State<Logging> {
                                       Navigator.pop(context);
 
                                       failureDialog(
-                                          context,
-                                          'عليك ادخال الرمز المرسل الي بريدك الالكتروني للدخول الي المنصة ',
-                                          "assets/lottie/Failuer.json",
-                                          'تحقق', () {
-                                        Navigator.pop(context);
-                                        goTopagepush(context, VerifyUser(username:isFoundEmail));
-                                      },);
+                                        context,
+                                        'عليك ادخال الرمز المرسل الي بريدك الالكتروني للدخول الي المنصة ',
+                                        "assets/lottie/Failuer.json",
+                                        'تحقق',
+                                        () {
+                                          Navigator.pop(context);
+                                          goTopagepush(context,
+                                              VerifyUser(username: getEmail));
+                                        },
+                                      );
 
                                       //showMassage(context, 'لم يتم التحقق من البريد الالكتروني بعد, لقد تم ارسال رمز التحقق الي البريد المدخل', 'اكمال اجراء');
                                     } else {
@@ -229,6 +234,22 @@ class _LoggingState extends State<Logging> {
                                       Navigator.pop(context);
                                       showMassage(context, 'بيانات غير صحيحة',
                                           'خطأ في كلمة المرور او اسم المستخدم');
+                                    } else if (result == "User not verified") {
+                                      Navigator.pop(context);
+
+                                      failureDialog(
+                                        context,
+                                        'عليك ادخال الرمز المرسل الي بريدك الالكتروني للدخول الي المنصة ',
+                                        "assets/lottie/Failuer.json",
+                                        'تحقق',
+                                        () {
+                                          Navigator.pop(context);
+                                          goTopagepush(context,
+                                              VerifyUser(username: getEmail));
+                                        },
+                                      );
+
+                                      //showMassage(context, 'لم يتم التحقق من البريد الالكتروني بعد, لقد تم ارسال رمز التحقق الي البريد المدخل', 'اكمال اجراء');
                                     } else {
                                       Navigator.pop(context);
                                       showMassage(

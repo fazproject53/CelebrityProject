@@ -77,18 +77,18 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
             child: widget!,
           );
         },
-        // initialRoute: initScreen == 0 || initScreen == null
-        //     ? 'firstPage'
-        //     : isLogging == ''
-        //         ? 'logging'
-        //         : 'MainScreen',
-        // routes: {
-        //   'firstPage': (context) => firstPage(),
-        //   'logging': (context) => Logging(),
-        //   'MainScreen': (context) => const MainScreen(),
-        // },
-         home:
-         VerifyUser()
+        initialRoute: initScreen == 0 || initScreen == null
+            ? 'firstPage'
+            : isLogging == ''
+                ? 'logging'
+                : 'MainScreen',
+        routes: {
+          'firstPage': (context) => firstPage(),
+          'logging': (context) => Logging(),
+          'MainScreen': (context) => const MainScreen(),
+        },
+        //  home:
+        //  VerifyUser()
       ),
     );
   }

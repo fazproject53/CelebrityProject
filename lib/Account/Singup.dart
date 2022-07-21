@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import '../ModelAPI/ModelsAPI.dart';
 import 'LoggingSingUpAPI.dart';
 import 'UserForm.dart';
+import 'VerifyUser.dart';
 
 class SingUp extends StatefulWidget {
   @override
@@ -26,6 +27,7 @@ class _SingUpState extends State<SingUp> {
   List<String> countries = [];
   List<String> celebrityCategories = [];
   late Image image1;
+  String getEmail = '';
   @override
   void initState() {
     super.initState();
@@ -33,6 +35,13 @@ class _SingUpState extends State<SingUp> {
     image1 = Image.asset("assets/image/singup.jpg");
     fetCelebrityCategories();
     fetCountries();
+    DatabaseHelper.getRememberUserEmail().then((email) {
+      setState(() {
+        getEmail = email;
+
+      });
+    });
+    print('email:$getEmail');
   }
 
   @override
@@ -301,7 +310,8 @@ class _SingUpState extends State<SingUp> {
           setState(() {
             currentuser = "celebrity";
           });
-          goTopageReplacement(context, const MainScreen());
+          FocusManager.instance.primaryFocus?.unfocus();
+          goTopagepush(context,  VerifyUser(username:getEmail ,));
           clearCelebrityTextField();
         } else if (result == "email and username found") {
           Navigator.pop(context);
@@ -348,7 +358,8 @@ class _SingUpState extends State<SingUp> {
           setState(() {
             currentuser = "user";
           });
-          goTopageReplacement(context, const MainScreen());
+          FocusManager.instance.primaryFocus?.unfocus();
+          goTopagepush(context,  VerifyUser(username: getEmail,));
           clearUserTextField();
         } else if (result == "email and username found") {
           Navigator.pop(context);
