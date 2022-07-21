@@ -83,7 +83,7 @@ class DatabaseHelper {
         'country_id': countryId
       };
       String url = "$serverUrl/user/new_register";
-      final respons = await http.post(Uri.parse(url), body: data);
+      final respons = await http.post(Uri.parse(url), body: data) .timeout(const Duration(seconds: 8));
       var message = jsonDecode(respons.body)["message"]["en"];
       int? status = jsonDecode(respons.body)?["data"]?["status"];
       print('user register respons: $message');
@@ -138,7 +138,7 @@ class DatabaseHelper {
         'category_id': categoryId
       };
       String url = "$serverUrl/celebrity/register";
-      final respons = await http.post(Uri.parse(url), body: data);
+      final respons = await http.post(Uri.parse(url), body: data) .timeout(const Duration(seconds: 8));
       var message = jsonDecode(respons.body)?["message"]?["en"];
       int? status = jsonDecode(respons.body)?["data"]?["status"];
       print('user register respons: $message');

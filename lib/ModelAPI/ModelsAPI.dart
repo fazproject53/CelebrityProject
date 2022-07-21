@@ -742,6 +742,8 @@ Future<Category> fetchCategories(int id, int pagNumber) async {
 }
 
 //-------------------------------------------------------------------------------
+
+
 class AllCelebrities {
   bool? success;
   AllCelebritiesData? data;

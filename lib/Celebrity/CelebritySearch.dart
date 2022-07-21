@@ -16,7 +16,7 @@ class CelebritySearch extends SearchDelegate {
   // onSubmitted: (String _) {
   //   widget.delegate.showResults(context);
   // },
-  List<getAllCelebrities> _oldFilters =  [];
+  List<getAllCelebrities> _oldFilters = [];
   final List<getAllCelebrities> allCelbrity;
   List<getAllCelebrities>? listSearch;
   String? pagIndex;
@@ -24,12 +24,10 @@ class CelebritySearch extends SearchDelegate {
   final OnSearchChanged onSearchChanged;
 
   CelebritySearch({required this.allCelbrity, required this.onSearchChanged})
-      : super( keyboardType: TextInputType.text,
-    textInputAction: TextInputAction.done,);
-
-
-
-
+      : super(
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.done,
+        );
 
   // CelebritySearch(
   //   this.allCelbrity, this.onSearchChanged, {
@@ -69,32 +67,40 @@ class CelebritySearch extends SearchDelegate {
   }
 
   @override
-  Widget buildResults(BuildContext context){
-    showSuggestions(context);
-     saveToRecentSearchesCelebrity(query);
-    return Container(
-      //child: Center(child: Text(query),),
-    );
-
+  Widget buildResults(BuildContext context) {
+    // showSuggestions(context);
+    // saveToRecentSearchesCelebrity(query);
+    List<getAllCelebrities> _results;
+     _results = allCelbrity.where((getAllCelebrities name) {
+      final nameLower = name.name!.toLowerCase();
+      final queryLower = query.toLowerCase();
+      return queryLower.compareTo(nameLower) == 0;
+    }).toList();
+     print(_results.length);
+    return
+      //_results==[]?
+    Text('hhhhhhhhhh');
+    //:
+   // Text('${_results[0].name}');
   }
 
-  @override
-  void showResults(BuildContext context) {
-    goTopagepush(
-        context,
-        CelebrityHome(
-          pageUrl: '$pagIndex',
-        ));
-    query = '';
-    super.showResults(context);
-  }
+  // @override
+  // void showResults(BuildContext context) {
+  //   goTopagepush(
+  //       context,
+  //       CelebrityHome(
+  //         pageUrl: '$pagIndex',
+  //       ));
+  //   query = '';
+  //   super.showResults(context);
+  // }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     listSearch = query.isEmpty
-        ?allCelbrity
-    //_oldFilters
-       // []
+        ? //allCelbrity
+        //_oldFilters
+        []
         : allCelbrity.where((getAllCelebrities name) {
             // print('name ${name.name}');
             final nameLower = name.name!.toLowerCase();
@@ -105,42 +111,43 @@ class CelebritySearch extends SearchDelegate {
           }).toList();
     return buildSuggetion(listSearch!);
   }
+
   Widget buildSuggetion(List<getAllCelebrities> suggestions) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Column(
         children: [
-          suggestions.isEmpty
-              ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 22.w, top: 15.h),
-                child: Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "عمليات البحث الأخيرة",
-                      style: TextStyle(
-                          fontSize: 17.sp,
-                          color: black,
-                          fontFamily: 'Cairo'),
-                    )),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 22.w, top: 15.h),
-                child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'مسح',
-                      style: TextStyle(
-                          fontSize: 17.sp,
-                          color: black,
-                          fontFamily: 'Cairo'),
-                    )),
-              ),
-            ],
-          )
-              : SizedBox(),
+          // suggestions.isEmpty
+          //     ? Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Padding(
+          //       padding: EdgeInsets.only(right: 22.w, top: 15.h),
+          //       child: Align(
+          //           alignment: Alignment.topRight,
+          //           child: Text(
+          //             "عمليات البحث الأخيرة",
+          //             style: TextStyle(
+          //                 fontSize: 17.sp,
+          //                 color: black,
+          //                 fontFamily: 'Cairo'),
+          //           )),
+          //     ),
+          //     Padding(
+          //       padding: EdgeInsets.only(left: 22.w, top: 15.h),
+          //       child: Align(
+          //           alignment: Alignment.topLeft,
+          //           child: Text(
+          //             'مسح',
+          //             style: TextStyle(
+          //                 fontSize: 17.sp,
+          //                 color: black,
+          //                 fontFamily: 'Cairo'),
+          //           )),
+          //     ),
+          //   ],
+          // )
+          //     : SizedBox(),
           Expanded(
             child: ListView.builder(
                 itemCount: suggestions.length,
@@ -148,7 +155,7 @@ class CelebritySearch extends SearchDelegate {
                   final suggestion = suggestions[index];
                   final queryText = suggestion.name?.substring(0, query.length);
                   final remainingText =
-                  suggestion.name?.substring(query.length);
+                      suggestion.name?.substring(query.length);
                   return ListTile(
                     minLeadingWidth: 5.w,
                     onTap: () {
@@ -156,7 +163,9 @@ class CelebritySearch extends SearchDelegate {
                       pagIndex = suggestion.pageUrl;
                       showResults(context);
                     },
-                    leading: Icon(suggestions.isEmpty ? Icons.history : Icons.search),
+                    leading: Icon(
+                        //suggestions.isEmpty ? Icons.history :
+                        Icons.search),
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -184,6 +193,7 @@ class CelebritySearch extends SearchDelegate {
       ),
     );
   }
+
   @override
   ThemeData appBarTheme(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -247,7 +257,6 @@ class CelebritySearch extends SearchDelegate {
   @override
   String get searchFieldLabel => "البحث عن مشهور";
 
-
 //--------------------------------------------------------------------
   getHistory() {
     return FutureBuilder<List<String>>(
@@ -256,16 +265,17 @@ class CelebritySearch extends SearchDelegate {
         if (snapshot.hasData) {
           //_oldFilters=snapshot.data!;
           return ListView.builder(
-          itemCount: _oldFilters.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              leading: Icon(Icons.restore),
-              title: Text("${_oldFilters[index].name}"),
-              onTap: () => close(context, _oldFilters[index]),
-            );
-          },
-        );
-        }return CircularProgressIndicator();
+            itemCount: _oldFilters.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Icon(Icons.restore),
+                title: Text("${_oldFilters[index].name}"),
+                onTap: () => close(context, _oldFilters[index]),
+              );
+            },
+          );
+        }
+        return CircularProgressIndicator();
       },
     );
   }
