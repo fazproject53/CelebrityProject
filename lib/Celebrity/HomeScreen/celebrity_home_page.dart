@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:card_swiper/card_swiper.dart';
+import 'package:celepraty/Account/logging.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:celepraty/Users/Exploer/viewData.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../MainScreen/main_screen_navigation.dart';
 import '../../ModelAPI/CelebrityScreenAPI.dart';
 import '../../Models/Methods/classes/GradientIcon.dart';
 
@@ -106,7 +108,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
-        scrollController.position.extentAfter < 300) {
+        scrollController.position.extentAfter < 200) {
       setState(() {
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
       });
@@ -846,7 +848,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                             height: 20.h,
                           ),
 
-                          padding(
+                          currentuser == 'user'?  padding(
                             15,
                             15,
                             gradientContainerNoborder(
@@ -861,7 +863,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                           snapshot.data!.data!.celebrity!.name!
                                               .toString()));
                                 })),
-                          ),
+                          ): SizedBox(),
                           SizedBox(
                             height: 20.h,
                           ),
