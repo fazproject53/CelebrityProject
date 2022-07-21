@@ -722,7 +722,6 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                           childAspectRatio: 0.90, //حجم العناصر
                                           mainAxisSpacing: 5.w,
                                         ),
-                                        scrollDirection: Axis.horizontal,
                                         controller: scrollControllerStudio,
                                         itemBuilder: (context, i) {
                                           ///play the celebrity video
@@ -837,33 +836,43 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                   ),
                                 ),
                           if (_isLoadMoreRunningStudio == true)
-                            SizedBox(),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 10, bottom: 40),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: purple,
+                                ),
+                              ),
+                            ),
 
 
                           // When nothing else to load
                           if (_hasNextPageStudio == false)
-                           SizedBox(),
+                            SizedBox(),
 
                           SizedBox(
                             height: 20.h,
                           ),
 
-                          currentuser == 'user'?  padding(
-                            15,
-                            15,
-                            gradientContainerNoborder(
-                                getSize(context).width,
-                                buttoms(context, 'اطلب حالا', 20, white, () {
-                                  showBottomSheett(
-                                      context,
-                                      bottomSheetMenu(
-                                          snapshot.data!.data!.celebrity!.id!
-                                              .toString(),
-                                          snapshot.data!.data!.celebrity!.image!,
-                                          snapshot.data!.data!.celebrity!.name!
-                                              .toString()));
-                                })),
-                          ): SizedBox(),
+                          Visibility(
+                            visible: currentuser == 'user'? true : false,
+                            child: padding(
+                              15,
+                              15,
+                              gradientContainerNoborder(
+                                  getSize(context).width,
+                                  buttoms(context, 'اطلب حالا', 20, white, () {
+                                    showBottomSheett(
+                                        context,
+                                        bottomSheetMenu(
+                                            snapshot.data!.data!.celebrity!.id!
+                                                .toString(),
+                                            snapshot.data!.data!.celebrity!.image!,
+                                            snapshot.data!.data!.celebrity!.name!
+                                                .toString()));
+                                  })),
+                            )
+                          ),
                           SizedBox(
                             height: 20.h,
                           ),
