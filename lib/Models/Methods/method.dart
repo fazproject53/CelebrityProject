@@ -1069,7 +1069,7 @@ Widget textFieldDescOnChange(context, String key, double fontSize,
 //Drow app bar----------------------------------------------------
 
 drowAppBar(String title, BuildContext context,
-    {color = deepwhite, IconData? download, onPressed}) {
+    {color = white, IconData? download, onPressed}) {
   return AppBar(
     title: Text(
       title,
