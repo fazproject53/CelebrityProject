@@ -1662,7 +1662,7 @@ Widget checkTimeOutException(context, {reload}) {
       SizedBox(
           height: MediaQuery.of(context).size.height / 5,
           width: MediaQuery.of(context).size.height / 5,
-          child: Lottie.asset('assets/lottie/connection.json')),
+          child: Lottie.asset('assets/lottie/timeout1.json')),
       SizedBox(
         height: 10.h,
       ),

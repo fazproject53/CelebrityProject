@@ -284,7 +284,7 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
                               textFieldNoIcon(
                                 context,
                                 'موضوع الرسالة',
-                                12,
+                                16,
                                 false,
                                 supportTitle,
                                 (String? value) {
@@ -312,7 +312,7 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
                               textFieldDesc(
                                 context,
                                 'تفاصيل الرسالة',
-                                12,
+                                16,
                                 false,
                                 supportDescription,
                                 (String? value) {
