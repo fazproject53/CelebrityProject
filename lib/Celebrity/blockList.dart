@@ -62,13 +62,14 @@ class _blockListState extends State<blockList> {
                               });
                             })));
                   } else {
-                    if(snapshot.error.toString() ==
-                        'ServerException'){
-                      Center(
+                    if(snapshot.error.toString() == 'serverExceptions'){
+                      return Center(
                           child: serverError(context));
+                    }else{
+                      return  Center(
+                          child: Text(snapshot.error.toString()));
                     }
-                    return  Center(
-                        child: serverError(context));
+
                   }
                   //---------------------------------------------------------------------------
                 } else if (snapshot.hasData) {
@@ -239,7 +240,7 @@ class _blockListState extends State<blockList> {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer $token'
+            'Authorization': 'Bearer $userToken'
           });
 
 
@@ -286,7 +287,7 @@ class Block {
     success = json['success'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
     message =
-        json['message'] != null ? new Message.fromJson(json['message']) : null;
+    json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -304,9 +305,10 @@ class Block {
 
 class Data {
   List<BlackList>? blackList;
+  int? pageCount;
   int? status;
 
-  Data({this.blackList, this.status});
+  Data({this.blackList, this.pageCount, this.status});
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['blackList'] != null) {
@@ -315,6 +317,7 @@ class Data {
         blackList!.add(new BlackList.fromJson(v));
       });
     }
+    pageCount = json['page_count'];
     status = json['status'];
   }
 
@@ -323,6 +326,7 @@ class Data {
     if (this.blackList != null) {
       data['blackList'] = this.blackList!.map((v) => v.toJson()).toList();
     }
+    data['page_count'] = this.pageCount;
     data['status'] = this.status;
     return data;
   }
@@ -331,8 +335,8 @@ class Data {
 class BlackList {
   String? date;
   Celebrity? celebrity;
-  User? user;
-  AccountStatus? banReson;
+  Celebrity? user;
+  City? banReson;
 
   BlackList({this.date, this.celebrity, this.user, this.banReson});
 
@@ -341,10 +345,9 @@ class BlackList {
     celebrity = json['celebrity'] != null
         ? new Celebrity.fromJson(json['celebrity'])
         : null;
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    banReson = json['ban_reson'] != null
-        ? new AccountStatus.fromJson(json['ban_reson'])
-        : null;
+    user = json['user'] != null ? new Celebrity.fromJson(json['user']) : null;
+    banReson =
+    json['ban_reson'] != null ? new City.fromJson(json['ban_reson']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -371,23 +374,23 @@ class Celebrity {
   String? email;
   String? phonenumber;
   Country? country;
-  Null? city;
-  Null? gender;
-  AccountStatus? accountStatus;
+  City? city;
+  City? gender;
+  City? accountStatus;
   String? type;
 
   Celebrity(
       {this.id,
-      this.username,
-      this.name,
-      this.image,
-      this.email,
-      this.phonenumber,
-      this.country,
-      this.city,
-      this.gender,
-      this.accountStatus,
-      this.type});
+        this.username,
+        this.name,
+        this.image,
+        this.email,
+        this.phonenumber,
+        this.country,
+        this.city,
+        this.gender,
+        this.accountStatus,
+        this.type});
 
   Celebrity.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -397,11 +400,11 @@ class Celebrity {
     email = json['email'];
     phonenumber = json['phonenumber'];
     country =
-        json['country'] != null ? new Country.fromJson(json['country']) : null;
-    city = json['city'];
-    gender = json['gender'];
+    json['country'] != null ? new Country.fromJson(json['country']) : null;
+    city = json['city'] != null ? new City.fromJson(json['city']) : null;
+    gender = json['gender'] != null ? new City.fromJson(json['gender']) : null;
     accountStatus = json['account_status'] != null
-        ? new AccountStatus.fromJson(json['account_status'])
+        ? new City.fromJson(json['account_status'])
         : null;
     type = json['type'];
   }
@@ -417,8 +420,12 @@ class Celebrity {
     if (this.country != null) {
       data['country'] = this.country!.toJson();
     }
-    data['city'] = this.city;
-    data['gender'] = this.gender;
+    if (this.city != null) {
+      data['city'] = this.city!.toJson();
+    }
+    if (this.gender != null) {
+      data['gender'] = this.gender!.toJson();
+    }
     if (this.accountStatus != null) {
       data['account_status'] = this.accountStatus!.toJson();
     }
@@ -449,107 +456,22 @@ class Country {
   }
 }
 
-class AccountStatus {
-  int? id;
-  String? name;
-  String? nameEn;
-
-  AccountStatus({this.id, this.name, this.nameEn});
-
-  AccountStatus.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    nameEn = json['name_en'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['name_en'] = this.nameEn;
-    return data;
-  }
-}
-
-class User {
-  int? id;
-  String? username;
-  String? name;
-  String? image;
-  String? email;
-  String? phonenumber;
-  Country? country;
-  City? city;
-  Null? gender;
-  AccountStatus? accountStatus;
-  String? type;
-
-  User(
-      {this.id,
-      this.username,
-      this.name,
-      this.image,
-      this.email,
-      this.phonenumber,
-      this.country,
-      this.city,
-      this.gender,
-      this.accountStatus,
-      this.type});
-
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    username = json['username'];
-    name = json['name'];
-    image = json['image'];
-    email = json['email'];
-    phonenumber = json['phonenumber'];
-    country =
-        json['country'] != null ? new Country.fromJson(json['country']) : null;
-    city = json['city'] != null ? new City.fromJson(json['city']) : null;
-    gender = json['gender'];
-    accountStatus = json['account_status'] != null
-        ? new AccountStatus.fromJson(json['account_status'])
-        : null;
-    type = json['type'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['username'] = this.username;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    data['email'] = this.email;
-    data['phonenumber'] = this.phonenumber;
-    if (this.country != null) {
-      data['country'] = this.country!.toJson();
-    }
-    if (this.city != null) {
-      data['city'] = this.city!.toJson();
-    }
-    data['gender'] = this.gender;
-    if (this.accountStatus != null) {
-      data['account_status'] = this.accountStatus!.toJson();
-    }
-    data['type'] = this.type;
-    return data;
-  }
-}
-
 class City {
+  int? id;
   String? name;
   String? nameEn;
 
-  City({this.name, this.nameEn});
+  City({this.id, this.name, this.nameEn});
 
   City.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     nameEn = json['name_en'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['name_en'] = this.nameEn;
     return data;
@@ -574,3 +496,5 @@ class Message {
     return data;
   }
 }
+
+
