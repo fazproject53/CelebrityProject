@@ -144,7 +144,7 @@ class _SingUpState extends State<SingUp> {
                         140,
                         buttoms(
                           context,
-                          'متابع',
+                          'مستخدم',
                           14,
                           white,
                           () {

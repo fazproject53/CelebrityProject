@@ -257,7 +257,7 @@ class _ShowMoreCelebratyState extends State<ShowMoreCelebraty>
       });
       print('pageApi $pageCount pagNumber $page');
       final response = await http.get(Uri.parse(
-          'http://mobile.celebrityads.net/api/category/celebrities/${widget.categoryId}?page=$page')).timeout(const Duration(seconds: 8));
+          'http://mobile.celebrityads.net/api/category/celebrities/${widget.categoryId}?page=$page'));
       if (response.statusCode == 200) {
         final body = response.body;
         Category category = Category.fromJson(jsonDecode(body));

@@ -643,7 +643,7 @@ class MessageCategory {
 Future<link> fetchLinks() async {
   try {
     final response =
-        await http.get(Uri.parse('http://mobile.celebrityads.net/api/links')).timeout(const Duration(seconds: 8));
+        await http.get(Uri.parse('http://mobile.celebrityads.net/api/links'));
 
     if (response.statusCode == 200) {
       final body = response.body;
@@ -669,7 +669,7 @@ Future<link> fetchLinks() async {
 Future<header> fetchHeader() async {
   try {
     final response =
-        await http.get(Uri.parse('http://mobile.celebrityads.net/api/header')).timeout(const Duration(seconds: 8));
+        await http.get(Uri.parse('http://mobile.celebrityads.net/api/header'));
 
     if (response.statusCode == 200) {
       final body = response.body;
@@ -695,7 +695,7 @@ Future<header> fetchHeader() async {
 Future<Partner> fetchPartners() async {
   try {
     final response = await http
-        .get(Uri.parse('http://mobile.celebrityads.net/api/partners')).timeout(const Duration(seconds: 8));
+        .get(Uri.parse('http://mobile.celebrityads.net/api/partners'));
 
     if (response.statusCode == 200) {
       final body = response.body;
@@ -720,7 +720,7 @@ Future<Partner> fetchPartners() async {
 Future<Category> fetchCategories(int id, int pagNumber) async {
   try {
     final response = await http.get(Uri.parse(
-        'http://mobile.celebrityads.net/api/category/celebrities/$id?page=$pagNumber')).timeout(const Duration(seconds: 8));
+        'http://mobile.celebrityads.net/api/category/celebrities/$id?page=$pagNumber'));
     if (response.statusCode == 200) {
       final body = response.body;
       Category category = Category.fromJson(jsonDecode(body));
@@ -740,10 +740,7 @@ Future<Category> fetchCategories(int id, int pagNumber) async {
     }
   }
 }
-
 //-------------------------------------------------------------------------------
-
-
 class AllCelebrities {
   bool? success;
   AllCelebritiesData? data;

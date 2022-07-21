@@ -267,7 +267,7 @@ class _AdvDetialsState extends State<AdvDetials>
                                 : widget.state == 3
                                     ? 'قبول'
                                     : widget.state == 2
-                                        ? 'قبول من المتابع'
+                                        ? 'قبول من المستخدم'
                                         : widget.state == 6
                                             ? 'تم الدفع'
                                             : 'قبول',
@@ -355,7 +355,7 @@ class _AdvDetialsState extends State<AdvDetials>
                                 : widget.state == 4
                                     ? 'رفض'
                                     : widget.state == 5
-                                        ? 'رفض من المتابع'
+                                        ? 'رفض من المستخدم'
                                         : widget.state == 6
                                             ? 'رفض'
                                             : 'رفض',

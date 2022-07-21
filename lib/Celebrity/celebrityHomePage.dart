@@ -1523,7 +1523,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   Future<List<getAllCelebrities>?> getAllCelebrity() async {
     try {
       var getSections = await http
-          .get(Uri.parse("https://mobile.celebrityads.net/api/celebrities")).timeout(const Duration(seconds: 8));
+          .get(Uri.parse("https://mobile.celebrityads.net/api/celebrities"));
       if (getSections.statusCode == 200) {
         final body = getSections.body;
         AllCelebrities celebrity = AllCelebrities.fromJson(jsonDecode(body));

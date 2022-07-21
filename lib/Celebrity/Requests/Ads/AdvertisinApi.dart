@@ -17,7 +17,7 @@ Future<bool> acceptAdvertisingOrder(
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       },
-      body: data).timeout(const Duration(seconds: 8));
+      body: data);
 
   if (respons.statusCode == 200) {
     print(respons.body);
@@ -50,7 +50,7 @@ Future<bool> rejectAdvertisingOrder(
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       },
-      body: data).timeout(const Duration(seconds: 8));
+      body: data);
 
   if (respons.statusCode == 200) {
     print(respons.body);

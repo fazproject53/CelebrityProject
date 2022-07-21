@@ -64,7 +64,7 @@ class _UserAdvertismentState extends State<UserAdvertisment>
                 });
               }),
             )
-          : Padding(
+          : empty?noData(context):Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
                   controller: scrollController,

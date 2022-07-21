@@ -63,7 +63,7 @@ class _LoggingState extends State<Logging> {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Colors.black,
+            color: Colors.white,
             image: DecorationImage(
                 image: image1.image,
                 colorFilter: ColorFilter.mode(
