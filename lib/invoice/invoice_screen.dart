@@ -112,254 +112,257 @@ class _invoiceScreenState extends State<invoiceScreen> {
                               ),),
                             )
                                 :
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 30.h,
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.data!.billings!
-                                      .length,
-                                  itemBuilder: (context, index) {
-                                    desc =
-                                    snapshot.data!.data!.billings![index].order!
-                                        .adType!.name! == "اعلان" ? ' طلب' +
-                                        snapshot.data!.data!.billings![index]
-                                            .order!.adType!.name! + ' ل' +
-                                        snapshot.data!.data!.billings![index]
-                                            .order!.advertisingAdType!.name! :
-                                    snapshot.data!.data!.billings![index].order!
-                                        .adType!.name! == "اهداء" ? ' طلب ' +
-                                        snapshot.data!.data!.billings![index]
-                                            .order!.adType!.name! + ' / ' +
-                                        snapshot.data!.data!.billings![index]
-                                            .order!.giftType!.name! +
-                                        " بمناسبة  " + 'عيد ميلاد' :
-                                    snapshot.data!.data!.billings![index].order!
-                                        .adType!.name! == "مساحة اعلانية"
-                                        ? ' طلب ' + 'مساحة اعلانية'
-                                        : '';
-                                    return Card(
-                                        elevation: 3,
-                                        child: ExpansionTile(
-                                            title: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.receipt_long,
-                                                      color:
-                                                      black.withOpacity(0.80),
-                                                      size: 27,
-                                                    ),
-                                                    SizedBox(width: 20.w),
-                                                    Container(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                        children: [
-                                                          text(
-                                                              context,
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
-                                                                  .user!.name!,
-                                                              16,
-                                                              black),
-                                                          text(
-                                                              context,
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
-                                                                  .price!
-                                                                  .toString() +
-                                                                  " ر.س",
-                                                              15,
-                                                              green),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                text(
-                                                    context,
-                                                    snapshot.data!.data!
-                                                        .billings![index].date
-                                                        .toString(),
-                                                    12,
-                                                    grey!),
-                                              ],
-                                            ),
-                                            children: [
-                                              Container(
-                                                  margin:
-                                                  EdgeInsets.only(top: 10.h),
-                                                  height: 70.h,
-                                                  decoration: BoxDecoration(
-                                                    color: fillWhite,
-                                                    border: Border(
-                                                        top: BorderSide(
-                                                            color: lightGrey
-                                                                .withOpacity(
-                                                                0.10))),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                            SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 30.h,
+                                  ),
+                                  ListView.builder(
+                                    physics: ScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data!.data!.billings!
+                                        .length,
+                                    itemBuilder: (context, index) {
+                                      desc =
+                                      snapshot.data!.data!.billings![index].order!
+                                          .adType!.name! == "اعلان" ? ' طلب' +
+                                          snapshot.data!.data!.billings![index]
+                                              .order!.adType!.name! + ' ل' +
+                                          snapshot.data!.data!.billings![index]
+                                              .order!.advertisingAdType!.name! :
+                                      snapshot.data!.data!.billings![index].order!
+                                          .adType!.name! == "اهداء" ? ' طلب ' +
+                                          snapshot.data!.data!.billings![index]
+                                              .order!.adType!.name! + ' / ' +
+                                          snapshot.data!.data!.billings![index]
+                                              .order!.giftType!.name! +
+                                          " بمناسبة  " + 'عيد ميلاد' :
+                                      snapshot.data!.data!.billings![index].order!
+                                          .adType!.name! == "مساحة اعلانية"
+                                          ? ' طلب ' + 'مساحة اعلانية'
+                                          : '';
+                                      return Card(
+                                          elevation: 3,
+                                          child: ExpansionTile(
+                                              title: Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
                                                     children: [
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .only(
-                                                            right: 15.0.w),
-                                                        child: text(context,
-                                                            'التفاصيل', 12,
-                                                            grey!),
+                                                      Icon(
+                                                        Icons.receipt_long,
+                                                        color:
+                                                        black.withOpacity(0.80),
+                                                        size: 27,
                                                       ),
-                                                      SingleChildScrollView(
-                                                        child: Container(
-                                                          child: text(
-                                                              context,
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
-                                                                  .order!
-                                                                  .description !=
-                                                                  null
-                                                                  ? snapshot
-                                                                  .data!.data!
-                                                                  .billings![index]
-                                                                  .order!
-                                                                  .description!
-                                                                  : '',
-                                                              14,
-                                                              black),
-                                                          width: 200.w,
-                                                          margin: EdgeInsets
-                                                              .only(
-                                                              right: 10.w),
+                                                      SizedBox(width: 20.w),
+                                                      Container(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                          children: [
+                                                            text(
+                                                                context,
+                                                                snapshot.data!
+                                                                    .data!
+                                                                    .billings![index]
+                                                                    .user!.name!,
+                                                                16,
+                                                                black),
+                                                            text(
+                                                                context,
+                                                                snapshot.data!
+                                                                    .data!
+                                                                    .billings![index]
+                                                                    .price!
+                                                                    .toString() +
+                                                                    " ر.س",
+                                                                15,
+                                                                green),
+                                                          ],
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding: EdgeInsets
-                                                            .only(
-                                                            left: 10.w),
-                                                        child: Row(children: [
-                                                          InkWell(
-                                                            child: Icon(
-                                                              Icons
-                                                                  .info_outlined,
-                                                              size: 20,
-                                                            ),
-                                                            onTap: () {
-                                                              showBottomSheettInvoice(
-                                                                  context,
-                                                                  invoice(
-                                                                      index));
-                                                            },
-                                                          ),
-                                                          SizedBox(
-                                                            width: 15.w,
-                                                          ),
-                                                          InkWell(
-                                                            child: GradientIcon(
-                                                              Icons.share,
-                                                              20,
-                                                              const LinearGradient(
-                                                                begin: Alignment(
-                                                                    0.7, 2.0),
-                                                                end: Alignment(
-                                                                    -0.69,
-                                                                    -1.0),
-                                                                colors: [
-                                                                  Color(
-                                                                      0xff0ab3d0),
-                                                                  Color(
-                                                                      0xffe468ca)
-                                                                ],
-                                                                stops: [
-                                                                  0.0,
-                                                                  1.0
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            onTap: () async {
-                                                              final pdf = await InvoicePdf
-                                                                  .createInvoicePDF(
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .order!
-                                                                      .id!
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .billingId
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .date
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .taxnumber
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .phone
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .celebrity!
-                                                                      .phonenumber
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .celebrity!
-                                                                      .country!
-                                                                      .name!,
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .celebrity!
-                                                                      .name!,
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .price
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .priceAfterTax
-                                                                      .toString(),
-                                                                  snapshot.data!
-                                                                      .data!
-                                                                      .billings![index]
-                                                                      .paymentMehtod!
-                                                                      .name!,
-                                                                  desc!);
-                                                              InvoicePdf
-                                                                  .openFile(
-                                                                  pdf);
-                                                            },
-                                                          ),
-                                                        ]),
-                                                      ),
                                                     ],
-                                                  ))
-                                            ]));
-                                  },
-                                ),
-                              ],
+                                                  ),
+                                                  text(
+                                                      context,
+                                                      snapshot.data!.data!
+                                                          .billings![index].date
+                                                          .toString(),
+                                                      12,
+                                                      grey!),
+                                                ],
+                                              ),
+                                              children: [
+                                                Container(
+                                                    margin:
+                                                    EdgeInsets.only(top: 10.h),
+                                                    height: 70.h,
+                                                    decoration: BoxDecoration(
+                                                      color: fillWhite,
+                                                      border: Border(
+                                                          top: BorderSide(
+                                                              color: lightGrey
+                                                                  .withOpacity(
+                                                                  0.10))),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              right: 15.0.w),
+                                                          child: text(context,
+                                                              'التفاصيل', 12,
+                                                              grey!),
+                                                        ),
+                                                        SingleChildScrollView(
+                                                          child: Container(
+                                                            child: text(
+                                                                context,
+                                                                snapshot.data!
+                                                                    .data!
+                                                                    .billings![index]
+                                                                    .order!
+                                                                    .description !=
+                                                                    null
+                                                                    ? snapshot
+                                                                    .data!.data!
+                                                                    .billings![index]
+                                                                    .order!
+                                                                    .description!
+                                                                    : '',
+                                                                14,
+                                                                black),
+                                                            width: 200.w,
+                                                            margin: EdgeInsets
+                                                                .only(
+                                                                right: 10.w),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .only(
+                                                              left: 10.w),
+                                                          child: Row(children: [
+                                                            InkWell(
+                                                              child: Icon(
+                                                                Icons
+                                                                    .info_outlined,
+                                                                size: 20,
+                                                              ),
+                                                              onTap: () {
+                                                                showBottomSheettInvoice(
+                                                                    context,
+                                                                    invoice(
+                                                                        index));
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              width: 15.w,
+                                                            ),
+                                                            InkWell(
+                                                              child: GradientIcon(
+                                                                Icons.share,
+                                                                20,
+                                                                const LinearGradient(
+                                                                  begin: Alignment(
+                                                                      0.7, 2.0),
+                                                                  end: Alignment(
+                                                                      -0.69,
+                                                                      -1.0),
+                                                                  colors: [
+                                                                    Color(
+                                                                        0xff0ab3d0),
+                                                                    Color(
+                                                                        0xffe468ca)
+                                                                  ],
+                                                                  stops: [
+                                                                    0.0,
+                                                                    1.0
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              onTap: () async {
+                                                                final pdf = await InvoicePdf
+                                                                    .createInvoicePDF(
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .order!
+                                                                        .id!
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .billingId
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .date
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .taxnumber
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .phone
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .celebrity!
+                                                                        .phonenumber
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .celebrity!
+                                                                        .country!
+                                                                        .name!,
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .celebrity!
+                                                                        .name!,
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .price
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .priceAfterTax
+                                                                        .toString(),
+                                                                    snapshot.data!
+                                                                        .data!
+                                                                        .billings![index]
+                                                                        .paymentMehtod!
+                                                                        .name!,
+                                                                    desc!);
+                                                                InvoicePdf
+                                                                    .openFile(
+                                                                    pdf);
+                                                              },
+                                                            ),
+                                                          ]),
+                                                        ),
+                                                      ],
+                                                    ))
+                                              ]));
+                                    },
+                                  ),
+                                ],
+                              ),
                             );
                           } else {
                             return const Center(
