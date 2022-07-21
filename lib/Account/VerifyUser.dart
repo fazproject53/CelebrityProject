@@ -217,16 +217,13 @@ class _VerifyUserState extends State<VerifyUser> {
                                     ' لايوجد اتصال بالانترنت في الوقت الحالي ');
                               } else if (result == "TimeoutException") {
                                 Navigator.pop(context);
-                                showMassage(context, 'مشكلة في الخادم',
-                                    'TimeoutException');
+                                showMassage(context, 'مشكلة في الخادم', 'TimeoutException');
                               } else if (result == false) {
                                 Navigator.pop(context);
-                                showMassage(context, 'بيانات غير صحيحة',
-                                    'الرمز المدخل خاطئ');
+                                showMassage(context, 'بيانات غير صحيحة', 'الرمز المدخل خاطئ');
                               } else if (result == "serverException") {
                                 Navigator.pop(context);
-                                showMassage(context, 'مشكلة في الخادم',
-                                    'حدث خطأ ما اثناء استعادة كلمة المرور, سنقوم باصلاحه قريبا');
+                                showMassage(context, 'مشكلة في الخادم', 'حدث خطأ ما اثناء استعادة كلمة المرور, سنقوم باصلاحه قريبا');
                               }
                             }
                           });

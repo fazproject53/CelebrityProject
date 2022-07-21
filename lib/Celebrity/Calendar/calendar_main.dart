@@ -98,17 +98,40 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                 child: SizedBox(
                                     height: 500.h,
                                     width: 250.w,
-                                    child:
-                                        internetConnection(context, reload: () {
+                                    child: internetConnection(context, reload: () {
                                       setState(() {
                                         calender = fetchCalender(userToken!);
                                         isConnectSection = true;
+
+                                        print('The error is SocketException');
                                       });
                                     })));
-                          } else {
-                            return const Center(
-                                child:
-                                    Text('حدث خطا ما اثناء استرجاع البيانات'));
+                          } else if(snapshot.error.toString() == 'ServerException'){
+                            return Center(
+                                child: SizedBox(
+                                    height: 500.h,
+                                    width: 250.w,
+                                    child: serverError(context, reload: () {
+                                      setState(() {
+                                        calender = fetchCalender(userToken!);
+                                        serverExceptions = true;
+
+                                        print('The error is timeoutException');
+                                      });
+                                    })));
+                          }else{ /// TimeOut Exception
+                            return Center(
+                                child: SizedBox(
+                                    height: 500.h,
+                                    width: 250.w,
+                                    child: internetConnection(context, reload: () {
+                                      setState(() {
+                                        calender = fetchCalender(userToken!);
+                                        timeoutException = true;
+
+                                        print('The error is TimeOut');
+                                      });
+                                    })));
                           }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {
