@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:celepraty/celebrity/blockList.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -16,266 +18,311 @@ class blockList extends StatefulWidget {
 
 class _blockListState extends State<blockList> {
   Future<Block>? blockedUsers;
+  final _baseUrl = 'https://mobile.celebrityads.net/api/celebrity/black-list';
+  int _page = 1;
+  bool ActiveConnection = false;
+  String T = "";
 
+  // There is next page or not
+  bool _hasNextPage = true;
+
+  // Used to display loading indicators when _firstLoad function is running
+  bool _isFirstLoadRunning = false;
+
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunning = false;
+
+  // This holds the posts fetched from the server
+  List _posts = [];
+  ScrollController _controller = ScrollController();
   String? userToken;
+
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
-        blockedUsers = getBlockList(userToken!);
+        getBlockList(userToken!);
       });
     });
+    _controller.addListener(_loadMore);
     // TODO: implement initState
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_loadMore);
+    super.dispose();
   }
 
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
+
+  void _loadMore() async {
+    print('#########################################################');
+
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false && _controller.position.maxScrollExtent ==
+        _controller.offset) {
+      setState(() {
+        _isLoadMoreRunning = true; // Display a progress indicator at the bottom
+      });
+      _page += 1;
+      try {
+        final res =
+        await http.get(Uri.parse("$_baseUrl?page=$_page"), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
+        });
+
+        if (Block
+            .fromJson(jsonDecode(res.body))
+            .data!
+            .blackList!
+            .isNotEmpty) {
+          setState(() {
+            _posts.addAll(Block
+                .fromJson(jsonDecode(res.body))
+                .data!
+                .blackList!);
+          });
+        } else {
+          setState(() {
+            _hasNextPage = false;
+          });
+        }
+      } catch (err) {
+        if (kDebugMode) {
+          print('Something went wrong!');
+        }
+      }
+
+      setState(() {
+        _isLoadMoreRunning = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: drowAppBar( 'قائمة الحظر', context),
-        body:  FutureBuilder(
-            future: blockedUsers,
-            builder: ((context, AsyncSnapshot<Block> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: mainLoad(context));
-              } else if (snapshot.connectionState ==
-                  ConnectionState.active ||
-                  snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  if (snapshot.error.toString() ==
-                      'SocketException') {
-                    return Center(
-                        child: SizedBox(
-                            height: 300.h,
-                            width: 250.w,
-                            child: internetConnection(
-                                context, reload: () {
-                              setState(() {
-                                blockedUsers = getBlockList(userToken!);
-                                isConnectSection = true;
-                              });
-                            })));
-                  } else {
-                    if(snapshot.error.toString() == 'serverExceptions'){
-                      return Center(
-                          child: serverError(context));
-                    }else{
-                      return  Center(
-                          child: Text(snapshot.error.toString()));
-                    }
-
-                  }
-                  //---------------------------------------------------------------------------
-                } else if (snapshot.hasData) {
-                  return snapshot.data!.data!.blackList!.isEmpty? Padding(
-                    padding:  EdgeInsets.only(top: getSize(context).height/4),
+        appBar: drowAppBar('قائمة الحظر', context),
+        body:_isFirstLoadRunning?
+      Center(child: mainLoad(context)):
+      _posts.isEmpty ? Padding(
+                    padding: EdgeInsets.only(top: getSize(context).height / 4),
                     child: Center(child: Column(
                       children: [
                         Padding(
-                          padding:  EdgeInsets.only(left:50.0.w, right: 50.w),
-                          child: LottieBuilder.asset('assets/lottie/peace.json'),
+                          padding: EdgeInsets.only(left: 50.0.w, right: 50.w),
+                          child: LottieBuilder.asset(
+                              'assets/lottie/peace.json'),
                         ),
                         text(context, 'لايوجد متابعين محظورين', 20, black),
                       ],
                     )),
-                  ) :Stack(
-          children: [
-            Container(
-              height: 300.h,
-              width: 1000.w,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment(0.7, 2.0),
-                    end: Alignment(-0.69, -1.0),
-                    colors: [
-                      Color(0xff0ab3d0).withOpacity(0.60),
-                      Color(0xffe468ca).withOpacity(0.80)
-                    ],
-                    stops: [0.0, 1.0],
-                  ),
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30.r),
-                      bottomRight: Radius.circular(30.r))),
-            ),
-
-                       paddingg(
-                        10,
-                        10,
-                        10,
-                        ListView.builder(
-                          itemCount: snapshot.data!.data!.blackList!.length,
-                          itemBuilder: (context, index) {
-                            return paddingg(
-                              8,
-                              8,
-                              5,
-                              SizedBox(
-                                height: 160.h,
-                                width: 100.w,
-                                child: Card(
-                                  elevation: 10,
-                                  color: white,
-                                  child: paddingg(
-                                    0,
-                                    0,
-                                    10,
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        paddingg(
-                                          15,
-                                          30,
-                                          0,
-                                          Container(
-                                            alignment: Alignment.centerRight,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              child: Image.network(
-                                                snapshot.data!.data!.blackList![index].user!.image!,
-                                                fit: BoxFit.fill,
-                                                height: 100.h,
-                                                width: 100.w,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10.h,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              height: 10.h,
-                                            ),
-                                            text(context, snapshot.data!.data!.blackList![index].user!.name!, 14,
-                                                black),
-                                            text(
-                                                context,
-                                                'وقت الحظر: ' + snapshot.data!.data!.blackList![index].date.toString(),
-                                                14,
-                                                black),
-                                            text(context, 'الحظر بسبب ' + snapshot.data!.data!.blackList![index].banReson!.name!,
-                                                14, black),
-                                            SizedBox(
-                                              height: 10.h,
-                                            ),
-                                            Row(
-                                              children: [
-                                                gradientContainerNoborder2(
-                                                  80,
-                                                  33,
-                                                  buttoms(context, 'فك الحظر',
-                                                      12, white, () {}),
-                                                ),
-                                                SizedBox(
-                                                  width: 10.w,
-                                                ),
-                                                InkWell(
-                                                    child: Container(
-                                                      width: 80.w,
-                                                      height: 33.h,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      10.r)),
-                                                          border: Border.all(
-                                                              color:
-                                                                  deepBlack)),
-                                                      child: Center(
-                                                          child: text(
-                                                              context,
-                                                              'ابلاغ',
-                                                              12,
-                                                              black,
-                                                              align: TextAlign
-                                                                  .center)),
-                                                    ),
-                                                    onTap: () {}),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                  ) : Stack(
+                      children: [
+                        Container(
+                          height: 300.h,
+                          width: 1000.w,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment(0.7, 2.0),
+                                end: Alignment(-0.69, -1.0),
+                                colors: [
+                                  Color(0xff0ab3d0).withOpacity(0.60),
+                                  Color(0xffe468ca).withOpacity(0.80)
+                                ],
+                                stops: [0.0, 1.0],
                               ),
-                            );
-                          },
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(30.r),
+                                  bottomRight: Radius.circular(30.r))),
                         ),
-                      ),
-              ]);
-                    } else {
-                      return const Center(
-                          child: Text('لايوجد لينك لعرضهم حاليا'));
-                    }
-                  } else {
-                    return Center(
-                        child: Text('State: ${snapshot.connectionState}'));
-                  }
-                })),
 
-        ),
-      );
+                        paddingg(
+                          10,
+                          10,
+                          10,
+                          ListView.builder(
+                            controller: _controller,
+                            itemCount: _posts.length+1,
+                            itemBuilder: (context, index) {
+                             if(index < _posts.length ){
+                               return paddingg(
+                                 8,
+                                 8,
+                                 5,
+                                 SizedBox(
+                                   height: 160.h,
+                                   width: 100.w,
+                                   child: Card(
+                                     elevation: 10,
+                                     color: white,
+                                     child: paddingg(
+                                       0,
+                                       0,
+                                       10,
+                                       Row(
+                                         mainAxisAlignment:
+                                         MainAxisAlignment.start,
+                                         children: [
+                                           paddingg(
+                                             15,
+                                             30,
+                                             0,
+                                             Container(
+                                               alignment: Alignment.centerRight,
+                                               child: ClipRRect(
+                                                 borderRadius:
+                                                 BorderRadius.circular(20.0),
+                                                 child: Image.network(
+                                                   _posts[index].user!
+                                                       .image!,
+                                                   fit: BoxFit.fill,
+                                                   height: 100.h,
+                                                   width: 100.w,
+                                                 ),
+                                               ),
+                                             ),
+                                           ),
+                                           SizedBox(
+                                             width: 10.h,
+                                           ),
+                                           Column(
+                                             crossAxisAlignment:
+                                             CrossAxisAlignment.start,
+                                             children: [
+                                               SizedBox(
+                                                 height: 10.h,
+                                               ),
+                                               text(context,  _posts[index].user!
+                                                   .name!, 14,
+                                                   black),
+                                               text(
+                                                   context,
+                                                   'وقت الحظر: ' +
+                                                       _posts[index]
+                                                           .date.toString(),
+                                                   14,
+                                                   black),
+                                               text(context, 'الحظر بسبب ' +
+                                                   _posts[index]
+                                                       .banReson!.name!,
+                                                   14, black),
+                                               SizedBox(
+                                                 height: 10.h,
+                                               ),
+                                               Row(
+                                                 children: [
+                                                   gradientContainerNoborder2(
+                                                     80,
+                                                     33,
+                                                     buttoms(context, 'فك الحظر',
+                                                         12, white, () {}),
+                                                   ),
+                                                   SizedBox(
+                                                     width: 10.w,
+                                                   ),
+                                                   InkWell(
+                                                       child: Container(
+                                                         width: 80.w,
+                                                         height: 33.h,
+                                                         decoration: BoxDecoration(
+                                                             borderRadius:
+                                                             BorderRadius.all(
+                                                                 Radius.circular(
+                                                                     10.r)),
+                                                             border: Border.all(
+                                                                 color:
+                                                                 deepBlack)),
+                                                         child: Center(
+                                                             child: text(
+                                                                 context,
+                                                                 'ابلاغ',
+                                                                 12,
+                                                                 black,
+                                                                 align: TextAlign
+                                                                     .center)),
+                                                       ),
+                                                       onTap: () {}),
+                                                 ],
+                                               ),
+                                             ],
+                                           ),
+                                         ],
+                                       ),
+                                     ),
+                                   ),
+                                 ),
+                               );                             } else{
+                               if (_isLoadMoreRunning == true) {
+                                 return Padding(
+                                   padding: EdgeInsets.only(
+                                       top: 10, bottom: 40),
+                                   child: Center(
+                                     child: CircularProgressIndicator(),
+                                   ),
+                                 );
+                               }else{return SizedBox();}
+                             }
 
+                            },
+                          ),
+                        ),
+
+                      ])
+
+      ),
+    );
   }
 
-  Future<Block> getBlockList(String tokenn) async {
-
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMjI0NWFmM2Q1YzJmNGYzMDg4MWQ4MjFlMWUyMjc0MDRlYTRlOWM0YjU5YmIzNTllMGIxMzE0M2I2NWNhNjExMmFhYzEzMzVhODNjYWQyMGUiLCJpYXQiOjE2NTgzMTcxNzkuMzM2OTM5MDk2NDUwODA1NjY0MDYyNSwibmJmIjoxNjU4MzE3MTc5LjMzNjk0NjAxMDU4OTU5OTYwOTM3NSwiZXhwIjoxNjg5ODUzMTc5LjMyOTMxMDg5NDAxMjQ1MTE3MTg3NSwic3ViIjoiNTMiLCJzY29wZXMiOltdfQ.eg16dIb4Buu3z6n_8BY241Ey2y09B2WUc5nA1zTxQkQVzslyGoDj7A55FWfwt4WSvn5Xxtva8j389VftbQsCO_9B67sJb8vbQVWRA6tekYE17P7GHxQzNrZttruH9TIBMPEjLmBtAxaUtkPB0uHxBAn1EadsFVGmJhL4rFY_s3UWXntpmQECrdju6hj6cRhcU1el2TMcTSYBctO6sFoykpNMTXAkuhrTS9SUTu-YAnodbLjPIttDi6qEDhlL5c3teDOy11VPSsUu9eRd4QYi5aGhUhhobjyIErERc9bZWdLSpkSafvIPzAsumct8d31-2o68h-FAad6MtzdqRtDGmbsvzLCRblaBeWdbzsb72215c7kBUrrGY8dsyFPKr53HoP-HziPdDr8h3eQRtpH7UN80gd_cI0_DhnOQGRns5snRRhyo0dkGHLEn_nTZXaqlP1Z7RN4SDJPISyDrMldk4flzBHoDkErEj2mqYgTkJS5mmM3PRP6TLBYmPl_Pp84OF9wCYMNfBYShQinFu-F7UTMTCqxReUmaZ3U-tOcU9pe_TjZ2pYkhHYSTQLT-2NMtQBi2Q92d203SZj0B89_xKFNQsl6SUvqw3yL_eSI6LVBwPgbb8TNinVVyLOzAQ8m37_YdHg3G40WAw8ed_g8FItNbfQOHt88oyOo_cG90LPY' ;
+  void getBlockList(String tokenn) async {
+    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDI4MTY3ZWY1YWE0ZDBjZWQ0MDBjOTViMzBmNWQwZGFiNmY4MzgxMWU3YTUwMWUyMmYwMmMyZGU2YjRjOTIwOGI0MjFjNmZjZGM3YWMzZjUiLCJpYXQiOjE2NTM5ODg2MjAuNjgyMDE4OTk1Mjg1MDM0MTc5Njg3NSwibmJmIjoxNjUzOTg4NjIwLjY4MjAyNDk1NTc0OTUxMTcxODc1LCJleHAiOjE2ODU1MjQ2MjAuNjczNjY3OTA3NzE0ODQzNzUsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.OguFfzEWNOyCU4xSZ_PbLwg1xmyEbIMYAQ-J9wRApGKMq0qo1aEiM1OvcfvEaopxRiKngk-ckebhhcl7MRtGopNZcNjJwp9jWS7yZuyH7DBvct0O6tys47HL4eBU0QLwgmxMmh8nLkADARdIvVdZJFw9vLp-7X-4Huj6I2E1SFjeYnV6l7Fu_c1BYMAJmXpBwIALxTvwxg8tbxuhKmFBtLnnY3K25Tedra9IMc0nR_nXV3ifXdp4v7fsvbCLLYNr5ihc3ElE_QWczOvkkYeOPTP4yFMFlZFpWUNeER5wiEdbcO6WzzxzCRkLXriedWDI3G6qOrMAUAjiAUxS51--_7x9iI0qHalXHyGxgudUnAHGNsYpvLJ8JVCM2k_dtGazmZtA5w5wDSTI8gSuWUZxf2OpQNCmyt8k80Pbi_Olz2xDMSuDKYmiomWrUhwIwunk_gsU9lC5oLcEzJ2BLcaiiuwFex9xraMbbC1ZyipSIZZhW1l1CppYeYmPSxLC8hEIywRy5Lbvw-WQ25CpurNgEMiHefGooDxCsHqnkfWCQ1MnFAGiEs2hPtG7DVp8RArzCyXXaVrtVi2wbBFrCPDK52yNQxQjs3z8JBNlDwEFR2uDa-VRup61j2WESvyUKPMloD7gL7FsthAl6IZquYh7XujHWEcf1Lnprd6D5J6CPWM';
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     try {
       final response = await http.get(
-          Uri.parse('https://mobile.celebrityads.net/api/celebrity/black-list'),
+          Uri.parse('$_baseUrl?page=$_page'),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': 'Bearer $userToken'
           });
-
-
       if (response.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        Block o = Block.fromJson(jsonDecode(response.body));
-        return o;
+        setState(() {
+          _posts = Block
+              .fromJson(jsonDecode(response.body))
+              .data!
+              .blackList!;
+        });
+        print(response.body);
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    }catch(e){
-      if (e is SocketException) {
-        setState(() {
-          isConnectSection = false;
-        });
-        return Future.error('SocketException');
-      } else if (e is TimeoutException) {
-        setState(() {
-          timeoutException = false;
-        });
-        return Future.error('TimeoutException');
-      } else {
-        setState(() {
-          serverExceptions = false;
-        });
-        return Future.error('serverExceptions');
+    } catch (err) {
+      if (kDebugMode) {
+        print('first load Something went wrong');
       }
     }
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
+
 }
-
-
 class Block {
   bool? success;
   Data? data;
