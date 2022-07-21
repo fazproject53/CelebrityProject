@@ -68,32 +68,43 @@ class CelebritySearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // showSuggestions(context);
-    // saveToRecentSearchesCelebrity(query);
+    saveToRecentSearchesCelebrity(query);
     List<getAllCelebrities> _results;
-     _results = allCelbrity.where((getAllCelebrities name) {
+    _results = allCelbrity.where((getAllCelebrities name) {
       final nameLower = name.name!.toLowerCase();
       final queryLower = query.toLowerCase();
       return queryLower.compareTo(nameLower) == 0;
     }).toList();
-     print(_results.length);
-    return
-      //_results==[]?
-    Text('hhhhhhhhhh');
-    //:
-   // Text('${_results[0].name}');
+    print(_results.length);
+    return _results.length == 0
+        ? Center(
+            child: text(context, "لاتوجد نتائج عن البحث", 14, Colors.grey),
+          )
+        : Text('');
   }
 
-  // @override
-  // void showResults(BuildContext context) {
-  //   goTopagepush(
-  //       context,
-  //       CelebrityHome(
-  //         pageUrl: '$pagIndex',
-  //       ));
-  //   query = '';
-  //   super.showResults(context);
-  // }
+  @override
+  void showResults(BuildContext context) {
+    List<getAllCelebrities> _results;
+    _results = allCelbrity.where((getAllCelebrities name) {
+      final nameLower = name.name!.toLowerCase();
+      final queryLower = query.toLowerCase();
+      return queryLower.compareTo(nameLower) == 0;
+    }).toList();
+    if (_results.length == 0) {
+      Center(
+        child: text(context, "لاتوجد نتائج عن البحث", 14, Colors.grey),
+      );
+    } else {
+      showSuggestions(context);
+      goTopagepush(
+          context,
+          CelebrityHome(
+            pageUrl: '$pagIndex',
+          ));
+    }
+    super.showResults(context);
+  }
 
   @override
   Widget buildSuggestions(BuildContext context) {
