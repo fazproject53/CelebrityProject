@@ -98,6 +98,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
   int? status;
   String? userToken;
 
+  int help=0;
   var platformlist =[];
   var budgetlist = [];
   var countrylist = [];
@@ -211,6 +212,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
   @override
   Widget build(BuildContext context) {
+
     setState(() {
       ww = getSize(context).width;
     });
@@ -484,16 +486,16 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
 
 
   Future<Filter> fetchCelebrity(int country, int category, int budget,int status, int gender ) async {
-    final response = await http.get(Uri.parse(
-        'https://mobile.celebrityads.net/api/celebrity/search?country_id=$country&category_id=$category&account_status_id=$status&gender_id=$gender&budget_id=$budget'));
-    if (response.statusCode == 200) {
-      final body = response.body;
-      Filter filter = Filter.fromJson(jsonDecode(body));
-      print("Reading category from network------------ ");
-      return filter;
-    } else {
-      throw Exception('Failed to load Category');
-    }
+      final response = await http.get(Uri.parse(
+          'https://mobile.celebrityads.net/api/celebrity/search?country_id=$country&category_id=$category&account_status_id=$status&gender_id=$gender&budget_id=$budget'));
+      if (response.statusCode == 200) {
+        final body = response.body;
+        Filter filter = Filter.fromJson(jsonDecode(body));
+        print("Reading category from network------------ ");
+        return filter;
+      } else {
+        throw Exception('Failed to load Category');
+      }
 
   }
 
@@ -1014,6 +1016,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
     );
   }
   stepTwo() {
+      help = 1;
     print(categorylist.indexOf(_selectedTest2).toString()+'////////////////////////////////////-');
     return countrylist.indexOf(_selectedTest3) != -1 && categorylist.indexOf(_selectedTest2)   != -1 && budgetlist.indexOf(_selectedTest)   != -1 ?
     FutureBuilder<Filter>(
@@ -1022,12 +1025,14 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
             ,gender==null? 1: gender!),
         builder: ((context, AsyncSnapshot<Filter> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center();
+            return Center(child: Container(height: 500.h,child: mainLoad(context)));
           } else if (snapshot.connectionState ==
               ConnectionState.active ||
               snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
-              return Center(child: Text(snapshot.error.toString()));
+              if (snapshot.error.toString() == 'socketException') {
+                return internetConnection(context);
+              } else{ return serverError(context);}
               //---------------------------------------------------------------------------
             } else if (snapshot.hasData) {
               return snapshot.data!.data!.isEmpty?  Center(child: Column(
@@ -1038,7 +1043,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                 ],
               )):
               SizedBox(
-                height: 540.h,
+                height: 500.h,
                 child: GridView.count(
                   physics: ScrollPhysics(),
                   crossAxisCount: 2,
@@ -1058,7 +1063,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                         });
                       },
                       child: Container(
-                        height: double.infinity,
+                        height: 400.h,
                         child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [
