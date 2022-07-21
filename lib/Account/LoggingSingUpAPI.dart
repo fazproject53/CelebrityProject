@@ -94,7 +94,7 @@ class DatabaseHelper {
         //token = jsonDecode(respons.body)['data']['token'];
         userType = jsonDecode(respons.body)['data']?['user']?['type'];
         //saveToken(token);
-        saveRememberUserEmail(email);
+        //saveRememberUserEmail(email);
         //print(userType);
         return '$userType';
       } else if (message['email']?[0] == "The email has already been taken." &&
@@ -149,7 +149,7 @@ class DatabaseHelper {
         //token = jsonDecode(respons.body)['data']['token'];
         userType = jsonDecode(respons.body)['data']?['celebrity']?['type'];
         //saveToken(token);
-        saveRememberUserEmail(email);
+
         // print('respons body: ${jsonDecode(respons.body)}');
         // print(userType);
         return '$userType';
@@ -217,6 +217,7 @@ class DatabaseHelper {
     final prefs = await SharedPreferences.getInstance();
     const key = 'user';
     prefs.setString(key, user);
+    print('save Remember user: $user');
   }
 
   //get Remember User------------------------------------------------------------
@@ -233,6 +234,7 @@ class DatabaseHelper {
     final prefs = await SharedPreferences.getInstance();
     const key = 'email';
     prefs.setString(key, user);
+    print('save Remember email: ${user}');
   }
 
   //get Remember User Email------------------------------------------------------------

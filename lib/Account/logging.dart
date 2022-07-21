@@ -39,13 +39,12 @@ class _LoggingState extends State<Logging> {
     image1 = Image.asset("assets/image/singup.jpg");
     DatabaseHelper.getRememberUserEmail().then((email) {
       setState(() {
-        getEmail = email;
         isFoundEmail = email;
         lgoingEmailConttroller =
             TextEditingController(text: isFoundEmail == '' ? '' : isFoundEmail);
       });
     });
-    print('email:$getEmail');
+
   }
 
   @override
@@ -189,7 +188,7 @@ class _LoggingState extends State<Logging> {
                                         () {
                                           Navigator.pop(context);
                                           goTopagepush(context,
-                                              VerifyUser(username: getEmail));
+                                              VerifyUser(username:lgoingEmailConttroller.text ));
                                         },
                                       );
 
@@ -245,7 +244,7 @@ class _LoggingState extends State<Logging> {
                                         () {
                                           Navigator.pop(context);
                                           goTopagepush(context,
-                                              VerifyUser(username: getEmail));
+                                              VerifyUser(username:lgoingEmailConttroller.text));
                                         },
                                       );
 

@@ -27,7 +27,7 @@ class _SingUpState extends State<SingUp> {
   List<String> countries = [];
   List<String> celebrityCategories = [];
   late Image image1;
-  String getEmail = '';
+  String? getEmail;
   @override
   void initState() {
     super.initState();
@@ -35,13 +35,9 @@ class _SingUpState extends State<SingUp> {
     image1 = Image.asset("assets/image/singup.jpg");
     fetCelebrityCategories();
     fetCountries();
-    DatabaseHelper.getRememberUserEmail().then((email) {
-      setState(() {
-        getEmail = email;
 
-      });
-    });
-    print('email:$getEmail');
+
+
   }
 
   @override
@@ -99,6 +95,7 @@ class _SingUpState extends State<SingUp> {
 //--------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
+  print('email:$getEmail');
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -307,12 +304,16 @@ class _SingUpState extends State<SingUp> {
           .then((result) {
         if (result == "celebrity") {
           Navigator.pop(context);
+          FocusManager.instance.primaryFocus?.unfocus();
+          DatabaseHelper.saveRememberUserEmail(email);
+          DatabaseHelper.saveRememberUser(
+              "celebrity");
           setState(() {
             currentuser = "celebrity";
           });
-          FocusManager.instance.primaryFocus?.unfocus();
-          goTopagepush(context,  VerifyUser(username:getEmail ,));
-          clearCelebrityTextField();
+
+          goTopagepush(context,  VerifyUser(username:email ,));
+         // clearCelebrityTextField();
         } else if (result == "email and username found") {
           Navigator.pop(context);
           showMassage(context, 'بيانات مكررة',
@@ -355,12 +356,14 @@ class _SingUpState extends State<SingUp> {
           showMassage(context, 'مشكلة في الخادم', 'TimeoutException');
         } else if (result == "user") {
           Navigator.pop(context);
+          FocusManager.instance.primaryFocus?.unfocus();
+          DatabaseHelper.saveRememberUserEmail(email);
+          DatabaseHelper.saveRememberUser("user");
           setState(() {
             currentuser = "user";
           });
-          FocusManager.instance.primaryFocus?.unfocus();
-          goTopagepush(context,  VerifyUser(username: getEmail,));
-          clearUserTextField();
+          goTopagepush(context,  VerifyUser(username: email,));
+         // clearUserTextField();
         } else if (result == "email and username found") {
           Navigator.pop(context);
           showMassage(context, 'بيانات مكررة',

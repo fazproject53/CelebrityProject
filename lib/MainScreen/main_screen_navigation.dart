@@ -29,6 +29,7 @@ class _MainScreenState extends State<MainScreen>
   PageController? pageController;
   int selectedIndex = 2;
   void initState() {
+    WidgetsFlutterBinding.ensureInitialized();
     super.initState();
     pageController = PageController(initialPage: selectedIndex);
     DatabaseHelper.getRememberUser().then((token) {
