@@ -9,7 +9,7 @@ getCreatePassword(String username) async {
   Map<String, dynamic> data = {"username": username};
   String url = "https://mobile.celebrityads.net/api/password/create";
   try {
-    final respons = await http.post(Uri.parse(url), body: data);
+    final respons = await http.post(Uri.parse(url), body: data).timeout(const Duration(seconds: 8));
     if (respons.statusCode == 200) {
       var state = jsonDecode(respons.body)?["success"];
       print('CreatePassword respons: $state');
@@ -38,7 +38,7 @@ Future<String> getVerifyCode(String username, int code) async {
   Map<String, dynamic> data = {"username": username, 'code': '$code'};
   String url = "https://mobile.celebrityads.net/api/password/verify";
   try {
-    final respons = await http.post(Uri.parse(url), body: data);
+    final respons = await http.post(Uri.parse(url), body: data).timeout(const Duration(seconds: 8));
     if (respons.statusCode == 200) {
       var message = jsonDecode(respons.body)?["message"]['en'];
       print('message respons: $message');
@@ -76,7 +76,7 @@ getResetPassword(
   };
   String url = "https://mobile.celebrityads.net/api/password/reset";
   try {
-    final respons = await http.post(Uri.parse(url), body: data);
+    final respons = await http.post(Uri.parse(url), body: data).timeout(const Duration(seconds: 8));
     if (respons.statusCode == 200) {
       var message = jsonDecode(respons.body)?["message"]['en'];
       print('ResetPassword respons: $message');

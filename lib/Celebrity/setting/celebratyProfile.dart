@@ -113,10 +113,12 @@ class _celebratyProfileState extends State<celebratyProfile> {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        setState(() {
+        if(mounted) {
+          setState(() {
           ActiveConnection = true;
           T = "Turn off the data and repress again";
         });
+        }
       }
     } on SocketException catch (_) {
       setState(() {

@@ -254,7 +254,7 @@ class _VerifyUserState extends State<VerifyUser> {
     Map<String, dynamic> data = {"username": username};
     String url = "https://mobile.celebrityads.net/api/send-verify-message";
     try {
-      final respons = await http.post(Uri.parse(url), body: data);
+      final respons = await http.post(Uri.parse(url), body: data).timeout(const Duration(seconds: 8));
       if (respons.statusCode == 200) {
         var state = jsonDecode(respons.body)?["success"];
 
@@ -284,7 +284,7 @@ class _VerifyUserState extends State<VerifyUser> {
     Map<String, dynamic> data = {"username": username, 'code': '$code'};
     String url = "https://mobile.celebrityads.net/api/verify-user";
     try {
-      final respons = await http.post(Uri.parse(url), body: data);
+      final respons = await http.post(Uri.parse(url), body: data).timeout(const Duration(seconds: 8));
       if (respons.statusCode == 200) {
         var state = jsonDecode(respons.body)?["message"]["en"];
         var getToken = jsonDecode(respons.body)?["data"]?["token"];

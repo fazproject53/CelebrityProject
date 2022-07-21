@@ -588,7 +588,7 @@ class _GiftDetialsState extends State<GiftDetials> {
 //-------------------------------------------------------------------------
   void getRejectReson() async {
     String url = "https://mobile.celebrityads.net/api/reject-resons";
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);

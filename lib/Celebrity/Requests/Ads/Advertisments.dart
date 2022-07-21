@@ -377,7 +377,7 @@ class _AdvertismentState extends State<Advertisment>
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
-      });
+      }).timeout(const Duration(seconds: 8));
 
       if (respons.statusCode == 200) {
         final body = respons.body;

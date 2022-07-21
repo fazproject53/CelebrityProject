@@ -8,7 +8,7 @@ import 'Reset.dart';
 getVerifyToken(String token) async {
   String url = "https://mobile.celebrityads.net/api/password/find/$token";
   try {
-    final respons = await http.get(Uri.parse(url));
+    final respons = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
     if (respons.statusCode == 200) {
       final body = respons.body;
       VerifyToken verifyToken = VerifyToken.fromJson(jsonDecode(body));
