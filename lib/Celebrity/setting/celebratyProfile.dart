@@ -47,7 +47,8 @@ class _celebratyProfileState extends State<celebratyProfile> {
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
-
+  bool ActiveConnection = false;
+  String T = "";
   File? imagefile;
   String? imageurl;
   final labels = [
@@ -98,8 +99,8 @@ class _celebratyProfileState extends State<celebratyProfile> {
   ];
   @override
   void initState() {
-
     super.initState();
+    CheckUserConnection();
 
     DatabaseHelper.getToken().then((value) {
       setState(() {
@@ -107,6 +108,22 @@ class _celebratyProfileState extends State<celebratyProfile> {
         celebrity = fetchCelebrities(userToken);
       });
     });
+  }
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
   }
   Future<CelebrityInformation> fetchCelebrities(String tokenn) async {
     try{
@@ -161,11 +178,12 @@ class _celebratyProfileState extends State<celebratyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    CheckUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBarNoIcon("حسابي"),
-        body: Center(
+        body: ActiveConnection?Center(
           child: SingleChildScrollView(
             child: FutureBuilder<CelebrityInformation>(
               future: celebrity,
@@ -434,7 +452,14 @@ class _celebratyProfileState extends State<celebratyProfile> {
               },
             ),
           ),
-        ),
+        ):Center(
+            child:SizedBox(
+                height: 300.h,
+                width: 250.w,
+                child: internetConnection(
+                    context, reload: () {
+                  CheckUserConnection();
+                })))
       ),
     );
 

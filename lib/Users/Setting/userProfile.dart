@@ -47,7 +47,8 @@ class _userProfileState extends State<userProfile>
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
-
+  bool ActiveConnection = false;
+  String T = "";
   Future<UserProfile>? getUsers;
   String userToken = "";
   List<Data>? data;
@@ -80,6 +81,7 @@ class _userProfileState extends State<userProfile>
 
   @override
   void initState() {
+    CheckUserConnection();
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
@@ -89,7 +91,22 @@ class _userProfileState extends State<userProfile>
 
     super.initState();
   }
-
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
   Future<UserProfile> fetchUsers(String token) async {
 
     try {
@@ -153,11 +170,12 @@ class _userProfileState extends State<userProfile>
 
   @override
   Widget build(BuildContext context) {
+    CheckUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBarNoIcon("حسابي"),
-        body: Center(
+        body: ActiveConnection? Center(
           child: SingleChildScrollView(
             child: Column(children: [
               //======================== profile header ===============================
@@ -362,17 +380,17 @@ class _userProfileState extends State<userProfile>
                                     ),
                                   ),
                                 ),
-                                padding(
-                                  8,
-                                  8,
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    color: white,
-                                    child: SvgPicture.asset('assets/Svg/icon-tiktok.svg',width: 30,
-                                      height: 30,),
-                                  ),
-                                ),
+                                // padding(
+                                //   8,
+                                //   8,
+                                //   Container(
+                                //     width: 30,
+                                //     height: 30,
+                                //     color: white,
+                                //     child: SvgPicture.asset('assets/Svg/icon-tiktok.svg',width: 30,
+                                //       height: 30,),
+                                //   ),
+                                // ),
                               ]),
 
                               //SvgPicture.asset(assetName),
@@ -413,7 +431,14 @@ class _userProfileState extends State<userProfile>
 
             ]),
           ),
-        ),
+        ):Center(
+            child:SizedBox(
+                height: 300.h,
+                width: 250.w,
+                child: internetConnection(
+                    context, reload: () {
+                  CheckUserConnection();
+                })))
       ),
     );
   }
