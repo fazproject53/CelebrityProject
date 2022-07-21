@@ -27,7 +27,7 @@ class DatabaseHelper {
         var username = jsonDecode(respons.body)["data"]?["user"]['username'];
         var email = jsonDecode(respons.body)["data"]?["user"]['email'];
         token = jsonDecode(respons.body)['data']['token'];
-        _saveToken(token);
+        saveToken(token);
         login.Logging.theUser = TheUser();
         login.Logging.theUser!.name =
             jsonDecode(respons.body)["data"]?["user"]['name'];
@@ -94,7 +94,7 @@ class DatabaseHelper {
       if (status == 200) {
         token = jsonDecode(respons.body)['data']['token'];
         userType = jsonDecode(respons.body)['data']?['user']?['type'];
-        _saveToken(token);
+        saveToken(token);
         saveRememberUserEmail(email);
         //print(userType);
         return '$userType';
@@ -150,7 +150,7 @@ class DatabaseHelper {
       if (status == 200) {
         token = jsonDecode(respons.body)['data']['token'];
         userType = jsonDecode(respons.body)['data']?['celebrity']?['type'];
-        _saveToken(token);
+        saveToken(token);
         saveRememberUserEmail(email);
         // print('respons body: ${jsonDecode(respons.body)}');
         // print(userType);
@@ -184,7 +184,7 @@ class DatabaseHelper {
 
   //save token------------------------------------------------------------
 
-  static _saveToken(String token) async {
+  static saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     const key = 'token';
     final value = token;

@@ -1721,3 +1721,4 @@ Future<void> saveToRecentSearchesCelebrity(String searchText) async {
   allSearches = {searchText, ...allSearches};
   pref.setStringList("recentSearches", allSearches.toList());
 }
+//tokens----------------------------------------------------------------------------------

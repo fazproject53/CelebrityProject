@@ -5,9 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../MainScreen/main_screen_navigation.dart';
 import '../Models/Methods/method.dart';
 import '../Models/Variables/Variables.dart';
+import 'LoggingSingUpAPI.dart';
 import 'UserForm.dart';
 
 class VerifyUser extends StatefulWidget {
@@ -22,6 +25,7 @@ class VerifyUser extends StatefulWidget {
 class _VerifyUserState extends State<VerifyUser> {
   GlobalKey<FormState> codeKey = GlobalKey();
   final TextEditingController codeController = TextEditingController();
+  String? token;
   late Image image1;
 
   @override
@@ -146,7 +150,7 @@ class _VerifyUserState extends State<VerifyUser> {
                                     Navigator.pop(context);
                                     successfullyDialog(
                                         context,
-                                        'تم اعادة ارسال رمز التحقق علي البريد الالكتروني الخاص بك',
+                                        'تم اعادة ارسال رمز التحقق مجددا الرجاء تفقد البريد الخاص بك',
                                         "assets/lottie/SuccessfulCheck.json",
                                         'تم', () {
                                       Navigator.pop(context);
@@ -200,10 +204,11 @@ class _VerifyUserState extends State<VerifyUser> {
                               Navigator.pop(context);
                               successfullyDialog(
                                   context,
-                                  'تم التحقق بنجاح ',
+                                  'تمت العملية بنجاح يمكنك الان الدخول للمنصة ',
                                   "assets/lottie/SuccessfulCheck.json",
                                   'تم', () {
-                                Navigator.pop(context);
+                                DatabaseHelper.saveToken(token!);
+                                goTopageReplacement(context, const MainScreen());
                               });
                             } else {
                               if (result == "SocketException") {
@@ -218,7 +223,7 @@ class _VerifyUserState extends State<VerifyUser> {
                                 Navigator.pop(context);
                                 showMassage(context, 'بيانات غير صحيحة',
                                     'الرمز المدخل خاطئ');
-                              } else if(result == "serverException"){
+                              } else if (result == "serverException") {
                                 Navigator.pop(context);
                                 showMassage(context, 'مشكلة في الخادم',
                                     'حدث خطأ ما اثناء استعادة كلمة المرور, سنقوم باصلاحه قريبا');
@@ -252,6 +257,7 @@ class _VerifyUserState extends State<VerifyUser> {
       final respons = await http.post(Uri.parse(url), body: data);
       if (respons.statusCode == 200) {
         var state = jsonDecode(respons.body)?["success"];
+
         print('state respons: $state');
         if (state == true) {
           return true;
@@ -280,9 +286,14 @@ class _VerifyUserState extends State<VerifyUser> {
     try {
       final respons = await http.post(Uri.parse(url), body: data);
       if (respons.statusCode == 200) {
-        var state = jsonDecode(respons.body)?["message"] ["en"];
+        var state = jsonDecode(respons.body)?["message"]["en"];
+        var getToken = jsonDecode(respons.body)?["data"]?["token"];
         print('state respons: $state');
         if (state == "verified") {
+          setState(() {
+            token=getToken;
+          });
+          print(token);
           return true;
         } else if (state == "not verified") {
           return false;
@@ -301,4 +312,6 @@ class _VerifyUserState extends State<VerifyUser> {
       }
     }
   }
+
+
 }
