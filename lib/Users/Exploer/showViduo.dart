@@ -1,7 +1,12 @@
+import 'package:celepraty/Users/Exploer/ExploerApi.dart';
 import 'package:flutter/material.dart';
 
 class ShowVideo extends StatefulWidget {
-  const ShowVideo({Key? key}) : super(key: key);
+  final String videoURL;
+  final int videoLikes;
+
+  const ShowVideo({Key? key, required this.videoURL, required this.videoLikes})
+      : super(key: key);
 
   @override
   State<ShowVideo> createState() => _ShowVideoState();

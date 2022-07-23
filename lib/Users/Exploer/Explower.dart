@@ -219,7 +219,11 @@ class _ExplowerState extends State<Explower> {
   Widget viewCard(List<Explorer> oldCelebraty, int index) {
     return InkWell(
       onTap: () {
-        goTopagepush(context, ShowVideo());
+        goTopagepush(
+            context,
+            ShowVideo(
+                videoURL: oldCelebraty[index].image!,
+                videoLikes: oldCelebraty[index].likes!));
       },
       child: Card(
           elevation: 10,
@@ -370,40 +374,44 @@ class _ExplowerState extends State<Explower> {
     if (page == 1) {
       loadingRequestDialogue(context);
     }
-    try{
-    final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/explorer?page=$page'));
-    if (response.statusCode == 200) {
-      final body = response.body;
-      TrendExplorer explorer = TrendExplorer.fromJson(jsonDecode(body));
-      var newItem = explorer.data!.explorer!;
-      pageCount = explorer.data!.pageCount!;
-      print('length ${newItem.length}');
-      if (!mounted) return;
-      setState(() {
-        if (newItem.isNotEmpty) {
-          hasMore = newItem.isEmpty;
-          oldCelebraty.addAll(newItem);
-          isLoading = false;
-          if (page == 1) {
-            Navigator.pop(context);
+    try {
+      final response = await http.get(
+          Uri.parse('https://mobile.celebrityads.net/api/explorer?page=$page'));
+      if (response.statusCode == 200) {
+        final body = response.body;
+        TrendExplorer explorer = TrendExplorer.fromJson(jsonDecode(body));
+        var newItem = explorer.data!.explorer!;
+        pageCount = explorer.data!.pageCount!;
+        print('length ${newItem.length}');
+        if (!mounted) return;
+        setState(() {
+          if (newItem.isNotEmpty) {
+            hasMore = newItem.isEmpty;
+            oldCelebraty.addAll(newItem);
+            isLoading = false;
+            if (page == 1) {
+              Navigator.pop(context);
+            }
+            page++;
+          } else if (newItem.isEmpty && page == 1) {
+            if (page == 1) {
+              Navigator.pop(context);
+            }
+            setState(() {
+              empty = true;
+            });
           }
-          page++;
-        } else if (newItem.isEmpty && page == 1) {
-          if (page == 1) {
-            Navigator.pop(context);
-          }
-          setState(() {
-            empty = true;
-          });
-        }
-      });
-      print(body);
-      return explorer;
-    } else {
-      return 'serverExceptions';
-    }
+        });
+        print(body);
+        return explorer;
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return 'serverExceptions';
+      }
     } catch (e) {
+      Navigator.pop(context);
       if (e is SocketException) {
         setState(() {
           isConnectSection = false;
