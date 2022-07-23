@@ -36,7 +36,10 @@ class _ExplowerState extends State<Explower> {
   @override
   void initState() {
     super.initState();
-    fetchAnotherExplorer();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      fetchAnotherExplorer();
+    });
+
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
               scrollController.offset &&
@@ -355,50 +358,51 @@ class _ExplowerState extends State<Explower> {
 
   //pagination---------------------------------------------------------------------------------
   fetchAnotherExplorer() async {
-    try {
-      if (isLoading) {
-        return;
-      }
+    // try {
+    if (isLoading) {
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+
+    print('pageApi $pageCount pagNumber $page');
+    if (page == 1) {
+      loadingRequestDialogue(context);
+    }
+    try{
+    final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/explorer?page=$page'));
+    if (response.statusCode == 200) {
+      final body = response.body;
+      TrendExplorer explorer = TrendExplorer.fromJson(jsonDecode(body));
+      var newItem = explorer.data!.explorer!;
+      pageCount = explorer.data!.pageCount!;
+      print('length ${newItem.length}');
+      if (!mounted) return;
       setState(() {
-        isLoading = true;
-      });
-
-      print('pageApi $pageCount pagNumber $page');
-      if (page == 1) {
-        loadingRequestDialogue(context);
-      }
-      final response = await http.get(
-          Uri.parse('https://mobile.celebrityads.net/api/explorer?page=$page'));
-      if (response.statusCode == 200) {
-        final body = response.body;
-        TrendExplorer explorer = TrendExplorer.fromJson(jsonDecode(body));
-        var newItem = explorer.data!.explorer!;
-        pageCount = explorer.data!.pageCount!;
-        print('length ${newItem.length}');
-        if (!mounted) return;
-        setState(() {
-          if (newItem.isNotEmpty) {
-            hasMore = newItem.isEmpty;
-            oldCelebraty.addAll(newItem);
-            isLoading = false;
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            page++;
-          } else if (newItem.isEmpty && page == 1) {
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            setState(() {
-              empty = true;
-            });
+        if (newItem.isNotEmpty) {
+          hasMore = newItem.isEmpty;
+          oldCelebraty.addAll(newItem);
+          isLoading = false;
+          if (page == 1) {
+            Navigator.pop(context);
           }
-        });
-
-        return explorer;
-      } else {
-        return 'serverExceptions';
-      }
+          page++;
+        } else if (newItem.isEmpty && page == 1) {
+          if (page == 1) {
+            Navigator.pop(context);
+          }
+          setState(() {
+            empty = true;
+          });
+        }
+      });
+      print(body);
+      return explorer;
+    } else {
+      return 'serverExceptions';
+    }
     } catch (e) {
       if (e is SocketException) {
         setState(() {

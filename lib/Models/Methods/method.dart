@@ -1658,13 +1658,13 @@ Widget checkServerException(context, {reload}) {
     children: [
       Spacer(),
       SizedBox(
-          height: MediaQuery.of(context).size.height / 5,
-          width: MediaQuery.of(context).size.height / 5,
-          child: Lottie.asset('assets/lottie/connection.json')),
+          // height: MediaQuery.of(context).size.height / 5,
+          // width: MediaQuery.of(context).size.height / 5,
+          child: Lottie.asset('assets/lottie/srver.json')),
       SizedBox(
         height: 10.h,
       ),
-      text(context, 'حدث خطأ ما اثناء استرجاع البيانات, سنقوم باصلاحه قريبا',
+      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا',
           20, black,
           align: TextAlign.center),
       SizedBox(
