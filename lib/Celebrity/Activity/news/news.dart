@@ -143,6 +143,9 @@ String? userToken;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        floatingActionButton: !add?FloatingActionButton(onPressed: (){  setState(() {
+          add = true;
+        });}, backgroundColor: pink, child: Icon(Icons.add),):null,
         body: add
             ? addNews()
             : SafeArea(
@@ -172,21 +175,7 @@ String? userToken;
                   controller: _controller,
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 30.w,
-                        ),
-                        gradientContainerNoborder2(
-                            150.w,
-                            45.h,
-                            buttoms(context, 'اضافة خبر', 14, white, () {
-                              setState(() {
-                                add = true;
-                              });
-                            })),
-                      ],
-                    ),
+
                     _posts.isEmpty? Padding(
                               padding: EdgeInsets.only(top:getSize(context).height/7),
                               child: Center(child: Column(
@@ -198,7 +187,7 @@ String? userToken;
                             ): paddingg(
                               10,
                               10,
-                              20,
+                              0,
                               ListView.builder(
                                 itemCount: _posts.length,
                                 shrinkWrap: true,
@@ -237,8 +226,8 @@ String? userToken;
                                                             Alignment.centerRight,
                                                         child: CircleAvatar(
                                                           radius: 50.r,
+                                                          backgroundColor: lightGrey.withOpacity(0.30),
                                                           child: ClipRRect(
-
                                                             borderRadius: BorderRadius.circular(100.r),
                                                             child: Image.network(
                                                               Logging.theUser!.image!,
@@ -247,6 +236,23 @@ String? userToken;
                                                                   ? 150.h
                                                                   : 130.h,
                                                               width: 100.w,
+                                                              loadingBuilder:
+                                                                  (context, child, loadingProgress) {
+                                                                if (loadingProgress == null) return child;
+                                                                return Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    backgroundColor: grey,
+                                                                    value: loadingProgress
+                                                                        .expectedTotalBytes !=
+                                                                        null
+                                                                        ? loadingProgress
+                                                                        .cumulativeBytesLoaded /
+                                                                        loadingProgress
+                                                                            .expectedTotalBytes!
+                                                                        : null,
+                                                                  ),
+                                                                );
+                                                              },
                                                             ),
                                                           ),
                                                         ),
@@ -255,101 +261,80 @@ String? userToken;
                                                       ),
                                                     ),
                                                     SizedBox(width: 5.w,),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: 10.h,
-                                                        ),
-                                                        Container(
-                                                          width: 190.w,
-                                                          height: 35.h,
-                                                          child:
-                                                              edit &&
-                                                                      theindex ==
-                                                                          index
-                                                                  ? TextFormField(
-                                                                      cursorColor:
-                                                                          black,
-                                                                      controller:
-                                                                          newstitle,
-                                                                      validator: (String? value){
-                                                                        if(value == null){
-                                                                          if(value!.length > 63){
-                                                                            return 'الحد الاقصى 63 حرف';
+                                            SingleChildScrollView(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 10.h,
+                                                          ),
+
+                                                          SizedBox(
+                                                            height: edit &&
+                                                                    theindex ==
+                                                                        index
+                                                                ? 8.h
+                                                                : 0.h,
+                                                          ),
+                                                          SizedBox(height: 20.h,),
+                                                           Container(
+                                                              width: 190.w,
+                                                              height: 100.h,
+                                                              child:
+                                                                  edit &&
+                                                                          theindex ==
+                                                                              index
+                                                                      ?  TextFormField(
+                                                                            cursorColor:
+                                                                                black,
+                                                                            controller:
+                                                                                newsdesc,
+                                                                    maxLines: null,
+                                                                    minLines: 10,
+                                                                    maxLength: 63,
+                                                                    buildCounter: (context,
+                                                                          {required currentLength, required isFocused, maxLength}) {
+                                                                        return Container(child: Text(
+                                                                            '${maxLength!}' + '/' + '${currentLength}'));
+                                                                    },
+                                                                    validator: (String? value) {
+                                                                        if (
+                                                                        value == null || value.isEmpty) {
+                                                                          return 'حقل اجباري';
+                                                                        } else {
+                                                                          if (value.length > 63) {
+                                                                            return 'الحد الاقصى للخبر 63 حرف';
                                                                           }
-                                                                        }
-                                                                      },
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              'Cairo'),
-                                                                      decoration: InputDecoration(
-                                                                          fillColor:
-                                                                              lightGrey,
-                                                                          focusedBorder: UnderlineInputBorder(
-                                                                              borderSide: BorderSide(
-                                                                                  color:
-                                                                                      pink)),
-                                                                          contentPadding:
-                                                                              EdgeInsets.all(0.h)),
-                                                                    )
-                                                                  : text(
-                                                                      context,
-                                                                      tempTitle.containsKey(_posts[index].id!)?
-                                                                      tempTitle[_posts[index].id!]! :_posts[index].title!,
-                                                                      14,
-                                                                      black),
-                                                        ),
-                                                        SizedBox(
-                                                          height: edit &&
-                                                                  theindex ==
-                                                                      index
-                                                              ? 8.h
-                                                              : 0.h,
-                                                        ),
-                                                        Container(
-                                                          width: 190.w,
-                                                          child:
-                                                              edit &&
-                                                                      theindex ==
-                                                                          index
-                                                                  ? TextFormField(
-                                                                      cursorColor:
-                                                                          black,
-                                                                      controller:
-                                                                          newsdesc,
-                                                                      maxLines: 3,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              black,
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontFamily:
-                                                                              'Cairo'),
-                                                                      decoration: InputDecoration(
-                                                                          fillColor:
-                                                                              lightGrey,
-                                                                          focusedBorder: UnderlineInputBorder(
-                                                                              borderSide: BorderSide(
-                                                                                  color:
-                                                                                      pink)),
-                                                                          contentPadding:
-                                                                              EdgeInsets.all(0.h)),
-                                                                    )
-                                                                  : text(
-                                                                      context,
-                                                                  tempDesc.containsKey(_posts[index].id!)?
-                                                                  tempDesc[_posts[index].id!]! :_posts[index].description!,
-                                                                      14,
-                                                                      black),
-                                                        ),
-                                                      ],
+                                                                        };
+                                                                    },
+                                                                            style: TextStyle(
+                                                                                color:
+                                                                                    black,
+                                                                                fontSize:
+                                                                                    12,
+                                                                                fontFamily:
+                                                                                    'Cairo'),
+                                                                            decoration: InputDecoration(
+                                                                                fillColor:
+                                                                                    lightGrey,
+                                                                                focusedBorder: UnderlineInputBorder(
+                                                                                    borderSide: BorderSide(
+                                                                                        color:
+                                                                                            pink)),
+                                                                                contentPadding:
+                                                                                    EdgeInsets.all(0.h)),
+                                                                          )
+                                                                      : text(
+                                                                          context,
+                                                                      tempDesc.containsKey(_posts[index].id!)?
+                                                                      tempDesc[_posts[index].id!]! :_posts[index].description!,
+                                                                          14,
+                                                                          black),
+                                                            ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -551,6 +536,9 @@ String? userToken;
                                 },
                               ),
                     ),
+                    _isLoadMoreRunning == true?
+                    SizedBox():
+                    SizedBox(height: 35.h,),
                     if (_isLoadMoreRunning == true)
                       const Padding(
                         padding: EdgeInsets.only(top: 10, bottom: 40),

@@ -15,6 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../Account/LoggingSingUpAPI.dart';
+import '../../../Users/Exploer/viewData.dart';
+import '../../../Users/Exploer/viewDataImage.dart';
 import '../../setting/profileInformation.dart';
 
 class Studio extends StatefulWidget {
@@ -250,6 +252,8 @@ class _StudioState extends State<Studio> {
                                         2,
                                         0,
                                         Container(
+                                          width: 125.w ,
+                                          color: lightGrey.withOpacity(0.30),
                                           margin: EdgeInsets.only(
                                               bottom: 2.h, top: 2.h),
                                           alignment: Alignment
@@ -260,20 +264,70 @@ class _StudioState extends State<Studio> {
                                                 .circular(
                                                 2.0),
                                             child: _posts[index].type! ==
-                                                "image" ? Image.network(
+                                                "image" ?_posts[index].image! == null? Container(
+                                              width: 125.w ,
+                                              color: lightGrey.withOpacity(0.30),
+                                              margin: EdgeInsets.only(
+                                                  bottom: 2.h, top: 2.h),
+                                              alignment: Alignment
+                                                  .centerRight,): InkWell(
+                                              onTap: (){
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                            ImageData(
+                                                              image:
+                                                              _posts[index].image!,
+                                                            )));
+                                              },
+                                                    child: Image.network(
                                               _posts[index].image!,
                                               fit: BoxFit
-                                                  .fill,
+                                                    .fill,
                                               height: double.infinity.h,
                                               width: 125.w,
-                                            ) : Container(
+                                              loadingBuilder:
+                                                    (context, child, loadingProgress) {
+                                                if (loadingProgress == null) return child;
+                                                return Center(
+                                                    child: CircularProgressIndicator(
+                                                      backgroundColor: grey,
+                                                      value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                          null
+                                                          ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                          loadingProgress
+                                                              .expectedTotalBytes!
+                                                          : null,
+                                                    ),
+                                                );
+                                              },
+                                            ),
+                                                  ) : Container(
                                                 height: double.infinity.h,
                                                 width: 100.w,
-                                                child: VideoPlayer(
+                                                child: _posts[index].image! == null? Container( width: 125.w ,
+                                                  color: lightGrey.withOpacity(0.30),
+                                                  margin: EdgeInsets.only(
+                                                      bottom: 2.h, top: 2.h),
+                                                  alignment: Alignment
+                                                      .centerRight,):InkWell(
+                                                  onTap: (){
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => viewData(
+                                                              video:_posts[index].image!,
+                                                            )));},
+                                                        child: VideoPlayer(
                                                     VideoPlayerController
-                                                        .network(
-                                                        _posts[index].image!)
-                                                      ..initialize())),
+                                                          .network(
+                                                          _posts[index].image!)
+                                                        ..initialize()),
+                                                      )),
 
                                           ),
                                         ),
@@ -430,6 +484,9 @@ class _StudioState extends State<Studio> {
 
               ),
 
+              _isLoadMoreRunning == true?
+                  SizedBox():
+              SizedBox(height: 30.h,),
               if (_isLoadMoreRunning == true)
                 const Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 40),
@@ -492,6 +549,7 @@ void fetchStudio() async {
     });
 
   }
+
 
   Future<http.Response> deleteStudio(int id) async {
     String token2 =
