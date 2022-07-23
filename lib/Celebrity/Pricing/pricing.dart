@@ -627,7 +627,7 @@ class _PricingHomeState extends State<PricingHome> {
                                       Colors.black38,
                                     ),
                                   ),
-                                  child: text(context, 'حفظ', 12, purple),
+                                  child: text(context, 'حفظ', 12, black),
                                   onPressed: () {
                                     //to
                                     var ad1 = int.parse(pricingAd1.text);
@@ -638,65 +638,11 @@ class _PricingHomeState extends State<PricingHome> {
                                       ///var c = int. parse(b);
                                       //to < from
                                       ad1 < ad
-                                          ? Flushbar(
-                                        flushbarPosition: FlushbarPosition.TOP,
-                                        backgroundColor: white,
-                                        margin: const EdgeInsets.all(5),
-                                        flushbarStyle: FlushbarStyle.FLOATING,
-                                        borderRadius: BorderRadius.circular(10.r),
-                                        duration: const Duration(seconds: 5),
-                                        icon: Icon(
-                                          error,
-                                          color: red!,
-                                          size: 25.sp,
-                                        ),
-                                        titleText: text(context, 'خطأ', 16, purple),
-                                        messageText: text(
-                                            context,
-                                            'يجب ان يكون الحد الاعلى للإعلان أكبر',
-                                            14,
-                                            black,
-                                            fontWeight: FontWeight.w200),
-                                      ).show(context) : postFunction(userToken!)
+                                          ? showMassage(context, 'خطأ',
+                                    'يجب ان يكون الحد الاعلى للإعلان أكبر') : postFunction(userToken!)
                                           .whenComplete(() => {
-                                        Flushbar(
-                                          flushbarPosition:
-                                          FlushbarPosition
-                                              .TOP,
-                                          backgroundColor:
-                                          white,
-                                          margin:
-                                          const EdgeInsets
-                                              .all(5),
-                                          flushbarStyle:
-                                          FlushbarStyle
-                                              .FLOATING,
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              10.r),
-                                          duration:
-                                          const Duration(
-                                              seconds: 5),
-                                          icon: Icon(
-                                            right,
-                                            color: green,
-                                            size: 30,
-                                          ),
-                                          titleText: text(
-                                              context,
-                                              'تم الحفظ',
-                                              16,
-                                              purple),
-                                          messageText: text(
-                                              context,
-                                              'تم حفظ المدخلات بنجاح',
-                                              14,
-                                              black,
-                                              fontWeight:
-                                              FontWeight
-                                                  .w200),
-                                        ).show(context)
+
+                                        showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done)
                                       })
                                     }
                                         : null;

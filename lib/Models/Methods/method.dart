@@ -125,12 +125,18 @@ Widget gradientContainer(double width, Widget child,
           topLeft: Radius.circular(topLeft),
           bottomRight: Radius.circular(bottomRight.r)),
       gradient: gradient == false
-          ? const LinearGradient(
-              begin: Alignment(0.7, 2.0),
-              end: Alignment(-0.69, -1.0),
-              colors: [Color(0xff0ab3d0), Color(0xffe468ca)],
-              stops: [0.0, 1.0],
-            )
+          ? const  LinearGradient(
+        begin:
+        Alignment(0.5, 2.0),
+        end: Alignment(
+            -0.69, -1.0),
+        colors: [
+          Color(0xffe468ca),
+          Color(0xff0ab3d0),
+
+        ],
+        stops: [0.0, 1.0],
+      )
           : null,
     ),
   );
@@ -148,9 +154,15 @@ Widget gradientContainerNoborder(double width, Widget child,
       ],
       borderRadius: BorderRadius.circular(reids.r),
       gradient: const LinearGradient(
-        begin: Alignment(0.7, 2.0),
-        end: Alignment(-0.69, -1.0),
-        colors: [Color(0xff0ab3d0), Color(0xffe468ca)],
+        begin:
+        Alignment(0.5, 2.0),
+        end: Alignment(
+            -0.69, -1.0),
+        colors: [
+          Color(0xffe468ca),
+          Color(0xff0ab3d0),
+
+        ],
         stops: [0.0, 1.0],
       ),
     ),
@@ -166,9 +178,15 @@ Widget gradientContainerNoborder2(double width, double height, Widget child) {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8.0),
       gradient: const LinearGradient(
-        begin: Alignment(0.7, 2.0),
-        end: Alignment(-0.69, -1.0),
-        colors: [Color(0xff0ab3d0), Color(0xffe468ca)],
+        begin:
+        Alignment(0.5, 2.0),
+        end: Alignment(
+            -0.69, -1.0),
+        colors: [
+          Color(0xffe468ca),
+          Color(0xff0ab3d0),
+
+        ],
         stops: [0.0, 1.0],
       ),
     ),
@@ -1013,9 +1031,15 @@ divider({
 //gradient color---------------------------------------------------------------------
 LinearGradient gradient() {
   return const LinearGradient(
-    begin: Alignment(0.7, 2.0),
-    end: Alignment(-0.69, -1.0),
-    colors: [Color(0xff0ab3d0), Color(0xffe468ca)],
+    begin:
+    Alignment(0.5, 2.0),
+    end: Alignment(
+        -0.69, -1.0),
+    colors: [
+      Color(0xffe468ca),
+      Color(0xff0ab3d0),
+
+    ],
     stops: [0.0, 1.0],
   );
 }
@@ -1548,8 +1572,8 @@ SnackBar snackBar(context, String title, Color? color, IconData? icon) {
 
 Widget mainLoad(context) {
   return SizedBox(
-    height: MediaQuery.of(context).size.height,
-    width: 100.w,
+    height: 70.h,
+    width: 70.w,
     child: Padding(
       padding: EdgeInsets.only(bottom: 100.h),
       child: Lottie.asset('assets/lottie/grey.json', height: 200.h),

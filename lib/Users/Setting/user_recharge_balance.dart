@@ -126,23 +126,9 @@ class _UserRechargeBalanceState extends State<UserRechargeBalance> {
                         showBottomSheetWhite(context,
                             bottomSheetRechargeMenu('1', 'rayana', '500'));
                       } else {
-                            Flushbar(
-                              flushbarPosition: FlushbarPosition.TOP,
-                              backgroundColor: white,
-                              margin: const EdgeInsets.all(5),
-                              flushbarStyle: FlushbarStyle.FLOATING,
-                              borderRadius: BorderRadius.circular(15.r),
-                              duration: const Duration(seconds: 5),
-                              icon: Icon(
-                                error,
-                                color: red!,
-                                size: 30.sp,
-                              ),
-                              titleText: text(context, 'خطأ', 16, purple),
-                              messageText: text(context,
-                                  'أدخل المبلغ المراد إضافة للرصيد', 14, black,
-                                  fontWeight: FontWeight.w200),
-                            ).show(context);
+                        //'خطأ'
+                        //'أدخل المبلغ المراد إضافة للرصيد'
+                            showMassage(context, 'خطأ', 'أدخل المبلغ المراد إضافة للرصيد');
                       }
                     })),
               ),
@@ -317,28 +303,10 @@ class _UserRechargeBalanceState extends State<UserRechargeBalance> {
                                         trueOrFalse: 1,
                                       ))
                                   :
-
                               ///loading Screen the failure animation
-                              Flushbar(
-                                flushbarPosition: FlushbarPosition.TOP,
-                                backgroundColor: white,
-                                margin: const EdgeInsets.all(5),
-                                flushbarStyle: FlushbarStyle.FLOATING,
-                                borderRadius: BorderRadius.circular(10.r),
-                                duration: const Duration(seconds: 5),
-                                icon: Icon(
-                                  error,
-                                  color: red!,
-                                  size: 25.sp,
-                                ),
-                                titleText: text(context, 'خطأ', 12, purple),
-                                messageText: text(
-                                    context,
-                                    'قم بإختيار بطاقة او ادخال بطاقة جديدة',
-                                    12,
-                                    black,
-                                    fontWeight: FontWeight.w200),
-                              ).show(context);
+                             //'خطأ'
+                              //'قم بإختيار بطاقة او ادخال بطاقة جديدة'
+                              showMassage(context, 'خطأ', 'قم بإختيار بطاقة او ادخال بطاقة جديدة');
                             },
                           ),
                         ),

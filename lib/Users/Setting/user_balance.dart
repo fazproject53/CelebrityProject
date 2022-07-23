@@ -371,47 +371,11 @@ class _UserBalanceHomeState extends State<UserBalanceHome> {
                           150.w,
                           buttoms(context, 'إسحب الرصيد', 15, white, () {
                             isVesible == false
-                                ? Flushbar(
-                                    flushbarPosition: FlushbarPosition.TOP,
-                                    backgroundColor: white,
-                                    margin: const EdgeInsets.all(5),
-                                    flushbarStyle: FlushbarStyle.FLOATING,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    duration: const Duration(seconds: 5),
-                                    icon: Icon(
-                                      error,
-                                      color: red!,
-                                      size: 25.sp,
-                                    ),
-                                    titleText: text(context, 'خطأ', 16, purple),
-                                    messageText: text(
-                                        context,
-                                        'قم بإختيار بطاقة او ادخال بطاقة جديدة',
-                                        14,
-                                        black,
-                                        fontWeight: FontWeight.w200),
-                                  ).show(context)
-                                : Flushbar(
-                                    flushbarPosition: FlushbarPosition.TOP,
-                                    backgroundColor: white,
-                                    margin: const EdgeInsets.all(5),
-                                    flushbarStyle: FlushbarStyle.FLOATING,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    duration: const Duration(seconds: 5),
-                                    icon: Icon(
-                                      right,
-                                      color: green,
-                                      size: 30,
-                                    ),
-                                    titleText: text(context,
-                                        'تم إرسال طلبك بنجاح', 16, purple),
-                                    messageText: text(
-                                        context,
-                                        'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام',
-                                        14,
-                                        black,
-                                        fontWeight: FontWeight.w200),
-                                  ).show(context);
+                            //'خطأ'
+                            //'قم بإختيار بطاقة او ادخال بطاقة جديدة'
+                                ? showMassage(context, 'خطأ', 'قم بإختيار بطاقة او ادخال بطاقة جديدة')
+                                : showMassage(context, 'تم إرسال طلبك بنجاح', 'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام', done: done);
+
                           })),
                     ),
                     SizedBox(
@@ -549,31 +513,10 @@ class _UserBalanceHomeState extends State<UserBalanceHome> {
                         22,
                         gradientContainerNoborder(
                             150.w,
-                            buttoms(context, 'إسحب الرصيد', 15, white, () {
+                            buttoms(context, 'إضافة بطاقة جديدة', 15, white, () {
                               _formKey.currentState!.validate()
                                   ? {
-                                      Flushbar(
-                                        flushbarPosition: FlushbarPosition.TOP,
-                                        backgroundColor: white,
-                                        margin: const EdgeInsets.all(5),
-                                        flushbarStyle: FlushbarStyle.FLOATING,
-                                        borderRadius:
-                                            BorderRadius.circular(10.r),
-                                        duration: const Duration(seconds: 5),
-                                        icon: Icon(
-                                          right,
-                                          color: green,
-                                          size: 30,
-                                        ),
-                                        titleText: text(context,
-                                            'تم إرسال طلبك بنجاح', 16, purple),
-                                        messageText: text(
-                                            context,
-                                            'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام',
-                                            14,
-                                            black,
-                                            fontWeight: FontWeight.w200),
-                                      )..show(context)
+                                showMassage(context, 'تم إرسال طلبك بنجاح', 'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام', done: done)
                                     }
                                   : null;
                             })),

@@ -368,74 +368,12 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
                                     _formKey.currentState!.validate()
                                         ? {
                                             _selectedTest == null
-                                                ? Flushbar(
-                                                    flushbarPosition:
-                                                        FlushbarPosition.TOP,
-                                                    backgroundColor: white,
-                                                    margin:
-                                                        const EdgeInsets.all(5),
-                                                    flushbarStyle:
-                                                        FlushbarStyle.FLOATING,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15.r),
-                                                    duration: const Duration(
-                                                        seconds: 5),
-                                                    icon: Icon(
-                                                      error,
-                                                      color: red!,
-                                                      size: 25.sp,
-                                                    ),
-                                                    titleText: text(context,
-                                                        'خطأ', 16, purple),
-                                                    messageText: text(
-                                                        context,
-                                                        'قم بإختيار نوع الشكوى',
-                                                        14,
-                                                        black,
-                                                        fontWeight:
-                                                            FontWeight.w200),
-                                                  ).show(context)
+
+                                                ? showMassage(context, 'خطأ', 'قم بإختيار نوع الشكوى',)
+
                                                 : postContactWithUs(userToken!)
                                                     .whenComplete(() => {
-                                                          Flushbar(
-                                                            flushbarPosition:
-                                                                FlushbarPosition
-                                                                    .TOP,
-                                                            backgroundColor:
-                                                                white,
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .all(5),
-                                                            flushbarStyle:
-                                                                FlushbarStyle
-                                                                    .FLOATING,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15.r),
-                                                            duration:
-                                                                const Duration(
-                                                                    seconds: 5),
-                                                            icon: Icon(
-                                                              right,
-                                                              color: green,
-                                                              size: 30,
-                                                            ),
-                                                            titleText: text(
-                                                                context,
-                                                                'تم الارسال بنجاح',
-                                                                16,
-                                                                purple),
-                                                            messageText: text(
-                                                                context,
-                                                                'سوف يتم التواصل معك عبر البريد الالكتروني',
-                                                                14,
-                                                                black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w200),
-                                                          ).show(context)
+                                              showMassage(context, 'تم الارسال بنجاح', 'سوف يتم التواصل معك عبر البريد الالكتروني', done: done)
                                                         })
                                           }
                                         : null;

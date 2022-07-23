@@ -451,7 +451,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                           ),
                                                         ),
                                                         child: text(context,
-                                                            'حفظ', 12, purple),
+                                                            'حفظ', 12, black),
                                                         onPressed: () {
                                                           _formKey.currentState!
                                                               .validate()
@@ -459,21 +459,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                               userToken!)
                                                               .whenComplete(
                                                                   () => {
-                                                                Flushbar(
-                                                                  flushbarPosition: FlushbarPosition.TOP,
-                                                                  backgroundColor: white,
-                                                                  margin: const EdgeInsets.all(5),
-                                                                  flushbarStyle: FlushbarStyle.FLOATING,
-                                                                  borderRadius: BorderRadius.circular(10.r),
-                                                                  duration: const Duration(seconds: 5),
-                                                                  icon: Icon(
-                                                                    right,
-                                                                    color: green,
-                                                                    size: 30,
-                                                                  ),
-                                                                  titleText: text(context, 'تم الحفظ', 16, purple),
-                                                                  messageText: text(context, 'تم حفظ المدخلات بنجاح', 14, black, fontWeight: FontWeight.w200),
-                                                                ).show(context)
+                                                                    showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done)
                                                               })
                                                               : null;
                                                         }),

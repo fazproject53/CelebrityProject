@@ -745,39 +745,19 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                                     .whenComplete(
                                                                         () => {
                                                                               print('save change'),
-                                                                              Flushbar(
-                                                                                flushbarPosition: FlushbarPosition.TOP,
-                                                                                backgroundColor: white,
-                                                                                margin: const EdgeInsets.all(5),
-                                                                                flushbarStyle: FlushbarStyle.FLOATING,
-                                                                                borderRadius: BorderRadius.circular(10.r),
-                                                                                duration: const Duration(seconds: 5),
-                                                                                icon: Icon(
-                                                                                  right,
-                                                                                  color: green,
-                                                                                  size: 30,
-                                                                                ),
-                                                                                titleText: text(context, 'تم', 16, purple),
-                                                                                messageText: text(context, 'تم حفظ التغيرات بنجاح', 14, black, fontWeight: FontWeight.w200),
-                                                                              ).show(context),
+                                                                              showMassage(
+                                                                                  context,
+                                                                                  'تم',
+                                                                                  'تم حفظ التغيرات بنجاح',
+                                                                                  done: done
+                                                                              )
                                                                             })
                                                                 : createNewDiscountCode(userToken!).whenComplete(() => {
                                                                               print('save'),
-                                                                              Flushbar(
-                                                                                flushbarPosition: FlushbarPosition.TOP,
-                                                                                backgroundColor: white,
-                                                                                margin: const EdgeInsets.all(5),
-                                                                                flushbarStyle: FlushbarStyle.FLOATING,
-                                                                                borderRadius: BorderRadius.circular(10.r),
-                                                                                duration: const Duration(seconds: 5),
-                                                                                icon: Icon(
-                                                                                  right,
-                                                                                  color: green,
-                                                                                  size: 30,
-                                                                                ),
-                                                                                titleText: text(context, 'تم', 16, purple),
-                                                                                messageText: text(context, 'تم الحفظ بنجاح', 14, black, fontWeight: FontWeight.w200),
-                                                                              ).show(context),
+                                                                              showMassage(
+                                                                                  context,
+                                                                                  'تم',
+                                                                                  'تم الحفظ بنجاح')
                                                                             }
                                                                             ),
                                                             goTopageReplacement(context, celebratyProfile())
