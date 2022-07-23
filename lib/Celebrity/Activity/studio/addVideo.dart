@@ -116,74 +116,10 @@ class _addVideoState extends State<addVideo> {
                             addvideo(userToken!).then((value) =>
                             value == ''?
                             {goTopageReplacement(context, ActivityScreen()),
+                            showMassage(context, 'تم بنجاح',
+                            'تمت الاضافة بنجاح', done: done),}:
+                            showMassage(context, 'خطا', value.replaceAll('حدث خطا ما الرجاء المحاولة لاحقا', ''),),
 
-                              Flushbar(
-                                flushbarPosition:
-                                FlushbarPosition.TOP,
-                                backgroundColor: white,
-                                margin:
-                                const EdgeInsets.all(5),
-                                flushbarStyle:
-                                FlushbarStyle.FLOATING,
-                                borderRadius:
-                                BorderRadius.circular(
-                                    15.r),
-                                duration: const Duration(
-                                    seconds: 5),
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(left: 18.0),
-                                  child: Icon(
-                                    done,
-                                    color: green,
-                                    size: 25.sp,
-                                  ),
-                                ),
-                                titleText: text(context, 'تم بنجاح', 14, purple),
-                                messageText: text(
-                                    context,
-                                    'تم اضافة فيديو بنجاح',
-                                    14,
-                                    black,
-                                    fontWeight:
-                                    FontWeight.w200),
-                              ).show(context)}
-                                : {
-                              Navigator.pop(context),
-                              Flushbar(
-                                flushbarPosition:
-                                FlushbarPosition.TOP,
-                                backgroundColor: white,
-                                margin:
-                                const EdgeInsets.all(5),
-                                flushbarStyle:
-                                FlushbarStyle.FLOATING,
-                                borderRadius:
-                                BorderRadius.circular(
-                                    15.r),
-                                duration: const Duration(
-                                    seconds: 5),
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 18.0),
-                                  child: Icon(
-                                    error,
-                                    color: red,
-                                    size: 25.sp,
-                                  ),
-                                ),
-                                titleText: text(
-                                    context, 'قشل الاتصال بالانترنت',
-                                    14, purple),
-                                messageText: text(
-                                    context,
-                                    'قشل الاتصال بالانترنت حاول لاحقا',
-                                    14,
-                                    black,
-                                    fontWeight:
-                                    FontWeight.w200),
-                              ).show(context),
-
-                            }
                             );
 
 

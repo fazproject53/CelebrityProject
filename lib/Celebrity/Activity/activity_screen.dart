@@ -12,11 +12,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ActivityScreen extends StatefulWidget {
   final String? move;
   const ActivityScreen({Key? key, this.move}) : super(key: key);
+
   @override
   _ActivityScreenMainState createState() => _ActivityScreenMainState();
-
   }
-
 
 class _ActivityScreenMainState extends State<ActivityScreen> {
   int? isSelected = 1;
