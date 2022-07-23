@@ -86,7 +86,7 @@ userForm(context, List<String> countries) {
         valedEmile,
         keyboardType: TextInputType.emailAddress,
         inputFormatters: [
-          FilteringTextInputFormatter(RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]'),
+          FilteringTextInputFormatter(RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]|[-]'),
               allow: true)
         ],
       ),
@@ -151,7 +151,7 @@ celebratyForm(context, List<String> countries, List<String> catogary) {
         valedEmile,
         keyboardType: TextInputType.emailAddress,
         inputFormatters: [
-          FilteringTextInputFormatter(RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]'),
+          FilteringTextInputFormatter(RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]|[-]'),
               allow: true)
         ],
       ),

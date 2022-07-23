@@ -62,13 +62,13 @@ class _LoggingState extends State<Logging> {
           body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            image: DecorationImage(
-                image: image1.image,
-                colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.7), BlendMode.darken),
-                fit: BoxFit.cover)),
+        // decoration: BoxDecoration(
+        //     color: Colors.white,
+        //     image: DecorationImage(
+        //         image: image1.image,
+        //         colorFilter: ColorFilter.mode(
+        //             Colors.black.withOpacity(0.7), BlendMode.darken),
+        //         fit: BoxFit.cover)),
         child:
 
 //==============================container===============================================================
@@ -86,9 +86,9 @@ class _LoggingState extends State<Logging> {
               ),
 
 //مرحبا بك مره اخري--------------------------------------------------
-              text(context, "مرحبا بك مرة اخري", 20, white),
+              text(context, "مرحبا بك مرة اخري", 20, Colors.black87),
 //تسجيل الدخول--------------------------------------------------
-              text(context, "تسجيل الدخول", 17, white),
+              text(context, "تسجيل الدخول", 17, Colors.black87),
               SizedBox(
                 height: 40.h,
               ),
@@ -275,7 +275,7 @@ class _LoggingState extends State<Logging> {
                             Wrap(
                               children: [
                                 text(context, "ليس لديك حساب بالفعل؟", 14,
-                                    white),
+                                    Colors.black87),
                                 SizedBox(
                                   width: 7.w,
                                 ),
@@ -325,7 +325,7 @@ class _LoggingState extends State<Logging> {
             SizedBox(
               width: 4.w,
             ),
-            text(context, 'تذكرني', 15.sp, white),
+            text(context, 'تذكرني', 15.sp, Colors.black87),
           ],
         ),
         // SizedBox(
@@ -335,7 +335,7 @@ class _LoggingState extends State<Logging> {
             onTap: () {
               goTopagepush(context, const SendEmail());
             },
-            child: text(context, 'نسيت كلمة المرور؟', 15.sp, white)),
+            child: text(context, 'نسيت كلمة المرور؟', 15.sp, Colors.black87)),
       ],
     );
   }

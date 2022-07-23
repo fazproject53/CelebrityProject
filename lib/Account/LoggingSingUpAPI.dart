@@ -16,9 +16,7 @@ class DatabaseHelper {
     Map<String, dynamic> data = {"username": username, "password": password};
     String url = "$serverUrl/login";
     try {
-      final respons = await http
-          .post(Uri.parse(url), body: data)
-          .timeout(const Duration(seconds: 8));
+      final respons = await http.post(Uri.parse(url), body: data);
       //--------------------------------------
       var message = jsonDecode(respons.body)["message"]["en"];
       var state = jsonDecode(respons.body)["data"]?["status"];
