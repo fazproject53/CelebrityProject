@@ -41,13 +41,13 @@ class _SendEmailState extends State<SendEmail> {
         body: Container(
           height: double.infinity,
           width: double.infinity,
-          decoration: BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                  image: image1.image,
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.7), BlendMode.darken),
-                  fit: BoxFit.cover)),
+          // decoration: BoxDecoration(
+          //     color: Colors.black,
+          //     image: DecorationImage(
+          //         image: image1.image,
+          //         colorFilter: ColorFilter.mode(
+          //             Colors.black.withOpacity(0.7), BlendMode.darken),
+          //         fit: BoxFit.cover)),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -58,7 +58,7 @@ class _SendEmailState extends State<SendEmail> {
                   context,
                   'التحقق من المستخدم',
                   18,
-                  white,
+                  Colors.black87,
                   fontWeight: FontWeight.bold,
                   align: TextAlign.right,
                 ),
@@ -74,7 +74,7 @@ class _SendEmailState extends State<SendEmail> {
                     height: 160.h,
                     margin: EdgeInsets.all(9.w),
                     decoration: const BoxDecoration(
-                        color: Colors.white12,
+                        color: Colors.black38,
                         shape: BoxShape.circle,
                         image: DecorationImage(
                             image: AssetImage('assets/image/email1.png'))),
@@ -91,7 +91,7 @@ class _SendEmailState extends State<SendEmail> {
                     context,
                     'قم بإدخال اسم المستخدم او عنوان بريدك الالكتروني المرتبط بحسابك',
                     15,
-                    white,
+                    Colors.black87,
                     fontWeight: FontWeight.bold,
                     align: TextAlign.right,
                   ),
@@ -112,7 +112,7 @@ class _SendEmailState extends State<SendEmail> {
                         keyboardType: TextInputType.emailAddress,
                         inputFormatters: [
                           FilteringTextInputFormatter(
-                              RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]'),
+                              RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]|[-]'),
                               allow: true)
                         ],
                       )),
@@ -157,7 +157,7 @@ class _SendEmailState extends State<SendEmail> {
         Navigator.pop(context);
         successfullyDialog(
             context,
-            'تم ارسال رمز التحقق علي البريد الالكتروني الخاص بك',
+            'تم ارسال رمز التحقق الى البريد الالكتروني الخاص بك',
             "assets/lottie/SuccessfulCheck.json",
             'التالي', () {
               Navigator.pop(context);

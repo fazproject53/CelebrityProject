@@ -103,13 +103,13 @@ class _SingUpState extends State<SingUp> {
           body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-                image: image1.image,
-                colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.7), BlendMode.darken),
-                fit: BoxFit.cover)),
+        // decoration: BoxDecoration(
+        //     color: Colors.black,
+        //     image: DecorationImage(
+        //         image: image1.image,
+        //         colorFilter: ColorFilter.mode(
+        //             Colors.black.withOpacity(0.7), BlendMode.darken),
+        //         fit: BoxFit.cover)),
         child:
 //==============================container===============================================================
 
@@ -125,9 +125,9 @@ class _SingUpState extends State<SingUp> {
                 width: 150.w,
               ),
 //استمتع يالتواصل--------------------------------------------------
-              text(context, "مرحبا بك في منصة المشاهير", 20, white),
+              text(context, "مرحبا بك في منصة المشاهير", 20, Colors.black87),
 //انشاء حساب--------------------------------------------------
-              text(context, "إنشئ حسابك الآن", 17, white),
+              text(context, "إنشئ حسابك الآن", 17, Colors.black87),
               SizedBox(
                 height: 22.h,
               ),
@@ -146,7 +146,9 @@ class _SingUpState extends State<SingUp> {
                           context,
                           'مستخدم',
                           14,
-                          white,
+                          isChang == false
+                              ? Colors.white
+                              : Colors.black87,
                           () {
                             FocusManager.instance.primaryFocus?.unfocus();
                             setState(() {
@@ -158,7 +160,7 @@ class _SingUpState extends State<SingUp> {
                         gradient: isChang! ? true : false,
                         color: isChang == false
                             ? Colors.transparent
-                            : Colors.white),
+                            : Colors.black87),
                     SizedBox(
                       width: 21.w,
                     ),
@@ -170,7 +172,7 @@ class _SingUpState extends State<SingUp> {
                           context,
                           'مشهور',
                           14,
-                          white,
+                          isChang! ? Colors.white : Colors.black87,
                           () {
                             FocusManager.instance.primaryFocus?.unfocus();
                             setState(() {
@@ -180,7 +182,7 @@ class _SingUpState extends State<SingUp> {
                           },
                         ),
                         gradient: isChang! ? false : true,
-                        color: isChang! ? Colors.transparent : Colors.white),
+                        color: isChang! ? Colors.transparent : Colors.black87),
                   ],
                 ),
               ),
@@ -265,7 +267,7 @@ class _SingUpState extends State<SingUp> {
                         children: [
                           Wrap(
                             children: [
-                              text(context, "هل لديك حساب بالفعل؟", 14, white),
+                              text(context, "هل لديك حساب بالفعل؟", 14, Colors.black87),
                               SizedBox(
                                 width: 7.w,
                               ),
@@ -405,7 +407,7 @@ class _SingUpState extends State<SingUp> {
               context,
               "او التسجيل من خلال",
               14,
-              Colors.white,
+              Colors.black87,
               align: TextAlign.center,
             ),
           ),

@@ -46,17 +46,17 @@ class _VerifyUserState extends State<VerifyUser> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: black,
+
         body: Container(
           height: double.infinity,
           width: double.infinity,
-          decoration: BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                  image: image1.image,
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.7), BlendMode.darken),
-                  fit: BoxFit.cover)),
+          // decoration: BoxDecoration(
+          //     color: Colors.black,
+          //     image: DecorationImage(
+          //         image: image1.image,
+          //         colorFilter: ColorFilter.mode(
+          //             Colors.black.withOpacity(0.7), BlendMode.darken),
+          //         fit: BoxFit.cover)),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -67,7 +67,7 @@ class _VerifyUserState extends State<VerifyUser> {
                   context,
                   'تأكيد عنوان البريد الالكتروني',
                   18,
-                  white,
+                  Colors.black87,
                   fontWeight: FontWeight.bold,
                   align: TextAlign.right,
                 ),
@@ -82,7 +82,7 @@ class _VerifyUserState extends State<VerifyUser> {
                     height: 160.h,
                     margin: EdgeInsets.all(9.w),
                     decoration: const BoxDecoration(
-                      color: Colors.white12,
+                      color:  Colors.black38,
                       shape: BoxShape.circle,
                       image: DecorationImage(
                           image: AssetImage('assets/image/code.png')),
@@ -98,12 +98,12 @@ class _VerifyUserState extends State<VerifyUser> {
                       EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 20.w),
                   child: text(
                     context,
-                    ' تم ارسال رمز التحقق علي البريد ${widget.username}'
-                        ' \n يرجى التحقق من صندوق البريد الوارد الخاص بك واتبع التعليمات.',
+                    'تتطلب هذه الخطوة تأكيد عنوان البريد الالكتروني.  يرجى التحقق من صندوق البريد الوارد الخاص بك واتبع التعليمات. ' ' تم ارسال رمز التحقق الى البريد الالكتروني ${widget.username}'
+                   ,
                     15,
-                    white,
+                    Colors.black87,
                     fontWeight: FontWeight.bold,
-                    align: TextAlign.justify,
+                    align: TextAlign.right,
                   ),
                 ),
 //code Text field---------------------------------------------------------------
@@ -136,7 +136,7 @@ class _VerifyUserState extends State<VerifyUser> {
                     children: [
                       Wrap(
                         children: [
-                          text(context, "لم يصل رمز التحقق؟", 13, white),
+                          text(context, "لم يصل رمز التحقق؟", 13, Colors.black87,),
                           SizedBox(
                             width: 7.w,
                           ),

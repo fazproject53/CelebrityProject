@@ -299,36 +299,36 @@ Widget textField(context, icons, String key, double fontSize, bool hintPass,
     inputFormatters: inputFormatters,
     keyboardType: keyboardType,
     controller: mycontroller,
-    style: TextStyle(color: Colors.white, fontSize: fontSize.sp),
+    style: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
     decoration: InputDecoration(
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(color: Colors.white, fontSize: fontSize.sp),
-        fillColor: Colors.white12,
-        labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
+        hintStyle: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
+        fillColor:textGray,
+        labelStyle: TextStyle(color: Colors.black87, fontSize: 15.0.sp),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(0.8),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
-        prefixIcon: Icon(icons, color: purple.withOpacity(0.6), size: 25.sp),
+        prefixIcon: Icon(icons, color: newGrey, size: 25.sp),
         labelText: key,
         errorStyle: TextStyle(color: Colors.red, fontSize: 13.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
@@ -351,36 +351,36 @@ Widget textField3(context, icons, String key, double fontSize, bool hintPass,
     inputFormatters: inputFormatters,
     keyboardType: keyboardType,
     controller: mycontroller,
-    style: TextStyle(color: white, fontSize: fontSize.sp),
+    style: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
     decoration: InputDecoration(
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(color: Colors.white, fontSize: fontSize.sp),
-        fillColor: Colors.white12,
-        labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
+        hintStyle: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
+        fillColor:textGray,
+        labelStyle: TextStyle(color: Colors.black87, fontSize: 15.0.sp),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(0.8),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
-        prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
+        prefixIcon: Icon(icons, color: newGrey, size: 25.sp),
         labelText: key,
         errorStyle: TextStyle(color: Colors.red, fontSize: 13.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
@@ -1257,7 +1257,7 @@ Widget drowMenu(
     validator: validator,
     hint: Text(
       inisValue,
-      style: TextStyle(color: Colors.white, fontSize: fontSize.sp),
+      style: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
     ),
     //dropdownColor: black,
     items: item
@@ -1266,7 +1266,7 @@ Widget drowMenu(
               value: type,
               child: Text(
                 type,
-                style: TextStyle(color: Colors.white, fontSize: fontSize.sp),
+                style: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
                 textAlign: TextAlign.center,
               ),
             ))
@@ -1276,29 +1276,29 @@ Widget drowMenu(
         filled: true,
         prefixIcon: Icon(
           prefixIcon,
-          color: purple.withOpacity(0.6),
+          color: newGrey,
         ),
-        fillColor: Colors.white12,
+        fillColor: textGray,
         alignLabelWithHint: true,
         errorStyle: TextStyle(color: Colors.red, fontSize: 14.0.sp),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(0.8),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
@@ -1307,10 +1307,10 @@ Widget drowMenu(
     dropdownMaxHeight: 140.h,
     dropdownWidth: 180.w,
     dropdownDecoration: BoxDecoration(
-        color: purple.withOpacity(0.6),
+        color: white,
         borderRadius: BorderRadius.all(Radius.circular(4.r))),
-    iconDisabledColor: purple.withOpacity(0.6),
-    iconEnabledColor: purple.withOpacity(0.6),
+    iconDisabledColor: newGrey,
+    iconEnabledColor: newGrey,
     scrollbarAlwaysShow: true,
   );
 }
@@ -1407,9 +1407,9 @@ Widget noData(context) {
 //showErrorMassage----------------------------------------------------------------------
 showMassage(context, String titleText, String messageText, {IconData? done}) {
   Flushbar(
-    flushbarPosition: FlushbarPosition.BOTTOM,
+    flushbarPosition: FlushbarPosition.TOP,
     backgroundColor: white,
-    margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+    margin: EdgeInsets.symmetric(horizontal: 4.w),
     padding: const EdgeInsets.all(10),
     flushbarStyle: FlushbarStyle.FLOATING,
     borderRadius: BorderRadius.circular(5.r),
@@ -1419,6 +1419,7 @@ showMassage(context, String titleText, String messageText, {IconData? done}) {
     leftBarIndicatorColor: done == null ? red : green,
     onTap: (bar) {
       bar.dismiss();
+      //-----------------
     },
     icon: Icon(
       done ?? error,
