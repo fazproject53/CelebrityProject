@@ -43,6 +43,7 @@ class _blockListState extends State<blockList> {
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
+        getBlockList(userToken!);
       });
     });
     _controller.addListener(_loadMore);
