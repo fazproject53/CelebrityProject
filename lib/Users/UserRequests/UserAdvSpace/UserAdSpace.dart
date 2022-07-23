@@ -65,7 +65,7 @@ class _UserAdSpaceState extends State<UserAdSpace>
               )
             : Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
+                child: empty?noData(context):ListView.builder(
                     controller: scrollController,
                     itemCount: oldAdvertisingOrder.length + 1,
                     itemBuilder: (context, i) {

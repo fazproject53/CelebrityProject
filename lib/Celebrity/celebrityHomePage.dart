@@ -1465,42 +1465,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
             SizedBox(
               width: 5.w,
             ),
-            Expanded(
-              flex: 4,
-              child: Container(
-                height: 35.h,
-                margin: EdgeInsets.only(left: 10.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5.r)),
-                  border:
-                      Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
-                ),
-                child: InkWell(
-                  overlayColor:
-                      MaterialStateProperty.all(Colors.purple.withOpacity(0.5)),
-                  onTap: () {
-                    print('object');
-                    _showSearch();
-                  },
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                      const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                      text(context, 'مالذي تبحث عنه؟', 12, Colors.grey)
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            //
+
             currentuser == 'user'
                 ? Expanded(
                     flex: 1,
@@ -1510,8 +1475,13 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                         goTopagepush(context, buildAdvOrder());
                       },
                     ))
-                : const SizedBox()
-
+                : const SizedBox(),
+            InkWell(
+              child: GradientIcon( Icons.search, 35.sp, gradient()),
+              onTap: () {
+                _showSearch();
+              },
+            ),
             //
           ],
         ),
@@ -1523,7 +1493,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   Future<List<getAllCelebrities>?> getAllCelebrity() async {
     try {
       var getSections = await http
-          .get(Uri.parse("https://mobile.celebrityads.net/api/celebrities")).timeout(const Duration(seconds: 8));
+          .get(Uri.parse("https://mobile.celebrityads.net/api/celebrities"));
       if (getSections.statusCode == 200) {
         final body = getSections.body;
         AllCelebrities celebrity = AllCelebrities.fromJson(jsonDecode(body));

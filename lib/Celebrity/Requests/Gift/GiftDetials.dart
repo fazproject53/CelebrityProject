@@ -269,7 +269,7 @@ class _GiftDetialsState extends State<GiftDetials> {
                                   : widget.state == 3
                                       ? 'قبول'
                                       : widget.state == 2
-                                          ? 'قبول من المتابع'
+                                          ? 'قبول من المستخدم'
                                           : widget.state == 6
                                               ? 'تم الدفع'
                                               : 'قبول',
@@ -353,7 +353,7 @@ class _GiftDetialsState extends State<GiftDetials> {
                                   : widget.state == 4
                                       ? 'رفض'
                                       : widget.state == 5
-                                          ? 'رفض من المتابع'
+                                          ? 'رفض من المستخدم'
                                           : widget.state == 6
                                               ? 'رفض'
                                               : 'رفض',
@@ -588,7 +588,7 @@ class _GiftDetialsState extends State<GiftDetials> {
 //-------------------------------------------------------------------------
   void getRejectReson() async {
     String url = "https://mobile.celebrityads.net/api/reject-resons";
-    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
