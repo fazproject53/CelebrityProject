@@ -354,64 +354,71 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 
 //"${snapshot.data.data.header[1].title}",------------------------------Slider image-------------------------------------------
   Widget imageSlider(List image) {
-    return Swiper(
-      itemBuilder: (context, index) {
-        return Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(5.r),
-              ),
-            ),
-            child: Stack(
-              children: [
-// image------------------------------------------------------------------------------
-                ClipRRect(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5.r),
-                  ),
-                  child: Image.network(
-                    image[index],
-                    fit: BoxFit.cover,
-                    height: double.infinity,
-                    width: double.infinity,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return Center(
-                          child: Lottie.asset('assets/lottie/grey.json',
-                              height: 70.h, width: 70.w));
-                    },
-                    errorBuilder: (BuildContext context, Object exception,
-                        StackTrace? stackTrace) {
-                      return Center(
-                          child: Icon(
-                        error,
-                        size: 50.r,
-                        color: red,
-                      ));
-                    },
-                  ),
+    return InkWell(
+      onTap: () async {
+        print('cliiiiiiiiiiiked');
+        var url = 'https://www.celebritycruises.com/';
+        await launch(url.toString(), forceWebView: true);
+      },
+      child: Swiper(
+        itemBuilder: (context, index) {
+          return Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5.r),
                 ),
-              ],
-            ));
-      },
-      onIndexChanged: (int index) {
-        setState(() {
-          currentIndex = index;
-        });
-      },
+              ),
+              child: Stack(
+                children: [
+// image------------------------------------------------------------------------------
+                  ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5.r),
+                    ),
+                    child: Image.network(
+                      image[index],
+                      fit: BoxFit.fill,
+                      height: double.infinity,
+                      width: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Center(
+                            child: Lottie.asset('assets/lottie/grey.json',
+                                height: 70.h, width: 70.w));
+                      },
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace? stackTrace) {
+                        return Center(
+                            child: Icon(
+                          error,
+                          size: 50.r,
+                          color: red,
+                        ));
+                      },
+                    ),
+                  ),
+                ],
+              ));
+        },
+        onIndexChanged: (int index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
 
-      indicatorLayout: PageIndicatorLayout.COLOR,
-      autoplay: true,
-      //axisDirection: AxisDirection.right,
-      itemCount: image.length,
-      pagination: const SwiperPagination(),
-      control: SwiperControl(
-          color: grey, padding: EdgeInsets.only(left: 20.w, right: 5.w)),
+        indicatorLayout: PageIndicatorLayout.COLOR,
+        autoplay: true,
+        //axisDirection: AxisDirection.right,
+        itemCount: image.length,
+        pagination: const SwiperPagination(),
+        control: SwiperControl(
+            color: grey, padding: EdgeInsets.only(left: 20.w, right: 5.w)),
+      ),
     );
   }
 
@@ -460,7 +467,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                   image,
                   // color: black.withOpacity(0.4),
                   // colorBlendMode: BlendMode.darken,
-                  fit: BoxFit.contain,
+                  fit: BoxFit.fill,
                   height: double.infinity,
                   width: double.infinity,
                   loadingBuilder: (context, child, loadingProgress) {
@@ -983,7 +990,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
                   if (snapshot.error.toString() == 'تحقق من اتصالك بالانترنت') {
-                    return const Center(child: Text(''));
+                    return const Center(child: Text('تحقق من اتصالك بالانترنت'));
                   } else {
                     return const Center(child: Text(''));
                   }
@@ -1121,7 +1128,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                             ),
                           );
                         },
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                       ))),
             ),
           )

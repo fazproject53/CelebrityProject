@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../Models/Methods/method.dart';
 import '../Models/Variables/Variables.dart';
 import 'HomeScreen/celebrity_home_page.dart';

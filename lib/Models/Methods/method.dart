@@ -1163,7 +1163,7 @@ drawAppBar(Widget title, BuildContext context, {Color color = deepwhite}) {
 }
 
 ///app bar without back icon
-AppBarNoIcon(String title, {Color color = deepwhite}) {
+AppBarNoIcon(String title, {Color color = white}) {
   return AppBar(
     title: Text(
       title,
