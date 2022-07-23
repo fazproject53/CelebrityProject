@@ -34,6 +34,8 @@ class _addphotoState extends State<addphoto> {
 
   File? studioimage;
   String? userToken;
+  Timer? _timer;
+  bool warnimage= false;
   @override
   void initState() {
     DatabaseHelper.getToken().then((value) {
@@ -69,12 +71,36 @@ class _addphotoState extends State<addphoto> {
 
 
                             SizedBox(height: 20.h),
-                            paddingg(15, 15, 12, uploadImg(200, 54,text(context, 'قم برفع صورة ', 12, black),(){getPhoto(context);}),),
+                            paddingg(15, 15, 12, uploadImg(200, 54,text(context, studioimage != null? 'تغيير الصورة':'قم برفع صورة', 12, black),(){getPhoto(context);}),),
+                            InkWell(
+                                onTap: (){image != null?
+                                showDialog(
+                                  useSafeArea: true,
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    _timer = Timer(Duration(seconds: 2), () {
+                                      Navigator.of(context).pop();    // == First dialog closed
+                                    });
+                                    return
+                                      Container(
+                                          height: double.infinity,
+                                          child: Image.file(studioimage!));},
+                                )
+                                    :null;},
+                                child: paddingg(15.w, 30.w, studioimage != null?10.h: 0.h,Row(
+                                  children: [
+                                    studioimage != null? Icon(Icons.image, color: newGrey,): SizedBox(),
+                                    SizedBox(width: studioimage != null?5.w: 0.w),
+                                    text(context,warnimage && studioimage == null ? 'الرجاء اضافة صورة': studioimage != null? 'معاينة الصورة':'',12,studioimage != null?black:red!,)
+                                  ],
+                                ))),
 
                             SizedBox(height: 20.h),
                             padding(15, 15, gradientContainerNoborder(getSize(context).width,  buttoms(context, 'اضافة ', 15, white, (){
                               if(_formKey.currentState!.validate()){
 
+                                studioimage == null? warnimage = true :
                                 showDialog(
                                   context: context,
                                   barrierDismissible: false,

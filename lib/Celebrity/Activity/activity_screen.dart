@@ -9,29 +9,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 
-class ActivityScreen extends StatelessWidget {
-  const ActivityScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: drowAppBar("التفاعلات", context),
-        body: const ActivityScreenMain(),
-      ),
-    );
-  }
-}
-class ActivityScreenMain extends StatefulWidget {
-  const ActivityScreenMain({Key? key}) : super(key: key);
-
+class ActivityScreen extends StatefulWidget {
+  final String? move;
+  const ActivityScreen({Key? key, this.move}) : super(key: key);
   @override
   _ActivityScreenMainState createState() => _ActivityScreenMainState();
-}
 
-class _ActivityScreenMainState extends State<ActivityScreenMain> {
+  }
+
+
+class _ActivityScreenMainState extends State<ActivityScreen> {
   int? isSelected = 1;
   bool grandientStudio=false;
   bool grandientnews=true;
@@ -58,54 +45,68 @@ class _ActivityScreenMainState extends State<ActivityScreenMain> {
     // TODO: implement initState
     super.initState();
     CheckUserConnection();
+    widget.move == null?
+    setState(() {
+      isSelected = 1;
+      grandientnews=true;
+      grandientStudio =false;
+    }) :   setState(() {
+      isSelected = 2;
+      grandientnews=false;
+      grandientStudio =true;
+    });
   }
   @override
   Widget build(BuildContext context) {
     CheckUserConnection();
-    return Scaffold(
-      body: ActiveConnection? Column( children: [
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+          appBar: drowAppBar("التفاعلات", context),
+        body: ActiveConnection? Column( children: [
 
-        SizedBox(
-          height: 26.h,
-        ),
-        //صف الاختيارات-------------------------------
-        drowRowButton(context),
-        SizedBox(
-          height: 30.h,
-        ),
-        //النص-------------------------------
+          SizedBox(
+            height: 26.h,
+          ),
+          //صف الاختيارات-------------------------------
+          drowRowButton(context),
+          SizedBox(
+            height: 30.h,
+          ),
+          //النص-------------------------------
 
-        if(isSelected == 1)
-        Padding(
-          padding: EdgeInsets.only(left: 28.w, right: 28.w),
-          child: text(context,
-             "التفاعلات الخاصة بمنشوراتك",
-              //,
-              18,
-              black,
-              fontWeight: FontWeight.bold),
-        ),
+          if(isSelected == 1)
+          Padding(
+            padding: EdgeInsets.only(left: 28.w, right: 28.w),
+            child: text(context,
+               "التفاعلات الخاصة بمنشوراتك",
+                //,
+                18,
+                black,
+                fontWeight: FontWeight.bold),
+          ),
 
-        SizedBox(
-          height: 10.h,
-        ),
+          SizedBox(
+            height: 10.h,
+          ),
 
-        //الطلبات وفق التصنيف-------------------------------
+          //الطلبات وفق التصنيف-------------------------------
 
-        Expanded(
-          flex: 4,
-          child: isSelected == 1
-              ?  Studio()
-              : news()
-        ),
-      ]):Center(
-          child:SizedBox(
-              height: 300.h,
-              width: 250.w,
-              child: internetConnection(
-                  context, reload: () {
-                CheckUserConnection();
-              })))
+          Expanded(
+            flex: 4,
+            child: isSelected == 1
+                ?  Studio()
+                : news()
+          ),
+        ]):Center(
+            child:SizedBox(
+                height: 300.h,
+                width: 250.w,
+                child: internetConnection(
+                    context, reload: () {
+                  CheckUserConnection();
+                })))
+      ),
     );
   }
   drowRowButton(BuildContext context) {

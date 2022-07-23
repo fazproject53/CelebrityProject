@@ -57,18 +57,6 @@ class _addNewsState extends State<addNews> {
 
                             SizedBox(height: 20.h,),
 
-                            paddingg(15, 15, 12, textFieldNoIcon(
-                                context,
-                                'عنوان الخبر',
-                                14,
-                                false,
-                                controlnewstitle, (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return 'حقل اجباري';
-                              }
-                              return null;
-                            },
-                                false),),
                             paddingg(15, 15, 12, textFieldDesc(
                                 context, 'وصف الخبر', 14, false,
                                 controlnewsdesc, (String? value) {
@@ -94,7 +82,7 @@ class _addNewsState extends State<addNews> {
                                       addNews(userToken!).then((value) => {
                                         value == '' ?{
                                         goTopageReplacement(
-                                            context, ActivityScreen()),
+                                            context, ActivityScreen(move: 'nn',)),
                                           //done
                                         Flushbar(
                                           flushbarPosition:
@@ -190,7 +178,7 @@ class _addNewsState extends State<addNews> {
           'Authorization': 'Bearer $token'
         },
         body: jsonEncode(<String, dynamic>{
-          "title": controlnewstitle.text,
+          "title": " ",
           "description": controlnewsdesc.text
         }),
       );
