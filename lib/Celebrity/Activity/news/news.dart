@@ -143,7 +143,7 @@ String? userToken;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        floatingActionButton: !add?FloatingActionButton(onPressed: (){  setState(() {
+        floatingActionButton: !add || !edit?FloatingActionButton(onPressed: (){  setState(() {
           add = true;
         });}, backgroundColor: pink, child: Icon(Icons.add),):null,
         body: add
@@ -281,7 +281,7 @@ String? userToken;
                                                           SizedBox(height: 20.h,),
                                                            Container(
                                                               width: 190.w,
-                                                              height: 100.h,
+                                                              height: 80.h,
                                                               child:
                                                                   edit &&
                                                                           theindex ==
@@ -434,8 +434,7 @@ String? userToken;
                                                               ),
                                                               onTap: () {
                                                                 setState(() {
-                                                                  newstitle.text = tempTitle.containsKey(_posts[index].id!)?
-                                                                  tempTitle[_posts[index].id!]! : _posts[index].title!;
+
                                                                   newsdesc.text = tempDesc.containsKey(_posts[index].id!)?
                                                                   tempDesc[_posts[index].id!]! : _posts[index].description!;
                                                                   edit = true;
