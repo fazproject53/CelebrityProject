@@ -1163,7 +1163,7 @@ drawAppBar(Widget title, BuildContext context, {Color color = deepwhite}) {
 }
 
 ///app bar without back icon
-AppBarNoIcon(String title, {Color color = deepwhite}) {
+AppBarNoIcon(String title, {Color color = white}) {
   return AppBar(
     title: Text(
       title,
@@ -1572,7 +1572,7 @@ SnackBar snackBar(context, String title, Color? color, IconData? icon) {
 
 Widget mainLoad(context) {
   return SizedBox(
-    height: 70.h,
+    height: MediaQuery.of(context).size.height,
     width: 70.w,
     child: Padding(
       padding: EdgeInsets.only(bottom: 100.h),
