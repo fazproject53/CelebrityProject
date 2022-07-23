@@ -112,7 +112,7 @@ class _SendEmailState extends State<SendEmail> {
                         keyboardType: TextInputType.emailAddress,
                         inputFormatters: [
                           FilteringTextInputFormatter(
-                              RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]'),
+                              RegExp(r'[a-zA-Z]|[@]|[_]|[0-9]|[.]|[-]'),
                               allow: true)
                         ],
                       )),
