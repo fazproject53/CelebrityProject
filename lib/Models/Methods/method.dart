@@ -1572,7 +1572,7 @@ SnackBar snackBar(context, String title, Color? color, IconData? icon) {
 
 Widget mainLoad(context) {
   return SizedBox(
-    height: 70.h,
+    height: MediaQuery.of(context).size.height,
     width: 70.w,
     child: Padding(
       padding: EdgeInsets.only(bottom: 100.h),
