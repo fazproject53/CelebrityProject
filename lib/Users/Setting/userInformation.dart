@@ -649,7 +649,8 @@ class _userInformationState extends State<userInformation> {
                                       if (( currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)){
                                         _formKey2.currentState ==null?null:
                                         _formKey2.currentState!.validate()? {
-                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => { value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => {
+                                            value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
                                             Navigator.pop(context),
                                             showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
                                           }:
