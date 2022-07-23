@@ -80,76 +80,18 @@ class _addNewsState extends State<addNews> {
                                 buttoms(context, 'اضافة الخبر', 15, white, () {
                                   if (_formKey.currentState!.validate()) {
                                       addNews(userToken!).then((value) => {
-                                        value == '' ?{
-                                        goTopageReplacement(
-                                            context, ActivityScreen(move: 'nn',)),
+                                        value.contains('true')? {
+                                          goTopageReplacement(
+                                              context,
+                                              ActivityScreen(move: 'nn',)),
                                           //done
-                                        Flushbar(
-                                          flushbarPosition:
-                                          FlushbarPosition.TOP,
-                                          backgroundColor: white,
-                                          margin:
-                                          const EdgeInsets.all(5),
-                                          flushbarStyle:
-                                          FlushbarStyle.FLOATING,
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              15.r),
-                                          duration: const Duration(
-                                              seconds: 5),
-                                          icon: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 18.0),
-                                            child: Icon(
-                                              done,
-                                              color: green,
-                                              size: 25.sp,
-                                            ),
-                                          ),
-                                          titleText: text(
-                                              context, 'تم بنجاح', 14, purple),
-                                          messageText: text(
-                                              context,
-                                              'تم اضافة الخبر بنجاح',
-                                              14,
-                                              black,
-                                              fontWeight:
-                                              FontWeight.w200),
-                                        ).show(context)}:
+                                          showMassage(context, 'تم بنجاح',
+                                              value.replaceAll('true', ''),
+                                              done: done),
+                                        }:
 
-
-                                        Flushbar(
-                                          flushbarPosition:
-                                          FlushbarPosition.TOP,
-                                          backgroundColor: white,
-                                          margin:
-                                          const EdgeInsets.all(5),
-                                          flushbarStyle:
-                                          FlushbarStyle.FLOATING,
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              15.r),
-                                          duration: const Duration(
-                                              seconds: 5),
-                                          icon: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 18.0),
-                                            child: Icon(
-                                              error,
-                                              color: red,
-                                              size: 25.sp,
-                                            ),
-                                          ),
-                                          titleText: text(
-                                              context, 'قشل الاتصال بالانترنت', 14, purple),
-                                          messageText: text(
-                                              context,
-                                              'قشل الاتصال بالانترنت حاول لاحقا',
-                                              14,
-                                              black,
-                                              fontWeight:
-                                              FontWeight.w200),
-                                        ).show(context)
+                                        showMassage(context, 'خطا',
+                                            value.replaceAll('false', ''),),
 
                                       });
 
@@ -187,7 +129,7 @@ class _addNewsState extends State<addNews> {
         // then parse the JSON.
 
         print(response.body);
-        return '';
+        return jsonDecode(response.body)['message']['ar'] +jsonDecode(response.body)['success'].toString();
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
