@@ -422,16 +422,16 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                 ),
                               ),
                             ),
-                            // padding(
-                            //   8,
-                            //   8,
-                            //   Container(
-                            //     width: 30,
-                            //     height: 30,
-                            //     child: SvgPicture.asset('assets/Svg/tt.svg',width: 30,
-                            //       height: 30,),
-                            //   ),
-                            // ),
+                            padding(
+                              8,
+                              8,
+                              Container(
+                                width: 30,
+                                height: 30,
+                                child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                  height: 30,),
+                              ),
+                            ),
                           ]),
 
 

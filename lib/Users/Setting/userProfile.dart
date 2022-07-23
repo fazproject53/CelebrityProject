@@ -380,17 +380,17 @@ class _userProfileState extends State<userProfile>
                                     ),
                                   ),
                                 ),
-                                // padding(
-                                //   8,
-                                //   8,
-                                //   Container(
-                                //     width: 30,
-                                //     height: 30,
-                                //     color: white,
-                                //     child: SvgPicture.asset('assets/Svg/tt.svg',width: 30,
-                                //       height: 30,),
-                                //   ),
-                                // ),
+                                padding(
+                                  8,
+                                  8,
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    color: white,
+                                    child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                      height: 30,),
+                                  ),
+                                ),
                               ]),
 
                               //SvgPicture.asset(assetName),

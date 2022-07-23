@@ -1419,6 +1419,7 @@ showMassage(context, String titleText, String messageText, {IconData? done}) {
     leftBarIndicatorColor: done == null ? red : green,
     onTap: (bar) {
       bar.dismiss();
+      //-----------------
     },
     icon: Icon(
       done ?? error,
