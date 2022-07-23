@@ -196,66 +196,59 @@ class _blockListState extends State<blockList> {
                                            SizedBox(
                                              width: 10.h,
                                            ),
-                                           Column(
-                                             crossAxisAlignment:
-                                             CrossAxisAlignment.start,
-                                             children: [
-                                               SizedBox(
-                                                 height: 10.h,
-                                               ),
-                                               text(context,  _posts[index].user!
-                                                   .name!, 14,
-                                                   black),
-                                               text(
-                                                   context,
-                                                   'وقت الحظر: ' +
-                                                       _posts[index]
-                                                           .date.toString(),
-                                                   14,
-                                                   black),
-                                               text(context, 'الحظر بسبب ' +
-                                                   _posts[index]
-                                                       .banReson!.name!,
-                                                   14, black),
-                                               SizedBox(
-                                                 height: 10.h,
-                                               ),
-                                               Row(
-                                                 children: [
-                                                   gradientContainerNoborder2(
-                                                     80,
-                                                     33,
-                                                     buttoms(context, 'فك الحظر',
-                                                         12, white, () {}),
-                                                   ),
-                                                   SizedBox(
-                                                     width: 10.w,
-                                                   ),
-                                                   InkWell(
-                                                       child: Container(
-                                                         width: 80.w,
-                                                         height: 33.h,
-                                                         decoration: BoxDecoration(
-                                                             borderRadius:
-                                                             BorderRadius.all(
-                                                                 Radius.circular(
-                                                                     10.r)),
-                                                             border: Border.all(
-                                                                 color:
-                                                                 deepBlack)),
-                                                         child: Center(
-                                                             child: text(
-                                                                 context,
-                                                                 'ابلاغ',
-                                                                 12,
-                                                                 black,
-                                                                 align: TextAlign
-                                                                     .center)),
-                                                       ),
-                                                       onTap: () {}),
-                                                 ],
-                                               ),
-                                             ],
+                                           Padding(
+                                             padding:  EdgeInsets.only(top:20.h),
+                                             child: Column(
+                                               crossAxisAlignment:
+                                               CrossAxisAlignment.start,
+                                               children: [
+                                                 SizedBox(
+                                                   height: 10.h,
+                                                 ),
+                                                 text(context,  _posts[index].user!
+                                                     .name!, 14,
+                                                     black),
+
+                                                 SizedBox(
+                                                   height: 10.h,
+                                                 ),
+                                                 Row(
+                                                   children: [
+                                                     gradientContainerNoborder2(
+                                                       80,
+                                                       33,
+                                                       buttoms(context, 'فك الحظر',
+                                                           12, white, () {}),
+                                                     ),
+                                                     SizedBox(
+                                                       width: 10.w,
+                                                     ),
+                                                     InkWell(
+                                                         child: Container(
+                                                           width: 80.w,
+                                                           height: 33.h,
+                                                           decoration: BoxDecoration(
+                                                               borderRadius:
+                                                               BorderRadius.all(
+                                                                   Radius.circular(
+                                                                       10.r)),
+                                                               border: Border.all(
+                                                                   color:
+                                                                   deepBlack)),
+                                                           child: Center(
+                                                               child: text(
+                                                                   context,
+                                                                   'ابلاغ',
+                                                                   12,
+                                                                   black,
+                                                                   align: TextAlign
+                                                                       .center)),
+                                                         ),
+                                                         onTap: () {}),
+                                                   ],
+                                                 ),
+                                               ],
+                                             ),
                                            ),
                                          ],
                                        ),

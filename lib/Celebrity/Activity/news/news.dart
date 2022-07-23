@@ -235,23 +235,26 @@ String? userToken;
                                                       Container(
                                                         alignment:
                                                             Alignment.centerRight,
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(2.0),
-                                                          child: Image.network(
-                                                            Logging.theUser!.image!,
-                                                            fit: BoxFit.fill,
-                                                            height: edit
-                                                                ? 150.h
-                                                                : 130.h,
-                                                            width: 100.w,
+                                                        child: CircleAvatar(
+                                                          radius: 50.r,
+                                                          child: ClipRRect(
+
+                                                            borderRadius: BorderRadius.circular(100.r),
+                                                            child: Image.network(
+                                                              Logging.theUser!.image!,
+                                                              fit: BoxFit.cover,
+                                                              height: edit
+                                                                  ? 150.h
+                                                                  : 130.h,
+                                                              width: 100.w,
+                                                            ),
                                                           ),
                                                         ),
                                                         margin: EdgeInsets.only(
                                                             bottom: 5.h),
                                                       ),
                                                     ),
+                                                    SizedBox(width: 5.w,),
                                                     Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -272,6 +275,13 @@ String? userToken;
                                                                           black,
                                                                       controller:
                                                                           newstitle,
+                                                                      validator: (String? value){
+                                                                        if(value == null){
+                                                                          if(value!.length > 63){
+                                                                            return 'الحد الاقصى 63 حرف';
+                                                                          }
+                                                                        }
+                                                                      },
                                                                       style: TextStyle(
                                                                           color:
                                                                               black,
