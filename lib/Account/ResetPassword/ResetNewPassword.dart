@@ -47,17 +47,17 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: black,
+
         body: Container(
           height: double.infinity,
           width: double.infinity,
-          decoration: BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                  image: image1.image,
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.7), BlendMode.darken),
-                  fit: BoxFit.cover)),
+          // decoration: BoxDecoration(
+          //     color: Colors.black,
+          //     image: DecorationImage(
+          //         image: image1.image,
+          //         colorFilter: ColorFilter.mode(
+          //             Colors.black.withOpacity(0.7), BlendMode.darken),
+          //         fit: BoxFit.cover)),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -68,7 +68,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                   context,
                   'تاكيد كلمة المرور الجديدة',
                   18,
-                  white,
+                  Colors.black87,
                   fontWeight: FontWeight.bold,
                   align: TextAlign.right,
                 ),
@@ -84,7 +84,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                     height: 150.h,
                     margin: EdgeInsets.all(9.w),
                     decoration: const BoxDecoration(
-                      color: Colors.white12,
+                      color: Colors.black38,
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('assets/image/reset.png'),
@@ -112,7 +112,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                               context,
                               ' قم باعادة تعين كلمة المرور الجديدة',
                               15,
-                              white,
+                              Colors.black87,
                               fontWeight: FontWeight.bold,
                               align: TextAlign.right,
                             ),
@@ -135,7 +135,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                   isVisibility
                                       ? Icons.visibility
                                       : Icons.visibility_off,
-                                  color: deepBlack,
+                                  color: newGrey,
                                   size: 25.sp),
                             )),
                         SizedBox(
@@ -155,7 +155,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                                   isVisibilityNew
                                       ? Icons.visibility
                                       : Icons.visibility_off,
-                                  color: deepBlack,
+                                  color: newGrey,
                                   size: 25.sp),
                             )),
                       ],

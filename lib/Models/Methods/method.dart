@@ -351,36 +351,36 @@ Widget textField3(context, icons, String key, double fontSize, bool hintPass,
     inputFormatters: inputFormatters,
     keyboardType: keyboardType,
     controller: mycontroller,
-    style: TextStyle(color: white, fontSize: fontSize.sp),
+    style: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
     decoration: InputDecoration(
         isDense: true,
         filled: true,
         suffixIcon: suffixIcon,
-        hintStyle: TextStyle(color: Colors.white, fontSize: fontSize.sp),
-        fillColor: Colors.white12,
-        labelStyle: TextStyle(color: Colors.white, fontSize: 15.0.sp),
+        hintStyle: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
+        fillColor:textGray,
+        labelStyle: TextStyle(color: Colors.black87, fontSize: 15.0.sp),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: purple.withOpacity(0.6),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
-          borderSide: BorderSide(
-            color: Colors.grey.withOpacity(0.8),
+          borderSide: const BorderSide(
+            color: textGray,
             width: 1.0,
           ),
         ),
-        prefixIcon: Icon(icons, color: deepBlack, size: 25.sp),
+        prefixIcon: Icon(icons, color: newGrey, size: 25.sp),
         labelText: key,
         errorStyle: TextStyle(color: Colors.red, fontSize: 13.0.sp),
         contentPadding: EdgeInsets.all(10.h)),
