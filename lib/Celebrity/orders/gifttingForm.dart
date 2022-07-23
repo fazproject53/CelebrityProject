@@ -480,109 +480,47 @@ class _gifttingFormState extends State<gifttingForm>{
                                   _selectedTest2 == null? typeChosen= false: typeChosen = true;}
                                 _formKey.currentState!.validate()?{
                                 check && current.day != DateTime.now().day && _selectedTest != null && _selectedTest2 != null?{
+
                                   showDialog(
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (BuildContext context) {
-                                      FocusManager.instance.primaryFocus
-                                          ?.unfocus();
-                                      addGift().then((value) =>
-                                      {
-                                        value == 'SocketException' ||
-                                            value == 'TimeoutException' ||
-                                            value == 'ServerException' ? {
-
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                      addGift().then((value) => {
+                                        value.contains('true')
+                                            ? {
+                                          goTopageReplacement(context, UserRequestMainPage()),
+                                          //done
+                                          showMassage(context, 'تم بنجاح',
+                                              value.replaceAll('true', ''),
+                                              done: done),
+                                        }
+                                            :  value == 'SocketException'?
+                                        { Navigator.pop(context),
+                                          showMassage(
+                                            context,
+                                            'خطا',
+                                            'فشل الاتصال بالانترنت ',
+                                          )}
+                                            :{
                                           Navigator.pop(context),
-                                          Flushbar(
-                                            flushbarPosition:
-                                            FlushbarPosition.TOP,
-                                            backgroundColor: white,
-                                            margin:
-                                            const EdgeInsets.all(5),
-                                            flushbarStyle:
-                                            FlushbarStyle.FLOATING,
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                15.r),
-                                            duration: const Duration(
-                                                seconds: 5),
-                                            icon: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 18.0),
-                                              child: Icon(
-                                                error,
-                                                color: red,
-                                                size: 25.sp,
-                                              ),
-                                            ),
-                                            titleText: text(
-                                                context, 'قشل الاتصال بالانترنت',
-                                                14, purple),
-                                            messageText: text(
-                                                context,
-                                                'قشل الاتصال بالانترنت حاول لاحقا',
-                                                14,
-                                                black,
-                                                fontWeight:
-                                                FontWeight.w200),
-                                          ).show(context)
-                                        } : {
-                                          value.contains('true')?
-                                          goTopageReplacement(context, UserRequestMainPage()): Navigator.pop(context),
-                                          Flushbar(
-                                            flushbarPosition:
-                                            FlushbarPosition.TOP,
-                                            backgroundColor: white,
-                                            margin:
-                                            const EdgeInsets.all(5),
-                                            flushbarStyle:
-                                            FlushbarStyle.FLOATING,
-                                            borderRadius:
-                                            BorderRadius.circular(
-                                                15.r),
-                                            duration: const Duration(
-                                                seconds: 5),
-                                            icon: Padding(
-                                              padding: const EdgeInsets
-                                                  .only(left: 18.0),
-                                              child: Icon(
-                                                value.contains('false')?error: done,
-                                                color: value.contains('false')
-                                                    ? red! : green,
-                                                size: 25.sp,
-                                              ),
-                                            ),
-
-                                            messageText: text(
-                                                context,
-                                                value.contains('true')?
-                                                value.replaceAll('true', ''):
-                                                value.replaceAll('false', ''),
-                                                14,
-                                                black,
-                                                fontWeight:
-                                                FontWeight.w200),
-
-                                            titleText: text(
-                                                context,
-                                                value.contains('false')?'خطا':'تم بنجاح' ,
-                                                14,
-                                                purple,
-                                                fontWeight:
-                                                FontWeight.w200),
-                                          ).show(context),}
+                                          showMassage(
+                                            context,
+                                            'خطا',
+                                            value.replaceAll('false', ''),
+                                          ),}
                                       });
-                                  // == First dialog closed
 
-                                      return
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Lottie.asset(
-                                            "assets/lottie/loding.json",
-                                            fit: BoxFit.cover,
-                                          ),
-                                        );},
-                                  ).whenComplete(() => goTopageReplacement(context, celebrityHomePage())),
+                                      // == First dialog closed
+                                      return Align(
+                                        alignment: Alignment.center,
+                                        child: Lottie.asset(
+                                          "assets/lottie/loding.json",
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    },
+                                  ),
 
                                 } : setState((){
                                   _selectedTest == null? ocasionChosen= false: ocasionChosen = true;
