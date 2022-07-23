@@ -179,7 +179,7 @@ class _HomeBodyDiscountState extends State<HomeBodyDiscount> {
                                                         .promoCode![index]
                                                         .status!
                                                         .name!,
-                                                    16,
+                                                    14,
                                                     snapshot
                                                                 .data!
                                                                 .data!
