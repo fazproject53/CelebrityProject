@@ -111,6 +111,7 @@ class Celebrity {
   String? instagram;
   String? twitter;
   String? facebook;
+  String? store;
   Category? category;
   String? brand;
   String? advertisingPolicy;
@@ -135,6 +136,7 @@ class Celebrity {
         this.instagram,
         this.twitter,
         this.facebook,
+        this.store,
         this.category,
         this.brand,
         this.advertisingPolicy,
@@ -160,6 +162,7 @@ class Celebrity {
     instagram = json['instagram'];
     twitter = json['twitter'];
     facebook = json['facebook'];
+    store = json['store'];
     category = json['category'] != null
         ? new Category.fromJson(json['category'])
         : null;
@@ -194,6 +197,7 @@ class Celebrity {
     data['instagram'] = this.instagram;
     data['twitter'] = this.twitter;
     data['facebook'] = this.facebook;
+    data['store'] = this.store;
     if (this.category != null) {
       data['category'] = this.category!.toJson();
     }
@@ -270,21 +274,18 @@ class Category {
 
 class News {
   int? id;
-  String? title;
   String? description;
 
-  News({this.id, this.title, this.description});
+  News({this.id, this.description});
 
   News.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    title = json['title'];
     description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['title'] = this.title;
     data['description'] = this.description;
     return data;
   }
@@ -408,7 +409,7 @@ class User {
   String? phonenumber;
   Country? country;
   City? city;
-  City? gender;
+  Null? gender;
   City? accountStatus;
   String? type;
 
@@ -435,7 +436,7 @@ class User {
     country =
     json['country'] != null ? new Country.fromJson(json['country']) : null;
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
-    gender = json['gender'] != null ? new City.fromJson(json['gender']) : null;
+    gender = json['gender'];
     accountStatus = json['account_status'] != null
         ? new City.fromJson(json['account_status'])
         : null;
@@ -456,9 +457,7 @@ class User {
     if (this.city != null) {
       data['city'] = this.city!.toJson();
     }
-    if (this.gender != null) {
-      data['gender'] = this.gender!.toJson();
-    }
+    data['gender'] = this.gender;
     if (this.accountStatus != null) {
       data['account_status'] = this.accountStatus!.toJson();
     }

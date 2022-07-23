@@ -755,7 +755,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
                               ///Container for celebrity store
                               Visibility(
-                                visible: snapshot.data!.data!.celebrity!.brand!.isNotEmpty,
+                                visible: snapshot.data!.data!.celebrity!.store!.isNotEmpty,
                                 child: Container(
                                   margin:
                                       EdgeInsets.only(right: 10.w, left: 10.w),

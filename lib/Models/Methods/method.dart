@@ -1575,7 +1575,7 @@ Widget mainLoad(context) {
     height: MediaQuery.of(context).size.height,
     width: 70.w,
     child: Padding(
-      padding: EdgeInsets.only(bottom: 100.h),
+      padding: EdgeInsets.only(bottom: 50.h),
       child: Lottie.asset('assets/lottie/grey.json', height: 200.h),
     ),
   );
