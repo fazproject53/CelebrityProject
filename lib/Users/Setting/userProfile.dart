@@ -254,38 +254,7 @@ class _userProfileState extends State<userProfile>
                               getImage().whenComplete(() => {
                                     updateImageUser(userToken)
                                         .whenComplete(() => {
-                                          if(userImage != null){
-                                            Flushbar(
-                                              flushbarPosition:
-                                              FlushbarPosition.TOP,
-                                              backgroundColor: white,
-                                              margin:
-                                              const EdgeInsets.all(5),
-                                              flushbarStyle:
-                                              FlushbarStyle.FLOATING,
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  15.r),
-                                              duration: const Duration(
-                                                  seconds: 5),
-                                              icon: Padding(
-                                                padding: const EdgeInsets.only(left: 18.0),
-                                                child: Icon(
-                                                  done,
-                                                  color: green,
-                                                  size: 25.sp,
-                                                ),
-                                              ),
-                                              titleText: text(context,
-                                                  'تم التعديل بنجاح', 14, purple),
-                                              messageText: text(
-                                                  context,
-                                                  'نم تغيير الصورة بنجاح',
-                                                  14,
-                                                  black,
-                                                  fontWeight:
-                                                  FontWeight.w200),
-                                            ).show(context)
+                                          if(userImage != null){  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
                                           }
                                             })});
                             },
@@ -652,17 +621,20 @@ class City {
   String? name;
   String? nameEn;
 
-  City({this.name, this.nameEn});
+  int? id;
+  City({this.name, this.nameEn, this.id});
 
   City.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     nameEn = json['name_en'];
+    id =json['id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['name_en'] = this.nameEn;
+    data['id'] = this.id;
     return data;
   }
 }

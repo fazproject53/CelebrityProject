@@ -257,37 +257,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
                               updateImage(),
                                 if(imagefile != null){
 
-                                  Flushbar(
-                                    flushbarPosition:
-                                    FlushbarPosition.TOP,
-                                    backgroundColor: white,
-                                    margin:
-                                    const EdgeInsets.all(5),
-                                    flushbarStyle:
-                                    FlushbarStyle.FLOATING,
-                                    borderRadius:
-                                    BorderRadius.circular(
-                                        15.r),
-                                    duration: const Duration(
-                                        seconds: 5),
-                                    icon: Padding(
-                                      padding: const EdgeInsets.only(left: 18.0),
-                                      child: Icon(
-                                        done,
-                                        color: green,
-                                        size: 25.sp,
-                                      ),
-                                    ),
-                                    titleText: text(context,
-                                       'تم التعديل بنجاح', 14, purple),
-                                    messageText: text(
-                                        context,
-                                        'نم تغيير الصورة بنجاح',
-                                        14,
-                                        black,
-                                        fontWeight:
-                                        FontWeight.w200),
-                                  ).show(context)
+                                  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
                                         }
                                   });
 

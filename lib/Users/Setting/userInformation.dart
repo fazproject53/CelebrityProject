@@ -203,7 +203,7 @@ class _userInformationState extends State<userInformation> {
                         : '',
                   snapshot.data!.data!.user!.city != null? {
                       city = snapshot.data!.data!.user!.city!.name.toString(),
-                  citychosen = true}
+                  citychosen = true, cityi =snapshot.data!.data!.user!.city!.id!}
                         : city = 'المدينة',
                     print('the length is = '+ getid.length.toString() + Logging.theUser!.country!),
                     getid.forEach((key, value) {
@@ -649,85 +649,12 @@ class _userInformationState extends State<userInformation> {
                                       if (( currentPassword.text.isNotEmpty && newPassword.text.isNotEmpty)){
                                         _formKey2.currentState ==null?null:
                                         _formKey2.currentState!.validate()? {
-                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => {
-                                            value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                              Navigator.pop(context),
-                                              Flushbar(
-                                                flushbarPosition:
-                                                FlushbarPosition.TOP,
-                                                backgroundColor: white,
-                                                margin:
-                                                const EdgeInsets.all(5),
-                                                flushbarStyle:
-                                                FlushbarStyle.FLOATING,
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    15.r),
-                                                duration: const Duration(
-                                                    seconds: 5),
-                                                icon: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 18.0),
-                                                  child: Icon(
-                                                    error,
-                                                    color: red,
-                                                    size: 25.sp,
-                                                  ),
-                                                ),
-                                                titleText: text(
-                                                    context, 'قشل الاتصال بالانترنت', 14, purple),
-                                                messageText: text(
-                                                    context,
-                                                    'قشل الاتصال بالانترنت حاول لاحقا',
-                                                    14,
-                                                    black,
-                                                    fontWeight:
-                                                    FontWeight.w200),
-                                              ).show(context)
-                                            }:
+                                          newPassword.text == confirmPassword.text?{ changePassword(userToken).then((value) => { value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+                                            Navigator.pop(context),
+                                            showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                          }:
+                                          value.contains('false')?showMassage(context, 'خطا',value.replaceAll('false', '')):showMassage(context, 'تم بنجاح',"تم التغيير بنجاح", done: done),
 
-                                            Flushbar(
-                                              flushbarPosition:
-                                              FlushbarPosition.TOP,
-                                              backgroundColor: white,
-                                              margin:
-                                              const EdgeInsets.all(5),
-                                              flushbarStyle:
-                                              FlushbarStyle.FLOATING,
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  15.r),
-                                              duration: const Duration(
-                                                  seconds: 5),
-                                              icon: Padding(
-                                                padding: const EdgeInsets
-                                                    .only(left: 18.0),
-                                                child: Icon(
-                                                 value.contains('false')?error: done,
-                                                  color: value.contains('false')
-                                                      ? red! : green,
-                                                  size: 25.sp,
-                                                ),
-                                              ),
-
-                                              messageText: text(
-                                                  context,
-                                                      value.contains('true')?
-                                                  value.replaceAll('true', ''):
-                                                          value.replaceAll('false', ''),
-                                                  14,
-                                                  black,
-                                                  fontWeight:
-                                                  FontWeight.w200),
-
-                                              titleText: text(
-                                                  context,
-                                                  value.contains('false')?'خطا':'تم بنجاح' ,
-                                                  14,
-                                                  purple,
-                                                  fontWeight:
-                                                  FontWeight.w200),
-                                            ).show(context),
                                           })  , updateUserInformation(userToken).whenComplete(() => fetchUsers(userToken))}: setState((){noMatch = true;})}:null;}
                                       else{
                                         _formKey.currentState!.validate() &&  _formKey2.currentState == null && citychosen == true?
@@ -737,41 +664,8 @@ class _userInformationState extends State<userInformation> {
                                           updateUserInformation(userToken)
                                               .then((value) {
                                                 value == 'SocketException'?{
-                                                  value == 'SocketException'?{
                                                   Navigator.pop(context),
-                                                  Flushbar(
-                                                    flushbarPosition:
-                                                    FlushbarPosition.TOP,
-                                                    backgroundColor: white,
-                                                    margin:
-                                                    const EdgeInsets.all(5),
-                                                    flushbarStyle:
-                                                    FlushbarStyle.FLOATING,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        15.r),
-                                                    duration: const Duration(
-                                                        seconds: 5),
-                                                    icon: Padding(
-                                                      padding: const EdgeInsets
-                                                          .only(left: 18.0),
-                                                      child: Icon(
-                                                        error,
-                                                        color: red,
-                                                        size: 25.sp,
-                                                      ),
-                                                    ),
-                                                    titleText: text(context,
-                                                        'فشل الاتصال بالانترنت', 14,
-                                                        purple),
-                                                    messageText: text(
-                                                        context,
-                                                        'فشل الاتصال بالانترنت حاول مرة اخرى لاحقا',
-                                                        14,
-                                                        black,
-                                                        fontWeight:
-                                                        FontWeight.w200),
-                                                  ).show(context)}:null
+                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
                                                 }: {
 
                                                   Navigator.pop(context),
@@ -793,39 +687,7 @@ class _userInformationState extends State<userInformation> {
                                                             (context) =>
                                                             MainScreen()),
                                                   ),
-                                                  Flushbar(
-                                                    flushbarPosition:
-                                                    FlushbarPosition.TOP,
-                                                    backgroundColor: white,
-                                                    margin:
-                                                    const EdgeInsets.all(5),
-                                                    flushbarStyle:
-                                                    FlushbarStyle.FLOATING,
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        15.r),
-                                                    duration: const Duration(
-                                                        seconds: 5),
-                                                    icon: Padding(
-                                                      padding: const EdgeInsets
-                                                          .only(left: 18.0),
-                                                      child: Icon(
-                                                        done,
-                                                        color: green,
-                                                        size: 25.sp,
-                                                      ),
-                                                    ),
-                                                    titleText: text(context,
-                                                        'تم التعديل بنجاح', 14,
-                                                        purple),
-                                                    messageText: text(
-                                                        context,
-                                                        'تم تعديل تعديل بيانات المشهور بنجاح بنجاح',
-                                                        14,
-                                                        black,
-                                                        fontWeight:
-                                                        FontWeight.w200),
-                                                  ).show(context)
+                                                  showMassage(context, 'تم بنجاح',value, done: done)
                                                 };
 
 
@@ -1069,14 +931,14 @@ class _userInformationState extends State<userInformation> {
           countrycode != null ? countrycode! + phone.text : phone.text,
           'country_id':
           _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
-          'city_id': _selectedTest == null ? null : _selectedTest['no'],
+          'city_id': _selectedTest == null ? cityi : _selectedTest['no'],
         }),
       );
       if (response.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
         print(response.body);
-        return '';
+        return jsonDecode(response.body)['message']['ar'] ;
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.

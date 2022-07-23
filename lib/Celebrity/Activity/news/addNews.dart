@@ -154,7 +154,6 @@ class _addNewsState extends State<addNews> {
           'Authorization': 'Bearer $token'
         },
         body: jsonEncode(<String, dynamic>{
-          "title": " .",
           "description": controlnewsdesc.text
         }),
       );
