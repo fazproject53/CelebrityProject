@@ -41,6 +41,7 @@ class _blockListState extends State<blockList> {
   String? userToken;
   @override
   void initState() {
+    CheckUserConnection();
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDI4MTY3ZWY1YWE0ZDBjZWQ0MDBjOTViMzBmNWQwZGFiNmY4MzgxMWU3YTUwMWUyMmYwMmMyZGU2YjRjOTIwOGI0MjFjNmZjZGM3YWMzZjUiLCJpYXQiOjE2NTM5ODg2MjAuNjgyMDE4OTk1Mjg1MDM0MTc5Njg3NSwibmJmIjoxNjUzOTg4NjIwLjY4MjAyNDk1NTc0OTUxMTcxODc1LCJleHAiOjE2ODU1MjQ2MjAuNjczNjY3OTA3NzE0ODQzNzUsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.OguFfzEWNOyCU4xSZ_PbLwg1xmyEbIMYAQ-J9wRApGKMq0qo1aEiM1OvcfvEaopxRiKngk-ckebhhcl7MRtGopNZcNjJwp9jWS7yZuyH7DBvct0O6tys47HL4eBU0QLwgmxMmh8nLkADARdIvVdZJFw9vLp-7X-4Huj6I2E1SFjeYnV6l7Fu_c1BYMAJmXpBwIALxTvwxg8tbxuhKmFBtLnnY3K25Tedra9IMc0nR_nXV3ifXdp4v7fsvbCLLYNr5ihc3ElE_QWczOvkkYeOPTP4yFMFlZFpWUNeER5wiEdbcO6WzzxzCRkLXriedWDI3G6qOrMAUAjiAUxS51--_7x9iI0qHalXHyGxgudUnAHGNsYpvLJ8JVCM2k_dtGazmZtA5w5wDSTI8gSuWUZxf2OpQNCmyt8k80Pbi_Olz2xDMSuDKYmiomWrUhwIwunk_gsU9lC5oLcEzJ2BLcaiiuwFex9xraMbbC1ZyipSIZZhW1l1CppYeYmPSxLC8hEIywRy5Lbvw-WQ25CpurNgEMiHefGooDxCsHqnkfWCQ1MnFAGiEs2hPtG7DVp8RArzCyXXaVrtVi2wbBFrCPDK52yNQxQjs3z8JBNlDwEFR2uDa-VRup61j2WESvyUKPMloD7gL7FsthAl6IZquYh7XujHWEcf1Lnprd6D5J6CPWM';
@@ -51,7 +52,22 @@ class _blockListState extends State<blockList> {
     // TODO: implement initState
     super.initState();
   }
-
+  Future CheckUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+      });
+    }
+  }
   @override
   void dispose() {
     _controller.removeListener(_loadMore);
@@ -105,13 +121,32 @@ class _blockListState extends State<blockList> {
 
   @override
   Widget build(BuildContext context) {
+    CheckUserConnection();
     print(_posts.length.toString()+ 'inside the build');
 
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
             appBar: drowAppBar('قائمة الحظر', context),
-            body: _isFirstLoadRunning
+            body:!ActiveConnection?Center(
+                child:SizedBox(
+                    height: 300.h,
+                    width: 250.w,
+                    child: internetConnection(
+                        context, reload: () {
+                      CheckUserConnection();
+                      _posts.clear();
+                      _page = 1;
+                      // There is next page or not
+                      _hasNextPage = true;
+
+                      // Used to display loading indicators when _firstLoad function is running
+                      _isFirstLoadRunning = false;
+
+                      // Used to display loading indicators when _loadMore function is running
+                      _isLoadMoreRunning = false;
+                      getBlockList(userToken!);
+                    }))) :  _isFirstLoadRunning
                 ? Center(child: mainLoad(context))
                 : _posts.isEmpty
                     ? Padding(
