@@ -89,7 +89,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
     BalanceMain(),
     PricingMain(),
     RequestMainPage(),
-    YourBrandMain(),
+    YourBrandHome(),
     DiscountCodes(),
     CelebrityCalenderMain(),
     ActivityScreen(),

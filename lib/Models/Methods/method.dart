@@ -1573,7 +1573,7 @@ SnackBar snackBar(context, String title, Color? color, IconData? icon) {
 Widget mainLoad(context) {
   return SizedBox(
     height: MediaQuery.of(context).size.height,
-    width: 70.w,
+    width: 100.w,
     child: Padding(
       padding: EdgeInsets.only(bottom: 50.h),
       child: Lottie.asset('assets/lottie/grey.json', height: 200.h),

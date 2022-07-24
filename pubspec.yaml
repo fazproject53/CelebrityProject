@@ -50,7 +50,7 @@ dependencies:
   url_launcher: ^6.0.20
   dependencies:
   simple_gradient_text: ^1.2.2
-  video_player: ^2.3.0
+  video_player: ^2.4.5
   smooth_page_indicator: ^1.0.0+2
   http:
   shared_preferences: ^2.0.13

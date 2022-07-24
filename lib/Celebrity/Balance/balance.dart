@@ -498,30 +498,12 @@ class _BalanceHomeState extends State<BalanceHome> {
                         22,
                         gradientContainerNoborder(
                             150.w,
-                            buttoms(context, 'إسحب الرصيد', 15, white, () {
+                            buttoms(context, 'إضافة بطاقة جديدة', 15, white, () {
                               _formKey.currentState!.validate()
                                   ? {
-                              Flushbar(
-                              flushbarPosition: FlushbarPosition.TOP,
-                              backgroundColor: white,
-                              margin: const EdgeInsets.all(5),
-                              flushbarStyle: FlushbarStyle.FLOATING,
-                              borderRadius: BorderRadius.circular(10.r),
-                              duration: const Duration(seconds: 5),
-                              icon: Icon(
-                              right,
-                              color: green,
-                              size: 30,
-                              ),
-                              titleText: text(context,
-                              'تم إرسال طلبك بنجاح', 16, purple),
-                              messageText: text(
-                              context,
-                              'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام',
-                              14,
-                              black,
-                              fontWeight: FontWeight.w200),
-                              ).show(context)
+                                //تم إرسال طلبك بنجاح
+                                //سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام
+                              showMassage(context, 'تم إرسال طلبك بنجاح', 'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام', done: done)
                                     }
                                   : null;
                             })),

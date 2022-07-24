@@ -245,7 +245,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
   @override
   Widget build(BuildContext context) {
-    checkUserConnection();
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -304,6 +304,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         child: Image.network(
                                             snapshot.data!.data!.celebrity!.image!,
                                           fit: BoxFit.cover,
+                                            color:
+                                            black.withOpacity(0.4),
                                           colorBlendMode: BlendMode.darken,
                                             loadingBuilder : (context, child, loadingProgress) {
                                               if (loadingProgress == null) return child;
@@ -339,6 +341,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         ),
                                       ),
                                       Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(
@@ -416,23 +419,22 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                               ],
                                             ),
                                           ),
+
                                           Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 12.h,
-                                                right: 25.w,
-                                                left: 25.w),
+                                            padding: EdgeInsets.only(top: 12.h,right: 25.w
+                                            ),
                                             child: text(
                                                 context,
                                                 snapshot.data!.data!.celebrity!
                                                     .description!,
                                                 14,
-                                                white.withOpacity(0.7),
-                                                align: TextAlign.justify),
+                                                white.withOpacity(0.9),
+                                                ),
                                           ),
                                           Container(
                                               alignment: Alignment.centerRight,
                                               margin:
-                                                  EdgeInsets.only(right: 25.w),
+                                                  EdgeInsets.only(top: 12.h,right: 25.w),
                                               child: InkWell(
                                                   onTap: () {
                                                     showDialogFunc(
@@ -874,8 +876,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                         : Stack(
                                                             children: [
                                                               ///Video
-                                                              VideoPlayer(VideoPlayerController.network(_studio[i].image!,)
-                                                                ..initialize()),
+                                                              VideoPlayer(VideoPlayerController.network(_studio[i].image!,)..initialize()),
 
                                                               ///Play Icon
                                                               Column(
