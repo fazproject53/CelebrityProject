@@ -57,7 +57,6 @@ class _ActivityScreenMainState extends State<ActivityScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    CheckUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
