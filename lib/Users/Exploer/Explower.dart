@@ -5,6 +5,7 @@ import 'package:celepraty/Users/Exploer/viewData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:video_player/video_player.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -32,11 +33,17 @@ class _ExplowerState extends State<Explower> {
   bool serverExceptions = true;
   ScrollController scrollController = ScrollController();
   List<Explorer> oldCelebraty = [];
-
+  VideoPlayerController? _controller;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      // _controller = VideoPlayerController.network(
+      //     'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
+      //   ..initialize().then((_) {
+      //     // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+      //     setState(() {});
+      //   });
       fetchAnotherExplorer();
     });
 
@@ -227,12 +234,12 @@ class _ExplowerState extends State<Explower> {
       },
       child: Card(
           elevation: 10,
-          color: black,
+          //color: black,
           child: Container(
             height: double.infinity,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: black,
+              //color: black,
               borderRadius: BorderRadius.all(Radius.circular(4.r)),
               // image: DecorationImage(
               //   image: AssetImage(
@@ -241,121 +248,135 @@ class _ExplowerState extends State<Explower> {
               //   fit: BoxFit.cover,
               // )
             ),
-            child: Column(
-              children: [
-//صوره المشهور+الاسم+التصنيف------------------------------------------
-//               Expanded(
-//                 flex: 2,
-//                 child: Align(
-//                     alignment: Alignment.topRight,
-//                     child: ListTile(
-//                       title: text(context, "ليجسي ليجسي", 15, white),
-//                       subtitle: text(context, "مطرب", 12, white),
-//                     )),
-//               ),
-//play viduo--------------------------------------------------------
+            child: _controller!=null&& _controller!.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
+                  )
+                : const Center(child: CircularProgressIndicator()),
 
-                // Expanded(
-                //   flex: 1,
-                //   child: Align(
-                //     alignment: Alignment.center,
-                //     child: CircleAvatar(
-                //       backgroundColor: white.withOpacity(0.12),
-                //       radius: 25.h,
-                //       child: IconButton(
-                //           onPressed: () {
-                //           setState(() {
-                //             goTopagepush(context, viewData());});
-                //           },
-                //           icon: GradientIcon(playViduo, 35.sp, gradient())),
-                //     ),
-                //   ),
-                // ),
+            // VideoPlayer(
+            //
+            //     VideoPlayerController.network(
+            //
+            //       oldCelebraty[index].image!,)
+            //   ..initialize()),
 
-//like icon------------------------------------------
+//             Column(
+//               children: [
+// //صوره المشهور+الاسم+التصنيف------------------------------------------
+// //               Expanded(
+// //                 flex: 2,
+// //                 child: Align(
+// //                     alignment: Alignment.topRight,
+// //                     child: ListTile(
+// //                       title: text(context, "ليجسي ليجسي", 15, white),
+// //                       subtitle: text(context, "مطرب", 12, white),
+// //                     )),
+// //               ),
+// //play viduo--------------------------------------------------------
+//
+//                 // Expanded(
+//                 //   flex: 1,
+//                 //   child: Align(
+//                 //     alignment: Alignment.center,
+//                 //     child: CircleAvatar(
+//                 //       backgroundColor: white.withOpacity(0.12),
+//                 //       radius: 25.h,
+//                 //       child: IconButton(
+//                 //           onPressed: () {
+//                 //           setState(() {
+//                 //             goTopagepush(context, viewData());});
+//                 //           },
+//                 //           icon: GradientIcon(playViduo, 35.sp, gradient())),
+//                 //     ),
+//                 //   ),
+//                 // ),
+//
+// //like icon------------------------------------------
+// //                 Expanded(
+// //                   child: Padding(
+// //                     padding: EdgeInsets.only(left: 10.r, right: 10.r),
+// //                     child: Align(
+// //                       alignment: Alignment.bottomLeft,
+// //                       child: CircleAvatar(
+// //                         backgroundColor: white.withOpacity(0.0),
+// //                         radius: 20.h,
+// //                         child: IconButton(
+// //                            onPressed: () {
+// //                           //   setState(() {
+// //                           //     isSelect = !isSelect;
+// //                           //   });
+// //                           //   if (isSelect) {
+// //                           //     setState(() {
+// //                           //       liksCounter++;
+// //                           //     });
+// //                           //   }
+// //                            },
+// //                           icon: GradientIcon(Icons.visibility, 27.sp, gradient()),
+// //                         ),
+// //                       ),
+// //                     ),
+// //                   ),
+// //                 ),
+// //share----------------------------------------------------------------------
+// //               Padding(
+// //                 padding: EdgeInsets.only(left: 10.r, right: 10.r),
+// //                 child: Align(
+// //                   alignment: Alignment.bottomLeft,
+// //                   child: CircleAvatar(
+// //                     backgroundColor: white.withOpacity(0.0),
+// //                     radius: 20.h,
+// //                     child: IconButton(
+// //                       onPressed: () {
+// //                         setState(() {
+// //                           isSelect = !isSelect;
+// //                         });
+// //                         if (isSelect) {
+// //                           setState(() {
+// //                             liksCounter++;
+// //                           });
+// //                         }
+// //                       },
+// //                       icon: GradientIcon(
+// //                           isSelect ? like : disLike, 27.sp, gradient()),
+// //                     ),
+// //                   ),
+// //                 ),
+// //               ),
+//
+// //conuter of like number------------------------------------------
 //                 Expanded(
-//                   child: Padding(
-//                     padding: EdgeInsets.only(left: 10.r, right: 10.r),
+//                   child: Directionality(
+//                     textDirection: TextDirection.ltr,
 //                     child: Align(
 //                       alignment: Alignment.bottomLeft,
-//                       child: CircleAvatar(
-//                         backgroundColor: white.withOpacity(0.0),
-//                         radius: 20.h,
-//                         child: IconButton(
-//                            onPressed: () {
-//                           //   setState(() {
-//                           //     isSelect = !isSelect;
-//                           //   });
-//                           //   if (isSelect) {
-//                           //     setState(() {
-//                           //       liksCounter++;
-//                           //     });
-//                           //   }
-//                            },
-//                           icon: GradientIcon(Icons.visibility, 27.sp, gradient()),
-//                         ),
+//                       child: Row(
+//                         children: [
+//                           IconButton(
+//                             onPressed: () {
+//                               //   setState(() {
+//                               //     isSelect = !isSelect;
+//                               //   });
+//                               //   if (isSelect) {
+//                               //     setState(() {
+//                               //       liksCounter++;
+//                               //     });
+//                               //   }
+//                             },
+//                             icon: GradientIcon(
+//                                 Icons.play_arrow, 35.sp, gradient()),
+//                           ),
+//                           text(context, "${oldCelebraty[index].views}", 15,
+//                               white,
+//                               fontWeight: FontWeight.bold),
+//                         ],
 //                       ),
 //                     ),
 //                   ),
 //                 ),
-//share----------------------------------------------------------------------
-//               Padding(
-//                 padding: EdgeInsets.only(left: 10.r, right: 10.r),
-//                 child: Align(
-//                   alignment: Alignment.bottomLeft,
-//                   child: CircleAvatar(
-//                     backgroundColor: white.withOpacity(0.0),
-//                     radius: 20.h,
-//                     child: IconButton(
-//                       onPressed: () {
-//                         setState(() {
-//                           isSelect = !isSelect;
-//                         });
-//                         if (isSelect) {
-//                           setState(() {
-//                             liksCounter++;
-//                           });
-//                         }
-//                       },
-//                       icon: GradientIcon(
-//                           isSelect ? like : disLike, 27.sp, gradient()),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-
-//conuter of like number------------------------------------------
-                Expanded(
-                  child: Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              //   setState(() {
-                              //     isSelect = !isSelect;
-                              //   });
-                              //   if (isSelect) {
-                              //     setState(() {
-                              //       liksCounter++;
-                              //     });
-                              //   }
-                            },
-                            icon: GradientIcon(
-                                Icons.play_arrow, 35.sp, gradient()),
-                          ),
-                          text(context, "${oldCelebraty[index].views}", 15,
-                              white,
-                              fontWeight: FontWeight.bold),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+//               ],
+//             ),
           )),
     );
   }
@@ -411,18 +432,21 @@ class _ExplowerState extends State<Explower> {
         return 'serverExceptions';
       }
     } catch (e) {
-      Navigator.pop(context);
       if (e is SocketException) {
+        Navigator.pop(context);
         setState(() {
           isConnectSection = false;
         });
         return 'SocketException';
       } else if (e is TimeoutException) {
+        Navigator.pop(context);
         setState(() {
           timeoutException = false;
         });
         return 'TimeoutException';
       } else {
+        Navigator.pop(context);
+
         setState(() {
           serverExceptions = false;
         });

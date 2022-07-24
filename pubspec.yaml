@@ -32,6 +32,7 @@ dependencies:
   flutter_svg: ^1.0.3
   flutter_screenutil: ^5.1.1
   adobe_xd: ^2.0.1
+  cached_video_player: ^2.0.3
   device_preview: ^1.0.0
   auto_size_text: ^3.0.0
   cupertino_icons: ^1.0.2
@@ -57,7 +58,6 @@ dependencies:
   cached_network_image: ^3.2.0
   flutter_lints: ^1.0.0
   open_file: ^3.2.1
-  api_cache_manager: ^1.0.1
   email_validator:
   lottie: ^1.2.2
   country_code_picker: ^2.0.2

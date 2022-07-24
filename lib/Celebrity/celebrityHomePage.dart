@@ -63,18 +63,17 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 
     super.initState();
   }
+
 //search history------------------------------
   Future<void> _showSearch() async {
-     await showSearch(
+    await showSearch(
       context: context,
       delegate: CelebritySearch(
         allCelbrity: allCellbrity,
         onSearchChanged: getRecentSearchesCelebrity,
       ),
     );
-
   }
-
 
   @override
   bool get wantKeepAlive => true;
@@ -124,37 +123,39 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return isConnectSection == false
-        ? internetConnection(context, reload: () {
-            setState(() {
-              onRefresh();
-              isConnectSection = true;
-            });
-          })
-        : timeoutException == false
-            ? checkTimeOutException(context, reload: () {
-                setState(() {
-                  onRefresh();
-                  timeoutException = true;
-                });
-              })
-            : serverExceptions == false
-                ? checkServerException(context, reload: () {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: isConnectSection == false
+              ? Center(
+                child: internetConnection(context, reload: () {
                     setState(() {
                       onRefresh();
-                      serverExceptions = true;
+                      isConnectSection = true;
                     });
-                  })
-                : Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      theme: ThemeData(primaryColor: purple),
-                      home: Scaffold(
-//-------------------------------------------------------------------------------------
-                          body: RefreshIndicator(
-                        onRefresh: onRefresh,
-                        child: SingleChildScrollView(
+                  }),
+              )
+              : timeoutException == false
+                  ? Center(
+                    child: checkTimeOutException(context, reload: () {
+                        setState(() {
+                          onRefresh();
+                          timeoutException = true;
+                        });
+                      }),
+                  )
+                  : serverExceptions == false
+                      ? Center(
+                        child: checkServerException(context, reload: () {
+                            setState(() {
+                              onRefresh();
+                              serverExceptions = true;
+                            });
+                          }),
+                      )
+                      : SingleChildScrollView(
                           child: Column(
                             children: [
                               search(),
@@ -347,9 +348,9 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                             ],
                           ),
                         ),
-                      )),
-                    ),
-                  );
+        ),
+      ),
+    );
   }
 
 //"${snapshot.data.data.header[1].title}",------------------------------Slider image-------------------------------------------
@@ -990,7 +991,8 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
                   if (snapshot.error.toString() == 'تحقق من اتصالك بالانترنت') {
-                    return const Center(child: Text('تحقق من اتصالك بالانترنت'));
+                    return const Center(
+                        child: Text('تحقق من اتصالك بالانترنت'));
                   } else {
                     return const Center(child: Text(''));
                   }
@@ -1484,7 +1486,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                     ))
                 : const SizedBox(),
             InkWell(
-              child: GradientIcon( Icons.search, 35.sp, gradient()),
+              child: GradientIcon(Icons.search, 35.sp, gradient()),
               onTap: () {
                 _showSearch();
               },

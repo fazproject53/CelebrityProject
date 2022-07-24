@@ -55,7 +55,8 @@ class DatabaseHelper {
       } else if (message == "User not verified") {
         return "User not verified";
       }
-    } catch (e) {
+    }
+    catch (e) {
       if (e is SocketException) {
         return 'SocketException';
       } else if (e is TimeoutException) {

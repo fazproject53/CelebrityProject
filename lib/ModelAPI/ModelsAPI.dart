@@ -201,16 +201,15 @@ class MessagePartner {
 class header {
   bool? success;
   HeaderData? data;
-  HeaderMessage? message;
+  Message? message;
 
   header({this.success, this.data, this.message});
 
   header.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     data = json['data'] != null ? new HeaderData.fromJson(json['data']) : null;
-    message = json['message'] != null
-        ? new HeaderMessage.fromJson(json['message'])
-        : null;
+    message =
+    json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -257,16 +256,22 @@ class HeaderData {
 
 class Header {
   String? image;
+  String? imageMobile;
+  String? link;
 
-  Header({this.image});
+  Header({this.image, this.imageMobile, this.link});
 
   Header.fromJson(Map<String, dynamic> json) {
     image = json['image'];
+    imageMobile = json['image_mobile'];
+    link = json['link'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['image'] = this.image;
+    data['image_mobile'] = this.imageMobile;
+    data['link'] = this.link;
     return data;
   }
 }
