@@ -102,7 +102,6 @@ class _celebratyProfileState extends State<celebratyProfile> {
   @override
   void initState() {
     super.initState();
-    CheckUserConnection();
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
@@ -186,8 +185,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBarNoIcon("حسابي"),
-        body: ActiveConnection?Center(
-          child: SingleChildScrollView(
+        body:  SingleChildScrollView(
             child: FutureBuilder<CelebrityInformation>(
               future: celebrity,
               builder: (context, snapshot) {
@@ -199,16 +197,19 @@ class _celebratyProfileState extends State<celebratyProfile> {
                     if (snapshot.error.toString() ==
                         'SocketException') {
                       return Center(
-                          child: SizedBox(
-                              height: 300.h,
-                              width: 250.w,
-                              child: internetConnection(
-                                  context, reload: () {
-                                setState(() {
-                                  celebrity = fetchCelebrities(userToken);
-                                  isConnectSection = true;
-                                });
-                              })));
+                          child: Padding(
+                            padding:  EdgeInsets.only(top: 100.h),
+                            child: SizedBox(
+                                height: 300.h,
+                                width: 250.w,
+                                child: internetConnection(
+                                    context, reload: () {
+                                  setState(() {
+                                    celebrity = fetchCelebrities(userToken);
+                                    isConnectSection = true;
+                                  });
+                                })),
+                          ));
                     } else {
                       return const Center(
                           child: Text(
@@ -430,14 +431,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
               },
             ),
           ),
-        ):Center(
-            child:SizedBox(
-                height: 300.h,
-                width: 250.w,
-                child: internetConnection(
-                    context, reload: () {
-                  CheckUserConnection();
-                })))
+
       ),
     );
 

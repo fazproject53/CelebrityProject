@@ -89,7 +89,6 @@ class _userProfileState extends State<userProfile>
         getUsers = fetchUsers(userToken);
       });
     });
-
     super.initState();
   }
   Future CheckUserConnection() async {
@@ -171,13 +170,12 @@ class _userProfileState extends State<userProfile>
 
   @override
   Widget build(BuildContext context) {
-    //CheckUserConnection();
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBarNoIcon("حسابي"),
-        body: ActiveConnection? Center(
-          child: SingleChildScrollView(
+        body: SingleChildScrollView(
             child: Column(children: [
               //======================== profile header ===============================
 
@@ -391,14 +389,7 @@ class _userProfileState extends State<userProfile>
 
             ]),
           ),
-        ):Center(
-            child:SizedBox(
-                height: 300.h,
-                width: 250.w,
-                child: internetConnection(
-                    context, reload: () {
-                  CheckUserConnection();
-                })))
+
       ),
     );
   }
