@@ -144,7 +144,7 @@ String? userToken;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        floatingActionButton: !add || !edit?FloatingActionButton(onPressed: (){  setState(() {
+        floatingActionButton: !add ?FloatingActionButton(onPressed: (){  setState(() {
           add = true;
         });}, backgroundColor: pink, child: Icon(Icons.add),):null,
         body: add
