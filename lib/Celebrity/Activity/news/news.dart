@@ -9,6 +9,7 @@ import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import '../../../Account/LoggingSingUpAPI.dart';
 import '../../../Account/logging.dart';
 
@@ -240,17 +241,7 @@ String? userToken;
                                                                   (context, child, loadingProgress) {
                                                                 if (loadingProgress == null) return child;
                                                                 return Center(
-                                                                  child: CircularProgressIndicator(
-                                                                    backgroundColor: grey,
-                                                                    value: loadingProgress
-                                                                        .expectedTotalBytes !=
-                                                                        null
-                                                                        ? loadingProgress
-                                                                        .cumulativeBytesLoaded /
-                                                                        loadingProgress
-                                                                            .expectedTotalBytes!
-                                                                        : null,
-                                                                  ),
+                                                                    child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
                                                                 );
                                                               },
                                                             ),

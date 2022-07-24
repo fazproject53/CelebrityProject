@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../Account/LoggingSingUpAPI.dart';
@@ -292,17 +293,7 @@ class _StudioState extends State<Studio> {
                                                     (context, child, loadingProgress) {
                                                 if (loadingProgress == null) return child;
                                                 return Center(
-                                                    child: CircularProgressIndicator(
-                                                      backgroundColor: grey,
-                                                      value: loadingProgress
-                                                          .expectedTotalBytes !=
-                                                          null
-                                                          ? loadingProgress
-                                                          .cumulativeBytesLoaded /
-                                                          loadingProgress
-                                                              .expectedTotalBytes!
-                                                          : null,
-                                                    ),
+                                                    child:  Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
                                                 );
                                               },
                                             ),
