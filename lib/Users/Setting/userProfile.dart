@@ -170,7 +170,7 @@ class _userProfileState extends State<userProfile>
 
   @override
   Widget build(BuildContext context) {
-    CheckUserConnection();
+    //CheckUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(

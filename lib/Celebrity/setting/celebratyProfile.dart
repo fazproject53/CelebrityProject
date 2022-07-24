@@ -180,7 +180,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
 
   @override
   Widget build(BuildContext context) {
-    CheckUserConnection();
+   // CheckUserConnection();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
