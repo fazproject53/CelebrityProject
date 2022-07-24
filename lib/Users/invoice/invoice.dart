@@ -8,6 +8,7 @@ import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:celepraty/Users/invoice/invoice_info.dart';
 import 'package:celepraty/invoice/ivoice_info_list.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,26 @@ class Invoice extends StatefulWidget{
 
 class _InvoiceState extends State<Invoice> {
 
+  final _baseUrl = 'https://mobile.celebrityads.net/api/user/billings';
+  int _page = 1;
+
+  bool ActiveConnection = false;
+  String T = "";
+
+  // There is next page or not
+  bool _hasNextPage = true;
+
+  // Used to display loading indicators when _firstLoad function is running
+  bool _isFirstLoadRunning = false;
+
+  // Used to display loading indicators when _loadMore function is running
+  bool _isLoadMoreRunning = false;
+
+  String? phone, taxnumber;
+  // This holds the posts fetched from the server
+  List _posts = [];
+  ScrollController _controller = ScrollController();
+
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
@@ -47,12 +68,63 @@ class _InvoiceState extends State<Invoice> {
     DatabaseHelper.getToken().then((value) {
       setState(() {
         userToken = value;
-        invoices = getInvoicess();
+      getInvoicess();
       });
     });
-    ;
-    print(getInvoicess());
+    _controller.addListener(_loadMore);
     super.initState();
+  }
+  @override
+  void dispose() {
+    _controller.removeListener(_loadMore);
+    super.dispose();
+  }
+
+  void _loadMore() async {
+    print('#########################################################');
+
+    if (_hasNextPage == true &&
+        _isFirstLoadRunning == false &&
+        _isLoadMoreRunning == false && _controller.position.maxScrollExtent ==
+        _controller.offset) {
+      setState(() {
+        _isLoadMoreRunning = true; // Display a progress indicator at the bottom
+      });
+      _page += 1;
+      try {
+        final res =
+        await http.get(Uri.parse("$_baseUrl?page=$_page"), headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
+        });
+
+        if (InvoiceModel
+            .fromJson(jsonDecode(res.body))
+            .data!
+            .billings!
+            .isNotEmpty) {
+          setState(() {
+            _posts.addAll(InvoiceModel
+                .fromJson(jsonDecode(res.body))
+                .data!
+                .billings!);
+          });
+        } else {
+          setState(() {
+            _hasNextPage = false;
+          });
+        }
+      } catch (err) {
+        if (kDebugMode) {
+          print('Something went wrong!');
+        }
+      }
+
+      setState(() {
+        _isLoadMoreRunning = false;
+      });
+    }
   }
 
   @override
@@ -63,7 +135,9 @@ class _InvoiceState extends State<Invoice> {
           appBar: drowAppBar('الفوترة', context),
           body: SafeArea(
             child: SingleChildScrollView(
-              child: Column(
+              controller: _controller,
+              child: _isFirstLoadRunning? Center(
+                  child: mainLoad(context)):Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: 30.h,),
@@ -72,38 +146,8 @@ class _InvoiceState extends State<Invoice> {
                     child: text(context, 'الطلبات المالية ', 20, black),
                   ),
                   SizedBox(height: 20.h,),
-                  FutureBuilder<InvoiceModel>(
-                      future: invoices,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: mainLoad(context),);
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.active ||
-                            snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            if (snapshot.error.toString() ==
-                                'SocketException') {
-                              return Center(
-                                  child: SizedBox(
-                                      height: 500.h,
-                                      width: 250.w,
-                                      child: internetConnection(
-                                          context, reload: () {
-                                        setState(() {
-                                          invoices = getInvoicess();
-                                          isConnectSection = true;
-                                        });
-                                      })));
-                            } else {
-                              return const Center(
-                                  child: Text(
-                                      'حدث خطا ما اثناء استرجاع البيانات'));
-                            }
-                            //---------------------------------------------------------------------------
-                          } else if (snapshot.hasData) {
-                            print(snapshot.data!.data!.billings!.length);
-                            return snapshot.data!.data!.billings!.isEmpty
+
+                  _posts.isEmpty
                                 ? Padding(
                               padding: EdgeInsets.only(
                                   top: getSize(context).height / 7),
@@ -119,24 +163,25 @@ class _InvoiceState extends State<Invoice> {
                             )
                                 :
                             ListView.builder(
+                              physics: ScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: snapshot.data!.data!.billings!.length,
+                              itemCount: _posts.length,
                               itemBuilder: (context, index) {
                                 desc =
-                                snapshot.data!.data!.billings![index].order!
+                                _posts[index].order!
                                     .adType!.name! == "اعلان" ? ' طلب' +
-                                    snapshot.data!.data!.billings![index].order!
+                                    _posts[index].order!
                                         .adType!.name! + ' ل' +
-                                    snapshot.data!.data!.billings![index].order!
+                                    _posts[index].order!
                                         .advertisingAdType!.name! :
-                                snapshot.data!.data!.billings![index].order!
+                                _posts[index].order!
                                     .adType!.name! == "اهداء" ? ' طلب ' +
-                                    snapshot.data!.data!.billings![index].order!
+                                    _posts[index].order!
                                         .adType!.name! + ' / ' +
-                                    snapshot.data!.data!.billings![index].order!
+                                    _posts[index].order!
                                         .giftType!.name! + " بمناسبة  " +
                                     'عيد ميلاد' :
-                                snapshot.data!.data!.billings![index].order!
+                                _posts[index].order!
                                     .adType!.name! == "مساحة اعلانية"
                                     ? ' طلب ' + 'مساحة اعلانية'
                                     : '';
@@ -160,15 +205,13 @@ class _InvoiceState extends State<Invoice> {
                                                     children: [
 
                                                       text(context,
-                                                          snapshot.data!.data!
-                                                              .billings![index]
+                                                          _posts[index]
                                                               .celebrity!.name!,
                                                           16, black),
 
 
                                                       text(context,
-                                                          snapshot.data!.data!
-                                                              .billings![index]
+                                                          _posts[index]
                                                               .order!.price!
                                                               .toString() +
                                                               " ر.س", 15,
@@ -180,8 +223,7 @@ class _InvoiceState extends State<Invoice> {
                                               ],
                                             ),
 
-                                            text(context, snapshot.data!.data!
-                                                .billings![index].price!
+                                            text(context, _posts[index].price!
                                                 .toString(), 12, grey!),
                                           ],
                                         ),
@@ -207,12 +249,10 @@ class _InvoiceState extends State<Invoice> {
                                                         grey!),
                                                   ),
                                                   Container(child: text(context,
-                                                      snapshot.data!.data!
-                                                          .billings![index]
+                                                      _posts[index]
                                                           .order!.description !=
                                                           null
-                                                          ? snapshot.data!.data!
-                                                          .billings![index]
+                                                          ?_posts[index]
                                                           .order!.description!
                                                           : '', 14, black),
                                                     width: 200.w,
@@ -247,57 +287,34 @@ class _InvoiceState extends State<Invoice> {
                                                         onTap: () async {
                                                           final pdf = await InvoicePdf
                                                               .createInvoicePDF(
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .order!.id!
                                                                   .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .id
                                                                   .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .date
                                                                   .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .taxnumber
-                                                                  .toString(),
-                                                              snapshot.data!
-                                                                  .data!.phone
-                                                                  .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              taxnumber!,
+                                                             phone!,
+                                                              _posts[index]
                                                                   .celebrity!
                                                                   .phonenumber
                                                                   .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .user!
                                                                   .country!
                                                                   .name!,
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .user!.name!,
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .price
                                                                   .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .priceAfterTax
                                                                   .toString(),
-                                                              snapshot.data!
-                                                                  .data!
-                                                                  .billings![index]
+                                                              _posts[index]
                                                                   .paymentMehtod!
                                                                   .name!,
                                                               desc!);
@@ -312,18 +329,14 @@ class _InvoiceState extends State<Invoice> {
                                               ))
                                         ]
                                     ));
-                              },);
-                          } else {
-                            return const Center(
-                                child: Text('لايوجد فواتير لعرضهم حاليا'));
-                          }
-                        } else {
-                          return Center(
-                              child:
-                              Text('State: ${snapshot.connectionState}'));
-                        }
-                      })
-
+                              },),
+                  if (_isLoadMoreRunning == true)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -335,20 +348,7 @@ class _InvoiceState extends State<Invoice> {
 
   Widget invoice(index) {
     return SingleChildScrollView(
-        child: FutureBuilder<InvoiceModel>(
-            future: invoices,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState ==
-                  ConnectionState.waiting) {
-                return Center();
-              } else if (snapshot.connectionState ==
-                  ConnectionState.active ||
-                  snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                  //---------------------------------------------------------------------------
-                } else if (snapshot.hasData) {
-                  return Column(
+         child: Column(
                     children: [
                       Column(
                         children: [
@@ -403,7 +403,7 @@ class _InvoiceState extends State<Invoice> {
                               children: [
                                 Directionality(textDirection: TextDirection.rtl,
                                     child: text(context,
-                                        snapshot.data!.data!.billings![index]
+                                       _posts[index]
                                             .date.toString(), 15, grey!)),
                                 text(context, 'فاتورة ضريبية', 18,
                                     black.withOpacity(0.75),
@@ -417,16 +417,16 @@ class _InvoiceState extends State<Invoice> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               text(context,
-                                  snapshot.data!.data!.billings![index].order!
+                                  _posts[index].order!
                                       .id!.toString() + '#', 18,
                                   black.withOpacity(0.75),
                                   fontWeight: FontWeight.bold),
                               SizedBox(height: 15.h,),
                               text(context, 'رقم الطلب: ' +
-                                  snapshot.data!.data!.billings![index].order!
+                                  _posts[index].order!
                                       .id!.toString(), 15, black),
                               text(context, 'رقم الفاتورة:  ' +
-                                  snapshot.data!.data!.billings![index]
+                                  _posts[index]
                                       .billingId.toString(), 15, black),
                               Divider(color: black,)
                             ],
@@ -455,8 +455,7 @@ class _InvoiceState extends State<Invoice> {
                                         .spaceBetween,
                                     children: [
                                       Container(child: text(context,
-                                          snapshot.data!.data!.taxnumber
-                                              .toString(), 15, black),
+                                          taxnumber!, 15, black),
                                         margin: EdgeInsets.only(left: 10.w),),
                                       text(context, ': الرقم الضريبي', 15,
                                           black.withOpacity(0.75),
@@ -467,7 +466,7 @@ class _InvoiceState extends State<Invoice> {
                                         .spaceBetween,
                                     children: [
                                       Container(child: text(context,
-                                          snapshot.data!.data!.phone.toString(),
+                                         phone!,
                                           15, black),
                                           margin: EdgeInsets.only(left: 10.w)),
                                       text(context, ': الهاتف', 15,
@@ -490,18 +489,18 @@ class _InvoiceState extends State<Invoice> {
                                         .spaceBetween,
                                     children: [
                                       Container(child: text(context,
-                                          snapshot.data!.data!.billings![index]
+                                          _posts[index]
                                               .user!.country!.name!, 15, black),
-                                          margin: EdgeInsets.only(left: 70.w)),
+                                          margin: EdgeInsets.only(left: 40.w)),
                                       Container(child: text(context,
-                                          snapshot.data!.data!.billings![index]
+                                          _posts[index]
                                               .user!.name!, 15,
                                           black.withOpacity(0.75),
                                           fontWeight: FontWeight.bold)),
 
                                     ],),
                                   Container(child: text(context,
-                                      snapshot.data!.data!.billings![index]
+                                      _posts[index]
                                           .user!.phonenumber.toString(), 15,
                                       black),
                                     margin: EdgeInsets.only(left: 30.w),
@@ -524,8 +523,7 @@ class _InvoiceState extends State<Invoice> {
                                       Container(child: Directionality(
                                           textDirection: TextDirection.rtl,
                                           child: text(context,
-                                              snapshot.data!.data!
-                                                  .billings![index].price!
+                                              _posts[index].price!
                                                   .toString() + ' ر.س ', 15,
                                               blue,
                                               fontWeight: FontWeight.bold)),
@@ -538,7 +536,7 @@ class _InvoiceState extends State<Invoice> {
                                         .spaceBetween,
                                     children: [
                                       Container(child: text(context,
-                                          snapshot.data!.data!.billings![index]
+                                          _posts[index]
                                               .paymentMehtod!.name!, 15, black),
                                         margin: EdgeInsets.only(left: 50.w),),
                                       Container(child: text(
@@ -591,31 +589,24 @@ class _InvoiceState extends State<Invoice> {
                                         Container(
                                           width: 150.w,
                                           child: text(context,
-                                              snapshot.data!.data!
-                                                  .billings![index].order!
+                                              _posts[index].order!
                                                   .adType!.name! == "اعلان"
-                                                  ? ' طلب' +
-                                                  snapshot.data!.data!
-                                                      .billings![index].order!
+                                                  ? ' طلب ' +
+                                                  _posts[index].order!
                                                       .adType!.name! + ' ل' +
-                                                  snapshot.data!.data!
-                                                      .billings![index].order!
+                                                  _posts[index].order!
                                                       .advertisingAdType!.name!
                                                   :
-                                              snapshot.data!.data!
-                                                  .billings![index].order!
+                                              _posts[index].order!
                                                   .adType!.name! == "اهداء"
                                                   ? ' طلب ' +
-                                                  snapshot.data!.data!
-                                                      .billings![index].order!
+                                                  _posts[index].order!
                                                       .adType!.name! + ' / ' +
-                                                  snapshot.data!.data!
-                                                      .billings![index].order!
+                                                  _posts[index].order!
                                                       .giftType!.name! +
                                                   " بمناسبة  " + 'عيد ميلاد'
                                                   :
-                                              snapshot.data!.data!
-                                                  .billings![index].order!
+                                              _posts[index].order!
                                                   .adType!.name! ==
                                                   "مساحة اعلانية" ? ' طلب ' +
                                                   'مساحة اعلانية' : '', 15,
@@ -628,13 +619,11 @@ class _InvoiceState extends State<Invoice> {
                                     Row(
                                       children: [
                                         SizedBox(width: 30.w,),
-                                        text(context, snapshot.data!.data!
-                                            .billings![index].price!
+                                        text(context,  _posts[index].price!
                                             .toString() + " ر . س  ", 15,
                                             black),
                                         SizedBox(width: 40.w,),
-                                        text(context, snapshot.data!.data!
-                                            .billings![index].price!
+                                        text(context,   _posts[index].price!
                                             .toString() + " ر . س  ", 15,
                                             black),
                                         SizedBox(width: 20.w,),
@@ -656,8 +645,7 @@ class _InvoiceState extends State<Invoice> {
                                     ),
                                     Row(
                                       children: [
-                                        text(context, snapshot.data!.data!
-                                            .billings![index].priceAfterTax! +
+                                        text(context,   _posts[index].priceAfterTax! +
                                             ' ر . س ', 15, black),
                                         SizedBox(width: 20.w,),
                                       ],
@@ -680,56 +668,47 @@ class _InvoiceState extends State<Invoice> {
                         ],
                       ),
                     ],
-                  );
-                } else {
-                  return const Center(
-                      child: Text('لايوجد فواتير لعرضهم حاليا'));
-                }
-              } else {
-                return Center(
-                    child:
-                    Text('State: ${snapshot.connectionState}'));
-              }
-            })
+                  ),
     );
   }
 
-  Future<InvoiceModel> getInvoicess() async {
-    try {
-      final response = await http.get(
-          Uri.parse('https://mobile.celebrityads.net/api/user/billings'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $userToken'
-          });
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        print(response.body);
-        return InvoiceModel.fromJson(jsonDecode(response.body));
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to load activity');
-      }
-    } catch (e) {
-      if (e is SocketException) {
-        setState(() {
-          isConnectSection = false;
+
+  void getInvoicess() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
+
+    final response = await http.get(
+        Uri.parse('$_baseUrl?page=$_page'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $userToken'
         });
-        return Future.error('SocketException');
-      } else if (e is TimeoutException) {
-        setState(() {
-          timeoutException = false;
-        });
-        return Future.error('TimeoutException');
-      } else {
-        setState(() {
-          serverExceptions = false;
-        });
-        return Future.error('serverExceptions');
-      }
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      setState(() {
+        _posts = InvoiceModel
+            .fromJson(jsonDecode(response.body))
+            .data!.billings!;
+        phone= InvoiceModel
+            .fromJson(jsonDecode(response.body)).data!.phone!;
+        taxnumber= InvoiceModel
+            .fromJson(jsonDecode(response.body)).data!.taxnumber!;
+      });
+      print(response.body);
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load activity');
     }
+
+
+    setState(() {
+      _isFirstLoadRunning = false;
+      print(_isFirstLoadRunning.toString()+'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    });
   }
 }

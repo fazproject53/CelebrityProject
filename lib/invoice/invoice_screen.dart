@@ -71,7 +71,11 @@ class _invoiceScreenState extends State<invoiceScreen> {
     _controller.addListener(_loadMore);
     super.initState();
   }
-
+  @override
+  void dispose() {
+    _controller.removeListener(_loadMore);
+    super.dispose();
+  }
 
   void _loadMore() async {
     print('#########################################################');
