@@ -454,12 +454,26 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                         onPressed: () {
                                                           _formKey.currentState!
                                                               .validate()
-                                                              ? postFunction(
-                                                              userToken!)
-                                                              .whenComplete(
-                                                                  () => {
-                                                                    showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done)
-                                                              })
+                                                              ? postFunction(userToken!).then((value)  {
+                                                                if(value == 'true'){
+                                                                  showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done);
+                                                                }else if (value ==
+                                                          'SocketException') {
+                                                              showMassage(
+                                                              context,
+                                                              'مشكلة في الانترنت',
+                                                              ' لايوجد اتصال بالانترنت في الوقت الحالي ');
+                                                        } else if (value ==
+                                                          'serverExceptions') {
+                                                          showMassage(
+                                                          context,
+                                                          'مشكلة في الخادم',
+                                                          '');
+                                                          } else {
+                                                          ///TimeOut
+
+                                                          }
+                                                          })
                                                               : null;
                                                         }),
                                                   ],
@@ -557,7 +571,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
   }
 
   ///Post
-  Future<http.Response> postFunction(String token) async {
+  Future<String> postFunction(String token) async {
     try {
       final response = await http.post(
         Uri.parse('https://mobile.celebrityads.net/api/celebrity/terms-and-conditions/update',
@@ -577,28 +591,19 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
         // If the server did return a 200 OK response,
         // then parse the JSON.
         print(response.body);
-        return response;
+        return 'true';
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
-        throw Exception('Failed to load activity');
+        return 'serverExceptions';
       }
     } catch (error) {
       if (error is SocketException) {
-        setState(() {
-          isConnectSection = false;
-        });
-        return Future.error('SocketException');
+        return 'SocketException';
       } else if (error is TimeoutException) {
-        setState(() {
-          timeoutException = false;
-        });
-        return Future.error('TimeoutException');
+        return 'TimeoutException';
       } else {
-        setState(() {
-          serverExceptions = false;
-        });
-        return Future.error('serverExceptions');
+        return 'serverExceptions';
       }
     }
   }

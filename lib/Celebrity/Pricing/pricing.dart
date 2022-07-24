@@ -637,10 +637,25 @@ class _PricingHomeState extends State<PricingHome> {
                                       //to < from
                                       ad1 < ad
                                           ? showMassage(context, 'خطأ',
-                                    'يجب ان يكون الحد الاعلى للإعلان أكبر') : postFunction(userToken!)
-                                          .whenComplete(() => {
+                                    'يجب ان يكون الحد الاعلى للإعلان أكبر') : postFunction(userToken!).then((value) {
+                                        if(value == 'true'){
+                                          showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done);
+                                        }else if (value ==
+                                            'SocketException') {
+                                          showMassage(
+                                              context,
+                                              'مشكلة في الانترنت',
+                                              ' لايوجد اتصال بالانترنت في الوقت الحالي ');
+                                        } else if (value ==
+                                            'serverExceptions') {
+                                          showMassage(
+                                              context,
+                                              'مشكلة في الخادم',
+                                              '');
+                                        } else {
+                                          ///TimeOut
 
-                                        showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done)
+                                        }
                                       })
                                     }
                                         : null;
@@ -730,7 +745,7 @@ class _PricingHomeState extends State<PricingHome> {
   }
 
   ///Post
-  Future<http.Response> postFunction(String token) async {
+  Future<String> postFunction(String token) async {
     try {
       final response = await http.post(
         Uri.parse('https://mobile.celebrityads.net/api/celebrity/price/update'),
@@ -751,7 +766,7 @@ class _PricingHomeState extends State<PricingHome> {
       if (response.statusCode == 200) {
         // If the server did return a 200 OK response,
         // then parse the JSON.
-        return response;
+        return 'true';
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.
@@ -759,20 +774,12 @@ class _PricingHomeState extends State<PricingHome> {
       }
     } catch (error) {
       if (error is SocketException) {
-        setState(() {
-          isConnectSection = false;
-        });
-        return Future.error('SocketException');
+        return 'SocketException';
       } else if (error is TimeoutException) {
-        setState(() {
-          timeoutException = false;
-        });
-        return Future.error('TimeoutException');
+
+        return 'TimeoutException';
       } else {
-        setState(() {
-          serverExceptions = false;
-        });
-        return Future.error('serverExceptions');
+        return 'serverExceptions';
       }
     }
   }

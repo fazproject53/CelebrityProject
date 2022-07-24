@@ -1184,7 +1184,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                   decoration: BoxDecoration(
                       border: Border.all(color: border),
                       borderRadius:
-                          const BorderRadius.all(const Radius.circular(10))),
+                           BorderRadius.all( Radius.circular(10.r))),
                   alignment: Alignment.centerRight,
                   height: 70.h,
                   width: 70.w,
