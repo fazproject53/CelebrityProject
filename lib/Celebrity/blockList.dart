@@ -11,6 +11,7 @@ import 'package:celepraty/Account/logging.dart' as login;
 import 'package:lottie/lottie.dart';
 
 import '../Account/LoggingSingUpAPI.dart';
+import '../ModelAPI/ModelsAPI.dart';
 
 class blockList extends StatefulWidget {
   _blockListState createState() => _blockListState();
@@ -42,7 +43,7 @@ class _blockListState extends State<blockList> {
   void initState() {
     DatabaseHelper.getToken().then((value) {
       setState(() {
-        userToken = value;
+        userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDI4MTY3ZWY1YWE0ZDBjZWQ0MDBjOTViMzBmNWQwZGFiNmY4MzgxMWU3YTUwMWUyMmYwMmMyZGU2YjRjOTIwOGI0MjFjNmZjZGM3YWMzZjUiLCJpYXQiOjE2NTM5ODg2MjAuNjgyMDE4OTk1Mjg1MDM0MTc5Njg3NSwibmJmIjoxNjUzOTg4NjIwLjY4MjAyNDk1NTc0OTUxMTcxODc1LCJleHAiOjE2ODU1MjQ2MjAuNjczNjY3OTA3NzE0ODQzNzUsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.OguFfzEWNOyCU4xSZ_PbLwg1xmyEbIMYAQ-J9wRApGKMq0qo1aEiM1OvcfvEaopxRiKngk-ckebhhcl7MRtGopNZcNjJwp9jWS7yZuyH7DBvct0O6tys47HL4eBU0QLwgmxMmh8nLkADARdIvVdZJFw9vLp-7X-4Huj6I2E1SFjeYnV6l7Fu_c1BYMAJmXpBwIALxTvwxg8tbxuhKmFBtLnnY3K25Tedra9IMc0nR_nXV3ifXdp4v7fsvbCLLYNr5ihc3ElE_QWczOvkkYeOPTP4yFMFlZFpWUNeER5wiEdbcO6WzzxzCRkLXriedWDI3G6qOrMAUAjiAUxS51--_7x9iI0qHalXHyGxgudUnAHGNsYpvLJ8JVCM2k_dtGazmZtA5w5wDSTI8gSuWUZxf2OpQNCmyt8k80Pbi_Olz2xDMSuDKYmiomWrUhwIwunk_gsU9lC5oLcEzJ2BLcaiiuwFex9xraMbbC1ZyipSIZZhW1l1CppYeYmPSxLC8hEIywRy5Lbvw-WQ25CpurNgEMiHefGooDxCsHqnkfWCQ1MnFAGiEs2hPtG7DVp8RArzCyXXaVrtVi2wbBFrCPDK52yNQxQjs3z8JBNlDwEFR2uDa-VRup61j2WESvyUKPMloD7gL7FsthAl6IZquYh7XujHWEcf1Lnprd6D5J6CPWM';
         getBlockList(userToken!);
       });
     });
@@ -104,6 +105,8 @@ class _blockListState extends State<blockList> {
 
   @override
   Widget build(BuildContext context) {
+    print(_posts.length.toString()+ 'inside the build');
+
     return Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
@@ -199,24 +202,14 @@ class _blockListState extends State<blockList> {
                                     CrossAxisAlignment.start,
                                     children: [
                                       SizedBox(
-                                        height: 10.h,
+                                        height: 35.h,
                                       ),
                                       text(context,  _posts[index].user!
                                           .name!, 14,
                                           black),
-                                      text(
-                                          context,
-                                          'وقت الحظر: ' +
-                                              _posts[index]
-                                                  .date.toString(),
-                                          14,
-                                          black),
-                                      text(context, 'الحظر بسبب ' +
-                                          _posts[index]
-                                              .banReson!.name!,
-                                          14, black),
+
                                       SizedBox(
-                                        height: 10.h,
+                                        height: 15.h,
                                       ),
                                       Row(
                                         children: [
@@ -283,9 +276,8 @@ class _blockListState extends State<blockList> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    try {
-      final response = await http.get(
 
+      final response = await http.get(
           Uri.parse('$_baseUrl?page=$_page'),
           headers: {
             'Content-Type': 'application/json',
@@ -310,15 +302,10 @@ class _blockListState extends State<blockList> {
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    } catch (err) {
-      if (kDebugMode) {
-        print('first load Something went wrong');
-      }
-    }
     setState(() {
       _isFirstLoadRunning = false;
     });
-
+    print(_posts.length.toString()+ 'inside the method');
   }
 
 }
@@ -421,8 +408,8 @@ class Celebrity {
   String? email;
   String? phonenumber;
   Country? country;
-  Null? city;
-  Null? gender;
+  City? city;
+  Gender? gender;
   AccountStatus? accountStatus;
   String? type;
 
@@ -448,8 +435,10 @@ class Celebrity {
     phonenumber = json['phonenumber'];
     country =
         json['country'] != null ? new Country.fromJson(json['country']) : null;
-    city = json['city'];
-    gender = json['gender'];
+    city =
+    json['city'] != null ? new City.fromJson(json['city']) : null;
+    gender =
+    json['gender'] != null ? new Gender.fromJson(json['gender']) : null;
     accountStatus = json['account_status'] != null
         ? new AccountStatus.fromJson(json['account_status'])
         : null;
@@ -530,7 +519,7 @@ class User {
   String? phonenumber;
   Country? country;
   City? city;
-  Null? gender;
+  Gender? gender;
   AccountStatus? accountStatus;
   String? type;
 
@@ -557,7 +546,7 @@ class User {
     country =
         json['country'] != null ? new Country.fromJson(json['country']) : null;
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
-    gender = json['gender'];
+    gender = json['gender'] != null ? new Gender.fromJson(json['gender']) : null;
     accountStatus = json['account_status'] != null
         ? new AccountStatus.fromJson(json['account_status'])
         : null;
