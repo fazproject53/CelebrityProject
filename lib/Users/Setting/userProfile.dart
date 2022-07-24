@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
@@ -219,6 +220,7 @@ class _userProfileState extends State<userProfile>
                               8,
                               8,
                               CircleAvatar(
+                                backgroundColor: lightGrey.withOpacity(0.30),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100.r),
                                   child: userImage != null? Image.file(userImage!,fit: BoxFit.fill,
@@ -231,22 +233,11 @@ class _userProfileState extends State<userProfile>
                                         (context, child, loadingProgress) {
                                       if (loadingProgress == null) return child;
                                       return Center(
-                                        child: CircularProgressIndicator(
-                                          backgroundColor: grey,
-                                          value: loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                              : null,
-                                        ),
+                                          child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
                                       );
                                     },
                                   ),
                                 ),
-                                backgroundColor: lightGrey,
                                 radius: 55.r,
                               ),
                             ),

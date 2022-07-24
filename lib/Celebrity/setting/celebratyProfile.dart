@@ -4,6 +4,7 @@ import 'package:celepraty/Users/Setting/userProfile.dart';
 import 'package:celepraty/celebrity/setting/profileInformation.dart' as info;
 import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'dart:io';
@@ -228,6 +229,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
                               8,
                               8,
                               CircleAvatar(
+                                backgroundColor: lightGrey.withOpacity(0.30),
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(70.r),
                                           child: imagefile != null? Image.file(imagefile!,fit: BoxFit.fill,
@@ -238,18 +240,11 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                             loadingBuilder : (context, child, loadingProgress) {
                                             if (loadingProgress == null) return child;
                                             return Center(
-                                              child: CircularProgressIndicator(
-                                                backgroundColor: grey,
-                                                value: loadingProgress.expectedTotalBytes != null
-                                                    ? loadingProgress.cumulativeBytesLoaded /
-                                                    loadingProgress.expectedTotalBytes!
-                                                    : null,
-                                              ),
+                                                child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
                                             );
                                                   },),
                                         ),
                                 radius: 55.r,
-                                backgroundColor: lightGrey,
                                       ),
                             ),
                             onTap: () {
