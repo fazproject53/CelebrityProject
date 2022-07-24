@@ -341,6 +341,10 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                 child: internetConnection(
                     context, reload: () {
                   CheckUserConnection();
+                  budgets = fetchBudget();
+                  platforms = fetchPlatform();
+                  countries = fetCountries();
+                  categories = fetCategories();
                 })))
       ),
     );
