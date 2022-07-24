@@ -121,7 +121,6 @@ class _blockListState extends State<blockList> {
 
   @override
   Widget build(BuildContext context) {
-    CheckUserConnection();
     print(_posts.length.toString()+ 'inside the build');
 
     return Directionality(

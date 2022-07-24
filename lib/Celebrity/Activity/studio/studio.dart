@@ -186,9 +186,12 @@ class _StudioState extends State<Studio> {
             : SingleChildScrollView(
           controller: _controller,
           child: _isFirstLoadRunning
-              ?  ActiveConnection?Center(
+              ?  ActiveConnection?Container(
+            height: getSize(context).height/1.5,
+                child: Center(
             child: mainLoad(context),
-          ):Center(
+          ),
+              ):Center(
               child:SizedBox(
                   height: 300.h,
                   width: 250.w,
