@@ -45,7 +45,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
   bool timeoutException = true;
   bool serverExceptions = true;
 
-  bool activeConnection = false;
+  bool activeConnection = true;
   String T = "";
 
   ///---------------------------------------------------------------------------

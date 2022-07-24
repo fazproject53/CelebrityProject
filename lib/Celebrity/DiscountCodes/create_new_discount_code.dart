@@ -74,7 +74,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
   bool timeoutException = true;
   bool serverExceptions = true;
 
-  bool activeConnection = false;
+  bool activeConnection = true;
   String T = "";
 
   @override
@@ -92,7 +92,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
 
   @override
   Widget build(BuildContext context) {
-    checkUserConnection();
+
     return Directionality(
         textDirection: TextDirection.rtl,
         child:  Scaffold(

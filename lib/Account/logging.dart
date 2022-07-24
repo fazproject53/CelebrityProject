@@ -135,8 +135,7 @@ class _LoggingState extends State<Logging> {
                               if (logKey.currentState?.validate() == true) {
                                 loadingDialogue(context);
                                 databaseHelper
-                                    .loggingMethod(lgoingEmailConttroller.text,
-                                        lgoingPassConttroller.text)
+                                    .loggingMethod(lgoingEmailConttroller.text, lgoingPassConttroller.text)
                                     .then((result) {
 //if user select remember me----------------------------------------------------------------------------
 

@@ -48,7 +48,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
   bool timeoutException = true;
   bool serverExceptions = true;
 
-  bool activeConnection = false;
+  bool activeConnection = true;
   String T = "";
 
   @override
@@ -73,7 +73,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
 
   @override
   Widget build(BuildContext context) {
-    checkUserConnection();
+
     return activeConnection ? SafeArea(
       child: Column(children: [
         Expanded(

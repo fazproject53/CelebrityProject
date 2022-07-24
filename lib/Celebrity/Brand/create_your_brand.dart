@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 import 'ModelBrand.dart';
 
@@ -29,7 +30,7 @@ class _YourBrandHomeState extends State<YourBrandHome> {
   bool timeoutException = true;
   bool serverExceptions = true;
 
-  bool activeConnection = false;
+  bool activeConnection = true;
   String T = "";
 
   String? userToken;
@@ -51,45 +52,82 @@ class _YourBrandHomeState extends State<YourBrandHome> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: drowAppBar("علامتك التجارية", context),
-        body: activeConnection ?  Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              alignment: Alignment.topRight,
-              child: Padding(
-                ///Main title
-                padding: EdgeInsets.only(top: 25.h, right: 20.w),
-                child: text(
-                  context,
-                  "قم بإنشاء علامتك التجارية الان",
-                  19,
-                  ligthtBlack,fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+        body: activeConnection ?  SingleChildScrollView(
+          child: FutureBuilder<ModelBrand>(
+            future: brand,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: mainLoad(context));
+              }else if(snapshot.connectionState == ConnectionState.active ||
+                  snapshot.connectionState == ConnectionState.done){
+                if (snapshot.hasError) {
+                  if (snapshot.error.toString() == 'SocketException') {
+                    return Center(
+                        child: SizedBox(
+                            height: 500.h,
+                            width: 250.w,
+                            child: internetConnection(context, reload: () {
+                              setState(() {
+                                brand = getBrandInfo(userToken!);
+                                isConnectSection = true;
+                              });
+                            })));
+                  } else {
+                    return const Center(
+                        child: Text('حدث خطا ما اثناء استرجاع البيانات'));
+                  }
+                  //---------------------------------------------------------------------------
+                }else if (snapshot.hasData) {
+                  return  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          ///Main title
+                          padding: EdgeInsets.only(top: 25.h, right: 20.w),
+                          child: text(
+                            context,
+                            snapshot.data!.data!.title!,
+                            19,
+                            ligthtBlack,fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
 
-            ///Text Description
-            Padding(
-              padding: EdgeInsets.only(top: 15.h,right: 20.w,left: 50.w),
-              child: text(context,'وصف العلامة وصف العلامة وصف العلامة وصف العلامة وصف العلامة وصف العلامة وصف العلامة وصف العلامة وصف العلامة وصف العلامة',14,ligthtBlack,
-                  align: TextAlign.justify),
-            ),
-            ///Buttons to go to ALmattager app (outside api)
-            Container(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: EdgeInsets.only(top: 20.h, right: 20.w),
-                child: gradientContainerNoborder(
-                  140.0,
-                  buttoms(
-                    context,
-                    "إنشاء علامتك", 15, white, () {}, evaluation: 0,
-                  ),
-                  height: 40,
-                ),
-              ),
-            )
-          ],
+                      ///Text Description
+                      Padding(
+                        padding: EdgeInsets.only(top: 15.h,right: 20.w,left: 50.w),
+                        child: text(context,snapshot.data!.data!.description!,14,ligthtBlack,
+                            align: TextAlign.justify),
+                      ),
+                      ///Buttons to go to ALmattager app (outside api)
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 20.h, right: 20.w),
+                          child: gradientContainerNoborder(
+                            140.0,
+                            buttoms(
+                              context,
+                              "إنشاء علامتك", 15, white, () => launch(snapshot.data!.data!.link!), evaluation: 0,
+                            ),
+                            height: 40,
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                }else{
+                  return const Center(child: Text('Empty data'));
+                }
+
+              }else{
+                return Center(
+                    child: Text('State: ${snapshot.connectionState}'));
+              }
+            },
+          ),
         ) : Center(
             child: SizedBox(
                 height: 300.h,
@@ -107,7 +145,7 @@ class _YourBrandHomeState extends State<YourBrandHome> {
 Future<ModelBrand> getBrandInfo(String token) async {
   try {
     final response = await http.get(
-        Uri.parse('https://mobile.celebrityads.net/api/celebrity/price'),
+        Uri.parse('https://mobile.celebrityads.net/api/brand'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

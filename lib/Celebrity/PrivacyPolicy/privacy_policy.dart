@@ -8,7 +8,6 @@ import 'package:celepraty/Models/Methods/classes/GradientIcon.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import '../../Account/LoggingSingUpAPI.dart';
@@ -62,7 +61,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
   bool timeoutException = true;
   bool serverExceptions = true;
 
-  bool activeConnection = false;
+  bool activeConnection = true;
   String T = "";
 
   @override
@@ -80,7 +79,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
 
   @override
   Widget build(BuildContext context) {
-    checkUserConnection();
+
     return GestureDetector(
       child: activeConnection ? SafeArea(
         child: Column(

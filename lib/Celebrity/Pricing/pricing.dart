@@ -64,7 +64,7 @@ class _PricingHomeState extends State<PricingHome> {
   bool timeoutException = true;
   bool serverExceptions = true;
 
-  bool activeConnection = false;
+  bool activeConnection = true;
   String T = "";
   @override
   void initState() {
@@ -80,11 +80,9 @@ class _PricingHomeState extends State<PricingHome> {
 
   @override
   Widget build(BuildContext context) {
-    checkUserConnection();
+
     return GestureDetector(
-
       child: activeConnection ? SafeArea(
-
         child: SingleChildScrollView(
           child: FutureBuilder<Pricing>(
               future: pricing,
