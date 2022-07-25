@@ -308,7 +308,8 @@ class _StudioState extends State<Studio> {
                                                   margin: EdgeInsets.only(
                                                       bottom: 2.h, top: 2.h),
                                                   alignment: Alignment
-                                                      .centerRight,):InkWell(
+                                                      .centerRight,
+                                                ):InkWell(
                                                   onTap: (){
                                                     Navigator.push(
                                                         context,
@@ -316,11 +317,17 @@ class _StudioState extends State<Studio> {
                                                             builder: (context) => viewData(
                                                               video:_posts[index].image!,
                                                             )));},
-                                                        child: VideoPlayer(
+                                                        child: Stack(
+                                                          alignment: Alignment.center,
+                                                          children: [
+                                                            Icon(Icons.play_arrow, color: purple,size: 40.h,),
+                                                            VideoPlayer(
                                                     VideoPlayerController
-                                                          .network(
-                                                          _posts[index].image!)
-                                                        ..initialize()),
+                                                              .network(
+                                                              _posts[index].image!)
+                                                            ..initialize()),
+                                                          ],
+                                                        ),
                                                       )),
 
                                           ),
