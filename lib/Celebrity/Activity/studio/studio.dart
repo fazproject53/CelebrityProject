@@ -322,7 +322,7 @@ class _StudioState extends State<Studio> {
                                                           children: [
                                                             Icon(Icons.play_arrow, color: purple,size: 40.h,),
                                                             VideoPlayer(
-                                                    VideoPlayerController
+                                                                VideoPlayerController
                                                               .network(
                                                               _posts[index].image!)
                                                             ..initialize()),
