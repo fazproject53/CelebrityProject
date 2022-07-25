@@ -102,11 +102,7 @@ class _addNewsState extends State<addNews> {
                             addNews(userToken!).then((value) => {
                                   value.contains('true')
                                       ? {
-                                          goTopageReplacement(
-                                              context,
-                                              ActivityScreen(
-                                                move: 'nn',
-                                              )),
+                                    gotoPageAndRemovePrevious(context, ActivityScreen(move: 'nn',)),
                                           //done
                                           showMassage(context, 'تم بنجاح',
                                               value.replaceAll('true', ''),

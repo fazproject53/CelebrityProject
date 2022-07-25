@@ -1570,6 +1570,12 @@ SnackBar snackBar(context, String title, Color? color, IconData? icon) {
       ));
 }
 
+//  Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (BuildContext context) =>  ActivityScreen(move: 'nn',)),  (route) => route.isFirst),
+
+ gotoPageAndRemovePrevious(context, page) {
+   Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (BuildContext context) =>  page),  (route) => route.isFirst);
+}
+
 Widget mainLoad(context) {
   return SizedBox(
     height: MediaQuery.of(context).size.height,

@@ -110,9 +110,7 @@ class _addphotoState extends State<addphoto> {
                                     addPhoto(userToken!).then((value) =>
 
                                     value == ''? {
-                                      goTopageReplacement(
-                                          context,
-                                          ActivityScreen()),
+                                      gotoPageAndRemovePrevious(context, ActivityScreen()),
                                     showMassage(context, 'تم بنجاح',
                                         'تمت الاضافة بنجاح', done: done),}:
                                     showMassage(context, 'خطا', value.replaceAll('حدث خطا ما الرجاء المحاولة لاحقا', ''),),

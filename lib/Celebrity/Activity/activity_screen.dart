@@ -57,6 +57,7 @@ class _ActivityScreenMainState extends State<ActivityScreen> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
