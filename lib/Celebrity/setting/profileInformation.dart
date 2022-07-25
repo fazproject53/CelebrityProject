@@ -308,15 +308,17 @@ class _profileInformaionState extends State<profileInformaion>
                             snapshot.data!.data!.celebrity!
                                 .country !=
                                 null
-                                ?{ country = snapshot.data!.data!
+                                ?{
+                              getid.forEach((key, value) {
+                                if (value == snapshot.data!.data!
+                                    .celebrity!.country!.name!) {
+                                  countryi =key+1;
+                                  print('country in build ============================ ' + (key +1).toString());
+                                }
+                              }),
+                              country = snapshot.data!.data!
                                 .celebrity!.country!.name!,
-                        getid.forEach((key, value) {
-                        if (value == snapshot.data!.data!
-                            .celebrity!.country!.name!) {
-                       countryi =key+1;
-                       print('country in build ============================ ' + (key +1).toString());
-                        }
-                        })}
+                      }
                                 : '',
                             snapshot.data!.data!.celebrity!.city !=
                                 null
