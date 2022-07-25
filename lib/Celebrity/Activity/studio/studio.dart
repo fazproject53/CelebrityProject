@@ -302,7 +302,7 @@ class _StudioState extends State<Studio> {
                                             ),
                                                   ) : Container(
                                                 height: double.infinity.h,
-                                                width: 100.w,
+                                                width: double.infinity.w,
                                                 child: _posts[index].image! == null? Container( width: 125.w ,
                                                   color: lightGrey.withOpacity(0.30),
                                                   margin: EdgeInsets.only(
