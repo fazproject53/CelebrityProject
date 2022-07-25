@@ -32,7 +32,8 @@ class _profileInformaionState extends State<profileInformaion>
   Future<CategoryL>? categories;
   bool countryChanged = false;
   bool? citychosen;
-  int? cityi;
+
+  int? cityi, countryi, genderi,categoryi;
   String? userToken;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -265,7 +266,9 @@ class _profileInformaionState extends State<profileInformaion>
                                 ? {
                               gender = snapshot.data!.data!
                                   .celebrity!.gender!.name!,
-                              genderChosen = true
+                              genderChosen = true,
+                              genderi =  snapshot.data!.data!
+                                  .celebrity!.gender!.id
                             }
                                 : gender,
                             pageLink.text = snapshot
@@ -291,14 +294,29 @@ class _profileInformaionState extends State<profileInformaion>
                             snapshot.data!.data!.celebrity!
                                 .category !=
                                 null
-                                ? category = snapshot.data!.data!
-                                .celebrity!.category!.name!
+                                ? {category = snapshot.data!.data!
+                                .celebrity!.category!.name!,
+                              categoriesId.forEach((key, value) {
+                                if (value == snapshot.data!.data!
+                                    .celebrity!.category!.name!) {
+                                  categoryi =key;
+                                }
+                              })
+
+                        }
                                 : '',
                             snapshot.data!.data!.celebrity!
                                 .country !=
                                 null
-                                ? country = snapshot.data!.data!
-                                .celebrity!.country!.name!
+                                ?{ country = snapshot.data!.data!
+                                .celebrity!.country!.name!,
+                        getid.forEach((key, value) {
+                        if (value == snapshot.data!.data!
+                            .celebrity!.country!.name!) {
+                       countryi =key+1;
+                       print('country in build ============================ ' + (key +1).toString());
+                        }
+                        })}
                                 : '',
                             snapshot.data!.data!.celebrity!.city !=
                                 null
@@ -1512,7 +1530,7 @@ class _profileInformaionState extends State<profileInformaion>
         catId = key + 1;
       }
     });
-    try {
+    // try {
       final response = await http.post(
         Uri.parse(
           'https://mobile.celebrityads.net/api/celebrity/profile/update',
@@ -1528,7 +1546,7 @@ class _profileInformaionState extends State<profileInformaion>
           'password': password.text,
           'phonenumber': phone.text,
           'country_id':
-          _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
+          _selectedTest3 == null ? countryi: countrylist.indexOf(_selectedTest3),
           'city_id': _selectedTest == null ? cityi : _selectedTest['no'],
           'category_id':
           _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
@@ -1539,7 +1557,7 @@ class _profileInformaionState extends State<profileInformaion>
           'twitter': twitter.text,
           'facebook': facebook.text,
           'description': desc.text,
-          'gender_id': _selectedTest4 == null ? 1 : _selectedTest4['no'],
+          'gender_id': _selectedTest4 == null ? genderi : _selectedTest4['no'],
           'store' : '',
         }),
       );
@@ -1553,16 +1571,16 @@ class _profileInformaionState extends State<profileInformaion>
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    }catch (e) {
-      if (e is SocketException) {
-        return 'SocketException';
-      } else if(e is TimeoutException) {
-        return 'TimeoutException';
-      } else {
-        return 'serverException';
-
-      }
-    }
+    // }catch (e) {
+    //   if (e is SocketException) {
+    //     return 'SocketException';
+    //   } else if(e is TimeoutException) {
+    //     return 'TimeoutException';
+    //   } else {
+    //     return 'serverException';
+    //
+    //   }
+    // }
   }
 
   Future<String> changePassword() async {

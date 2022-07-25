@@ -64,6 +64,7 @@ class _userInformationState extends State<userInformation> {
   var currentFocus;
   var citilist = [];
 
+  int? countryi, genderi,categoryi;
   var countrylist = [];
 
   List<DropdownMenuItem<Object?>> _dropdownTestItems = [];
@@ -198,8 +199,16 @@ class _userInformationState extends State<userInformation> {
                     phone.text =
                     snapshot.data!.data!.user!.phonenumber!,
                     password.text = "********",
-                    country = snapshot.data!.data!.user!.country != null
-                        ? snapshot.data!.data!.user!.country!.name!
+                    snapshot.data!.data!.user!.country != null
+                        ? { country =snapshot.data!.data!.user!.country!.name!,
+                      getid.forEach((key, value) {
+                        if (value == snapshot.data!.data!
+                            .user!.country!.name!) {
+                          countryi =key+1;
+                          print('country in build ============================ ' + (key +1).toString());
+                        }
+                      })
+                    }
                         : '',
                   snapshot.data!.data!.user!.city != null? {
                       city = snapshot.data!.data!.user!.city!.name.toString(),
@@ -931,7 +940,7 @@ class _userInformationState extends State<userInformation> {
           'phonenumber':
           countrycode != null ? countrycode! + phone.text : phone.text,
           'country_id':
-          _selectedTest3 == null ? 1 : countrylist.indexOf(_selectedTest3),
+          _selectedTest3 == null ?  countryi : countrylist.indexOf(_selectedTest3),
           'city_id': _selectedTest == null ? cityi : _selectedTest['no'],
         }),
       );
