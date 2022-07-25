@@ -38,6 +38,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
   bool isSelect = false;
   Future<introModel>? celebrityHome;
 
+  ///Video player section
+  VideoPlayerController? _videoPlayerController;
+  bool clicked = false;
+
   ///list of string to store the advertising area images
   List<String> advImage = [];
 
@@ -245,7 +249,6 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
   @override
   Widget build(BuildContext context) {
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -302,25 +305,30 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         width: 500.w,
                                         height: 400.h,
                                         child: Image.network(
-                                            snapshot.data!.data!.celebrity!.image!,
-                                          fit: BoxFit.cover,
-                                            color:
-                                            black.withOpacity(0.4),
-                                          colorBlendMode: BlendMode.darken,
-                                            loadingBuilder : (context, child, loadingProgress) {
-                                              if (loadingProgress == null) return child;
-                                              return Center(
-                                                child: CircularProgressIndicator(
-                                                  backgroundColor: grey,
-                                                  color: purple.withOpacity(0.5),
-                                                  value: loadingProgress.expectedTotalBytes != null
-                                                      ? loadingProgress.cumulativeBytesLoaded /
-                                                      loadingProgress.expectedTotalBytes!
-                                                      : null,
-                                                ),
-                                              );
-                                            }
-                                        ),
+                                            snapshot
+                                                .data!.data!.celebrity!.image!,
+                                            fit: BoxFit.cover,
+                                            color: black.withOpacity(0.4),
+                                            colorBlendMode: BlendMode.darken,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              backgroundColor: grey,
+                                              color: purple.withOpacity(0.5),
+                                              value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                  : null,
+                                            ),
+                                          );
+                                        }),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
@@ -341,7 +349,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         ),
                                       ),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(
@@ -421,20 +430,20 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                           ),
 
                                           Padding(
-                                            padding: EdgeInsets.only(top: 12.h,right: 25.w
-                                            ),
+                                            padding: EdgeInsets.only(
+                                                top: 12.h, right: 25.w),
                                             child: text(
-                                                context,
-                                                snapshot.data!.data!.celebrity!
-                                                    .description!,
-                                                14,
-                                                white.withOpacity(0.9),
-                                                ),
+                                              context,
+                                              snapshot.data!.data!.celebrity!
+                                                  .description!,
+                                              14,
+                                              white.withOpacity(0.9),
+                                            ),
                                           ),
                                           Container(
                                               alignment: Alignment.centerRight,
-                                              margin:
-                                                  EdgeInsets.only(top: 12.h,right: 25.w),
+                                              margin: EdgeInsets.only(
+                                                  top: 12.h, right: 25.w),
                                               child: InkWell(
                                                   onTap: () {
                                                     showDialogFunc(
@@ -557,7 +566,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding:  EdgeInsets.only(left: 8.w),
+                                                  padding: EdgeInsets.only(
+                                                      left: 8.w),
                                                   child: SizedBox(
                                                     width: 30,
                                                     height: 30,
@@ -602,7 +612,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                         } else {
                                                           await launch(url,
                                                               forceWebView:
-                                                              true);
+                                                                  true);
                                                         }
                                                       },
                                                     ),
@@ -663,7 +673,6 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                       colors: [
                                                         Color(0xffe468ca),
                                                         Color(0xff0ab3d0),
-
                                                       ],
                                                       stops: [0.0, 1.0],
                                                     ),
@@ -674,20 +683,39 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                     child: Row(
                                                       children: [
                                                         CircleAvatar(
-                                                          backgroundImage: Image.network(snapshot.data!.data!.celebrity!.image!,
-                                                              loadingBuilder : (context, child, loadingProgress) {
-                                                                if (loadingProgress == null) return child;
-                                                                return Center(
-                                                                  child: CircularProgressIndicator(
-                                                                    backgroundColor: grey,
-                                                                    color: purple.withOpacity(0.5),
-                                                                    value: loadingProgress.expectedTotalBytes != null
-                                                                        ? loadingProgress.cumulativeBytesLoaded /
-                                                                        loadingProgress.expectedTotalBytes!
-                                                                        : null,
-                                                                  ),
-                                                                );
-                                                              }).image,
+                                                          backgroundImage:
+                                                              Image.network(
+                                                                  snapshot
+                                                                      .data!
+                                                                      .data!
+                                                                      .celebrity!
+                                                                      .image!,
+                                                                  loadingBuilder:
+                                                                      (context,
+                                                                          child,
+                                                                          loadingProgress) {
+                                                            if (loadingProgress ==
+                                                                null)
+                                                              return child;
+                                                            return Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                backgroundColor:
+                                                                    grey,
+                                                                color: purple
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                value: loadingProgress
+                                                                            .expectedTotalBytes !=
+                                                                        null
+                                                                    ? loadingProgress
+                                                                            .cumulativeBytesLoaded /
+                                                                        loadingProgress
+                                                                            .expectedTotalBytes!
+                                                                    : null,
+                                                              ),
+                                                            );
+                                                          }).image,
                                                           radius: 30.r,
                                                         ),
                                                         SizedBox(
@@ -744,12 +772,12 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         color: black,
                                         borderRadius:
                                             BorderRadius.circular(7.r)),
-                                    child: imageSlider(advImage)
-                                ),
+                                    child: imageSlider(advImage)),
                               ),
 
                               Visibility(
-                                visible: snapshot.data!.data!.celebrity!.brand!.isNotEmpty,
+                                visible: snapshot
+                                    .data!.data!.celebrity!.brand!.isNotEmpty,
                                 child: SizedBox(
                                   height: 20.h,
                                 ),
@@ -757,7 +785,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
 
                               ///Container for celebrity store
                               Visibility(
-                                visible: snapshot.data!.data!.celebrity!.store!.isNotEmpty,
+                                visible: snapshot
+                                    .data!.data!.celebrity!.store!.isNotEmpty,
                                 child: Container(
                                   margin:
                                       EdgeInsets.only(right: 10.w, left: 10.w),
@@ -778,8 +807,11 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            text(context, 'قم بزيارة المتجر الان',
-                                                12, white),
+                                            text(
+                                                context,
+                                                'قم بزيارة المتجر الان',
+                                                12,
+                                                white),
                                             text(
                                                 context,
                                                 'المتجر الخاص بمروان بابلو',
@@ -809,8 +841,8 @@ class _CelebrityHomeState extends State<CelebrityHome>
                               ),
 
                               Visibility(
-                                visible: snapshot.data!.data!.celebrity!
-                                    .brand!.isNotEmpty,
+                                visible: snapshot
+                                    .data!.data!.celebrity!.brand!.isNotEmpty,
                                 child: SizedBox(
                                   height: 20.h,
                                 ),
@@ -850,17 +882,29 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                     _studio[i].type! == "image"
                                                         ? InkWell(
                                                             child: Image.network(
-                                                                _studio[i].image!,
-                                                                height: double.infinity, width: double.infinity,
-                                                                fit: BoxFit.cover,
-                                                                loadingBuilder : (context, child, loadingProgress) {
-                                                                  if (loadingProgress == null) return child;
-                                                                  return Center(
-                                                                    child: Lottie.asset('assets/lottie/grey.json',
-                                                                        height: 70.h, width: 70.w)
-                                                                  );
-                                                                }
-                                                            ),
+                                                                _studio[i]
+                                                                    .image!,
+                                                                height: double
+                                                                    .infinity,
+                                                                width: double
+                                                                    .infinity,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                loadingBuilder:
+                                                                    (context,
+                                                                        child,
+                                                                        loadingProgress) {
+                                                              if (loadingProgress ==
+                                                                  null)
+                                                                return child;
+                                                              return Center(
+                                                                  child: Lottie.asset(
+                                                                      'assets/lottie/grey.json',
+                                                                      height:
+                                                                          70.h,
+                                                                      width: 70
+                                                                          .w));
+                                                            }),
                                                             onTap: () {
                                                               Navigator.push(
                                                                   context,
@@ -872,63 +916,55 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                                           )));
                                                             },
                                                           )
-                                                    ///Video Section
-                                                        : Stack(
-                                                            children: [
-                                                              ///Video
-                                                              VideoPlayer(VideoPlayerController.network(_studio[i].image!,)..initialize()),
 
-                                                              ///Play Icon
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
+                                                        ///Video Section
+                                                        : InkWell(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          viewData(
+                                                                            video:
+                                                                                _studio[i].image!,
+                                                                          )));
+                                                            },
+                                                            child: Stack(
                                                                 children: [
-                                                                  ///play video
-                                                                  Expanded(
-                                                                    flex: 1,
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                          top: 10
-                                                                              .h,
-                                                                          right:
-                                                                              75.w),
-                                                                      child:
-                                                                          IconButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.push(
-                                                                              context,
-                                                                              MaterialPageRoute(
-                                                                                  builder: (context) => viewData(
-                                                                                        video: _studio[i].image!,
-                                                                                      )));
-                                                                          print(
-                                                                              'Tap it');
-                                                                        },
-                                                                        icon: GradientIcon(
-                                                                            playViduo,
-                                                                            40.sp,
-                                                                            const LinearGradient(
-                                                                              begin: Alignment(0.7, 2.0),
-                                                                              end: Alignment(-0.69, -1.0),
-                                                                              colors: [
-                                                                                Color(0xff0ab3d0),
-                                                                                Color(0xffe468ca)
-                                                                              ],
-                                                                              stops: [
-                                                                                0.0,
-                                                                                1.0
-                                                                              ],
-                                                                            )),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
+                                                                  VideoPlayer(
+                                                                      VideoPlayerController
+                                                                          .network(
+                                                                    _studio[i]
+                                                                        .image!,
+                                                                  )..initialize()),
+                                                                  Center(
+                                                                    child: GradientIcon(
+                                                                        playViduo,
+                                                                        40.sp,
+                                                                        const LinearGradient(
+                                                                          begin: Alignment(
+                                                                              0.7,
+                                                                              2.0),
+                                                                          end: Alignment(
+                                                                              -0.69,
+                                                                              -1.0),
+                                                                          colors: [
+                                                                            Color(0xff0ab3d0),
+                                                                            Color(0xffe468ca)
+                                                                          ],
+                                                                          stops: [
+                                                                            0.0,
+                                                                            1.0
+                                                                          ],
+                                                                        )),
+                                                                  )
+                                                                ]),
                                                           )
+
+                                                    ///Video
+                                                    //only show the videos
+
+                                                    ///Play Icon
                                                   ],
                                                 ),
                                               );
@@ -1183,8 +1219,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
               Container(
                   decoration: BoxDecoration(
                       border: Border.all(color: border),
-                      borderRadius:
-                           BorderRadius.all( Radius.circular(10.r))),
+                      borderRadius: BorderRadius.all(Radius.circular(10.r))),
                   alignment: Alignment.centerRight,
                   height: 70.h,
                   width: 70.w,
