@@ -177,7 +177,22 @@ class DatabaseHelper {
     }
     return "";
   }
+  //save first logging------------------------------------------------------------
+  static saveFirstLogging(String isLogging) async {
+    final prefs = await SharedPreferences.getInstance();
+    const key = 'isFirstLogging';
+    prefs.setString(key, isLogging);
+    print('save First Logging: $isLogging');
+  }
 
+  //get first logging------------------------------------------------------------
+  static Future<String> getFirstLogging() async {
+    final prefs = await SharedPreferences.getInstance();
+    const key = 'isFirstLogging';
+    String value = prefs.getString(key) ?? '';
+    print('get First Logging: $value');
+    return value;
+  }
   //save token------------------------------------------------------------
 
   static saveToken(String token) async {

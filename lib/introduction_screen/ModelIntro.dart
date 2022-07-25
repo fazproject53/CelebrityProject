@@ -93,15 +93,15 @@ Future<IntroData> getIntroData() async {
     print("------------Reading Intro from network");
     return header_;
   } else {
-    return Future.error('حدثت مشكله في السيرفر');
+    return Future.error('serverException');
   }
   }catch (e) {
     if (e is SocketException) {
-      return Future.error('تحقق من اتصالك بالانترنت');
+      return Future.error('SocketException');
     } else if (e is TimeoutException) {
       return Future.error('TimeoutException');
     } else {
-      return Future.error('حدثت مشكله في السيرفر');
+      return Future.error('serverException');
     }
   }
 }

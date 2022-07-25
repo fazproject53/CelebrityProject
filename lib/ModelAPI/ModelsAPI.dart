@@ -4,12 +4,11 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-List<int> getPagNumber = [];
-
+//List<int> getPagNumber = [];
 class Section {
   bool? success;
   List<DataSection>? data;
-  MessageSection? message;
+  Message? message;
 
   Section({this.success, this.data, this.message});
 
@@ -21,9 +20,8 @@ class Section {
         data!.add(new DataSection.fromJson(v));
       });
     }
-    message = json['message'] != null
-        ? new MessageSection.fromJson(json['message'])
-        : null;
+    message =
+    json['message'] != null ? new Message.fromJson(json['message']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -44,24 +42,27 @@ class DataSection {
   String? title;
   String? titleEn;
   String? image;
+  String? imageMobile;
   String? link;
   int? categoryId;
   int? active;
 
   DataSection(
       {this.sectionName,
-      this.title,
-      this.titleEn,
-      this.image,
-      this.link,
-      this.categoryId,
-      this.active});
+        this.title,
+        this.titleEn,
+        this.image,
+        this.imageMobile,
+        this.link,
+        this.categoryId,
+        this.active});
 
   DataSection.fromJson(Map<String, dynamic> json) {
     sectionName = json['section_name'];
     title = json['title'];
     titleEn = json['title_en'];
     image = json['image'];
+    imageMobile = json['image_mobile'];
     link = json['link'];
     categoryId = json['category_id'];
     active = json['active'];
@@ -73,6 +74,7 @@ class DataSection {
     data['title'] = this.title;
     data['title_en'] = this.titleEn;
     data['image'] = this.image;
+    data['image_mobile'] = this.imageMobile;
     data['link'] = this.link;
     data['category_id'] = this.categoryId;
     data['active'] = this.active;
@@ -730,7 +732,7 @@ Future<Category> fetchCategories(int id, int pagNumber) async {
       final body = response.body;
       Category category = Category.fromJson(jsonDecode(body));
       print("Reading category from network------------ ");
-      getPagNumber.add(1);
+     // getPagNumber.add(1);
       return category;
     } else {
       return Future.error('حدثت مشكله في السيرفر');

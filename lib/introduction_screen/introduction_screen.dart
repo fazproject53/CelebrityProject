@@ -1,5 +1,6 @@
 ///import section
 
+import 'package:celepraty/Account/LoggingSingUpAPI.dart';
 import 'package:celepraty/Account/Singup.dart';
 import 'package:celepraty/Account/logging.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -9,8 +10,11 @@ import 'package:celepraty/introduction_screen/screen_three.dart';
 import 'package:celepraty/introduction_screen/screen_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../Account/LoggingSingUpAPI.dart';
 import '../Models/Methods/method.dart';
+import '../main.dart';
 import 'ModelIntro.dart';
 
 class IntroductionScreen extends StatefulWidget {
@@ -97,7 +101,9 @@ class _IntroductionScreenState extends State<IntroductionScreen>
               children: [
                 ///Skip
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
+                    SharedPreferences preferences = await SharedPreferences.getInstance();
+                    await preferences.setInt('initScreen', 1);
                     goTopagepush(context,  SingUp());
 
                   },
@@ -130,8 +136,11 @@ class _IntroductionScreenState extends State<IntroductionScreen>
 
                 ///Start
                 InkWell(
-                    onTap: () {
+                    onTap: () async {
+                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                      await preferences.setInt('initScreen', 1);
                       goTopagepush(context,  SingUp());
+
                     },
                     child: Visibility(
                       visible: currentIndex == 3 ? true : false,

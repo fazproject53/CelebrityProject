@@ -19,10 +19,9 @@ int? initScreen;
 void main() async {
   //show splash screen one time
   WidgetsFlutterBinding.ensureInitialized();
-
   SharedPreferences preferences = await SharedPreferences.getInstance();
   initScreen = preferences.getInt('initScreen');
-  await preferences.setInt('initScreen', 1);
+
   runApp(
     MyApp(),
     // Wrap your app
@@ -39,7 +38,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
   Future<IntroData>? futureIntro;
   String? isLogging;
-  StreamSubscription? streamSubscription;
+  //StreamSubscription? streamSubscription;
   @override
   void initState() {
     super.initState();
@@ -52,11 +51,17 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
     print('isLogging:$isLogging');
   }
 
-  @override
-  void dispose() {
-    streamSubscription?.cancel();
-    super.dispose();
+  Future onRefresh() async {
+    setState(() {
+      futureIntro = getIntroData();
+    });
   }
+
+  // @override
+  // void dispose() {
+  //   streamSubscription?.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +74,8 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
         title: 'منصة المشاهير',
         theme: ThemeData(
           fontFamily: "Cairo",
-          colorScheme: ColorScheme.fromSwatch().copyWith(primary: purple.withOpacity(0.5)),
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(primary: purple.withOpacity(0.5)),
           scaffoldBackgroundColor: Colors.white,
         ),
         builder: (context, widget) {
@@ -90,8 +96,7 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
           'logging': (context) => Logging(),
           'MainScreen': (context) => const MainScreen(),
         },
-        //  home:
-        //  VerifyUser()
+        // home: firstPage()
       ),
     );
   }
@@ -102,8 +107,33 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
       future: futureIntro,
       builder: (BuildContext context, AsyncSnapshot<IntroData> snapshot) {
         var getData = snapshot.data;
-        if (snapshot.hasData) {
-          return IntroductionScreen(data: getData?.data);
+
+        if (snapshot.connectionState == ConnectionState.active ||
+            snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            if (snapshot.error.toString() == 'SocketException') {
+              return Scaffold(
+                body: Center(
+                    child: internetConnection(context, reload: () {
+                  setState(() {
+                    onRefresh();
+                  });
+                })),
+              );
+            } else {
+              return Scaffold(
+                body: Center(
+                    child: checkServerException(context, reload: () {
+                  setState(() {
+                    onRefresh();
+                  });
+                })),
+              );
+            }
+            //---------------------------------------------------------------------------
+          } else if (snapshot.hasData) {
+            return IntroductionScreen(data: getData?.data);
+          }
         }
         return Center(child: splash());
       },
@@ -120,14 +150,27 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 100.r,
-              backgroundColor: black,
+              radius: 80.r,
+              backgroundColor: white,
               backgroundImage: Image.asset(
                 'assets/image/log.png',
               ).image,
             ),
+            SizedBox(
+              height: 20.h,
+            ),
             text(context, 'مرحبا بكم في منصة المشاهير', 20, white,
-                align: TextAlign.center)
+                align: TextAlign.center),
+            SizedBox(
+              height: 40.h,
+            ),
+            Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 5.r,
+                backgroundColor: grey!,
+                color: Colors.purple,
+              ),
+            )
           ],
         ),
       ),
@@ -138,62 +181,3 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
-// import 'package:video_player/video_player.dart';
-// import 'package:flutter/material.dart';
-//
-// void main() => runApp(VideoApp());
-//
-// class VideoApp extends StatefulWidget {
-//   @override
-//   _VideoAppState createState() => _VideoAppState();
-// }
-//
-// class _VideoAppState extends State<VideoApp> {
-//   late VideoPlayerController _controller;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller = VideoPlayerController.network(
-//         'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
-//       ..initialize().then((_) {
-//         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-//         setState(() {});
-//       });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Video Demo',
-//       home: Scaffold(
-//         body: Center(
-//           child: _controller.value.isInitialized
-//               ? AspectRatio(
-//             aspectRatio: _controller.value.aspectRatio,
-//             child: VideoPlayer(_controller),
-//           )
-//               : Container(),
-//         ),
-//         floatingActionButton: FloatingActionButton(
-//           onPressed: () {
-//             setState(() {
-//               _controller.value.isPlaying
-//                   ? _controller.pause()
-//                   : _controller.play();
-//             });
-//           },
-//           child: Icon(
-//             _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     _controller.dispose();
-//   }
-//}
