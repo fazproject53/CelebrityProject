@@ -486,7 +486,7 @@ String? userToken;
                                                                               child: text(context, 'هل انت متأكد من انك تريد حذف الخبر ؟', 14, black,)),
                                                                           actions: <Widget>[
                                                                             Padding(
-                                                                              padding:  EdgeInsets.only(top: 0.h,),
+                                                                              padding:  EdgeInsets.only(top: 0.h,right: 110.w),
                                                                               child: TextButton(
                                                                                   onPressed: () =>
                                                                                       Navigator.pop(

@@ -434,7 +434,7 @@ class _StudioState extends State<Studio> {
                                                     actions: <Widget>[
                                                       Padding(
                                                         padding: EdgeInsets
-                                                            .only(top: 0.h,),
+                                                            .only(top: 0.h, right: 110.w),
                                                         child: TextButton(
                                                             onPressed: () =>
                                                                 Navigator.pop(

@@ -44,7 +44,7 @@ class _blockListState extends State<blockList> {
     CheckUserConnection();
     DatabaseHelper.getToken().then((value) {
       setState(() {
-        userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDI4MTY3ZWY1YWE0ZDBjZWQ0MDBjOTViMzBmNWQwZGFiNmY4MzgxMWU3YTUwMWUyMmYwMmMyZGU2YjRjOTIwOGI0MjFjNmZjZGM3YWMzZjUiLCJpYXQiOjE2NTM5ODg2MjAuNjgyMDE4OTk1Mjg1MDM0MTc5Njg3NSwibmJmIjoxNjUzOTg4NjIwLjY4MjAyNDk1NTc0OTUxMTcxODc1LCJleHAiOjE2ODU1MjQ2MjAuNjczNjY3OTA3NzE0ODQzNzUsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.OguFfzEWNOyCU4xSZ_PbLwg1xmyEbIMYAQ-J9wRApGKMq0qo1aEiM1OvcfvEaopxRiKngk-ckebhhcl7MRtGopNZcNjJwp9jWS7yZuyH7DBvct0O6tys47HL4eBU0QLwgmxMmh8nLkADARdIvVdZJFw9vLp-7X-4Huj6I2E1SFjeYnV6l7Fu_c1BYMAJmXpBwIALxTvwxg8tbxuhKmFBtLnnY3K25Tedra9IMc0nR_nXV3ifXdp4v7fsvbCLLYNr5ihc3ElE_QWczOvkkYeOPTP4yFMFlZFpWUNeER5wiEdbcO6WzzxzCRkLXriedWDI3G6qOrMAUAjiAUxS51--_7x9iI0qHalXHyGxgudUnAHGNsYpvLJ8JVCM2k_dtGazmZtA5w5wDSTI8gSuWUZxf2OpQNCmyt8k80Pbi_Olz2xDMSuDKYmiomWrUhwIwunk_gsU9lC5oLcEzJ2BLcaiiuwFex9xraMbbC1ZyipSIZZhW1l1CppYeYmPSxLC8hEIywRy5Lbvw-WQ25CpurNgEMiHefGooDxCsHqnkfWCQ1MnFAGiEs2hPtG7DVp8RArzCyXXaVrtVi2wbBFrCPDK52yNQxQjs3z8JBNlDwEFR2uDa-VRup61j2WESvyUKPMloD7gL7FsthAl6IZquYh7XujHWEcf1Lnprd6D5J6CPWM';
+        userToken = value;
         getBlockList(userToken!);
       });
     });
@@ -251,7 +251,47 @@ class _blockListState extends State<blockList> {
                                             80,
                                             33,
                                             buttoms(context, 'فك الحظر',
-                                                12, white, () {}),
+                                                12, white, () {
+                                                 setState(() {
+                                                   showDialog<String>(
+                                                     context: context,
+                                                     builder: (BuildContext context) =>
+                                                         AlertDialog(
+                                                           title: Directionality(
+                                                               textDirection: TextDirection.rtl,
+                                                               child: text(context, 'فك الحظر', 16, black,)),
+                                                           content: Directionality(
+                                                               textDirection: TextDirection.rtl,
+                                                               child: text(context, 'هل انت متأكد من انك تريد فك الحظر عن المستخدم ؟', 14, black,)),
+                                                           actions: <Widget>[
+                                                             Padding(
+                                                               padding:  EdgeInsets.only(right: 110.w ,top: 0.h,),
+                                                               child: TextButton(
+                                                                   onPressed: () =>
+                                                                       Navigator.pop(
+                                                                           context,
+                                                                           'تراجع'),
+                                                                   child: text(context, 'تراجع', 15, purple)
+                                                               ),
+                                                             ),
+                                                             Padding(
+                                                               padding:  EdgeInsets.only(bottom: 0.h, right: 0.w),
+                                                               child: TextButton(
+                                                                   onPressed: () => setState(() {
+                                                                     deleteBlock(_posts[index].id!,userToken!);
+                                                                     Navigator.pop(
+                                                                         context,
+                                                                         'تاكيد');
+
+                                                                   }),
+                                                                   child: text(context, 'تاكيد', 15, purple)
+                                                               ),
+                                                             ),
+                                                           ],
+                                                         ),);
+
+                                                 });
+                                                }),
                                           ),
                                           SizedBox(
                                             width: 10.w,
@@ -304,6 +344,33 @@ class _blockListState extends State<blockList> {
               ),
                       ]),
         ));
+  }
+
+  Future<http.Response> deleteBlock(int id, String token) async {
+
+    final http.Response response = await http.get(
+      Uri.parse('https://mobile.celebrityads.net/api/celebrity/black-list/unban/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    setState(() {
+      _posts.clear();
+      _page = 1;
+      // There is next page or not
+      _hasNextPage = true;
+
+      // Used to display loading indicators when _firstLoad function is running
+      _isFirstLoadRunning = false;
+
+      // Used to display loading indicators when _loadMore function is running
+      _isLoadMoreRunning = false;
+      getBlockList(userToken!);
+    });
+    return response;
   }
   void getBlockList(String tokenn) async {
     var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDI4MTY3ZWY1YWE0ZDBjZWQ0MDBjOTViMzBmNWQwZGFiNmY4MzgxMWU3YTUwMWUyMmYwMmMyZGU2YjRjOTIwOGI0MjFjNmZjZGM3YWMzZjUiLCJpYXQiOjE2NTM5ODg2MjAuNjgyMDE4OTk1Mjg1MDM0MTc5Njg3NSwibmJmIjoxNjUzOTg4NjIwLjY4MjAyNDk1NTc0OTUxMTcxODc1LCJleHAiOjE2ODU1MjQ2MjAuNjczNjY3OTA3NzE0ODQzNzUsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.OguFfzEWNOyCU4xSZ_PbLwg1xmyEbIMYAQ-J9wRApGKMq0qo1aEiM1OvcfvEaopxRiKngk-ckebhhcl7MRtGopNZcNjJwp9jWS7yZuyH7DBvct0O6tys47HL4eBU0QLwgmxMmh8nLkADARdIvVdZJFw9vLp-7X-4Huj6I2E1SFjeYnV6l7Fu_c1BYMAJmXpBwIALxTvwxg8tbxuhKmFBtLnnY3K25Tedra9IMc0nR_nXV3ifXdp4v7fsvbCLLYNr5ihc3ElE_QWczOvkkYeOPTP4yFMFlZFpWUNeER5wiEdbcO6WzzxzCRkLXriedWDI3G6qOrMAUAjiAUxS51--_7x9iI0qHalXHyGxgudUnAHGNsYpvLJ8JVCM2k_dtGazmZtA5w5wDSTI8gSuWUZxf2OpQNCmyt8k80Pbi_Olz2xDMSuDKYmiomWrUhwIwunk_gsU9lC5oLcEzJ2BLcaiiuwFex9xraMbbC1ZyipSIZZhW1l1CppYeYmPSxLC8hEIywRy5Lbvw-WQ25CpurNgEMiHefGooDxCsHqnkfWCQ1MnFAGiEs2hPtG7DVp8RArzCyXXaVrtVi2wbBFrCPDK52yNQxQjs3z8JBNlDwEFR2uDa-VRup61j2WESvyUKPMloD7gL7FsthAl6IZquYh7XujHWEcf1Lnprd6D5J6CPWM';
@@ -401,13 +468,15 @@ class Data {
 
 class BlackList {
   String? date;
+  int? id;
   Celebrity? celebrity;
   User? user;
   AccountStatus? banReson;
 
-  BlackList({this.date, this.celebrity, this.user, this.banReson});
+  BlackList({this.date, this.celebrity, this.user, this.banReson, this.id});
 
   BlackList.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     date = json['date'];
     celebrity = json['celebrity'] != null
         ? new Celebrity.fromJson(json['celebrity'])
@@ -421,6 +490,7 @@ class BlackList {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['date'] = this.date;
+    data['id'] = this.id;
     if (this.celebrity != null) {
       data['celebrity'] = this.celebrity!.toJson();
     }
