@@ -1733,23 +1733,5 @@ Widget waitingData(double height, double width) {
         )),
   );
 }
-Future<List<String>> getRecentSearchesCelebrity(String query) async {
-  final pref = await SharedPreferences.getInstance();
-  final allSearches = pref.getStringList("recentSearches");
-  return allSearches!.where(( String search)=> search.startsWith(query)).toList();
-}
 
-//save To Recent Searches Celebrity--------------------------------------------------------
-Future<void> saveToRecentSearchesCelebrity(String searchText) async {
-  if (searchText == null) return; //Should not be null
-  final pref = await SharedPreferences.getInstance();
-
-  //Use `Set` to avoid duplication of recentSearches
-  Set<String> allSearches =
-      pref.getStringList("recentSearches")?.toSet() ?? {};
-
-  //Place it at first in the set
-  allSearches = {searchText, ...allSearches};
-  pref.setStringList("recentSearches", allSearches.toList());
-}
 //tokens----------------------------------------------------------------------------------

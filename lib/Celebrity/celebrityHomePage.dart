@@ -39,12 +39,13 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   bool isConnectSection = true;
   bool timeoutException = true;
   bool serverExceptions = true;
+  bool endLode = false;
   DatabaseHelper h = DatabaseHelper();
   Future<Section>? sections;
   Future<link>? futureLinks;
   Future<header>? futureHeader;
   Future<Partner>? futurePartners;
-  List<getAllCelebrities> allCellbrity = [];
+  List<dynamic> allCellbrity = [];
   bool isLoading = true;
   int page = 1;
   @override
@@ -57,6 +58,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
       if (mounted) {
         setState(() {
           allCellbrity = value!;
+          endLode = true;
         });
       }
     });
@@ -66,13 +68,15 @@ class _celebrityHomePageState extends State<celebrityHomePage>
 
 //search history------------------------------
   Future<void> _showSearch() async {
-    await showSearch(
-      context: context,
-      delegate: CelebritySearch(
-        allCelbrity: allCellbrity,
-        onSearchChanged: getRecentSearchesCelebrity,
-      ),
-    );
+    endLode
+        ? await showSearch(
+            context: context,
+            delegate: CelebritySearch(
+              allCelbrity: allCellbrity,
+              // onSearchChanged: getRecentSearchesCelebrity,
+            ),
+          )
+        : print('lllllllllloding');
   }
 
   @override
@@ -127,13 +131,11 @@ class _celebrityHomePageState extends State<celebrityHomePage>
       textDirection: TextDirection.rtl,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: purple
-        ),
+        theme: ThemeData(primaryColor: purple),
         home: Scaffold(
           body: RefreshIndicator(
             color: white,
-            backgroundColor:purple ,
+            backgroundColor: purple,
             onRefresh: onRefresh,
             child: isConnectSection == false
                 ? Center(
@@ -204,7 +206,8 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                                             children: [
                                               for (int sectionIndex = 0;
                                                   sectionIndex <
-                                                      snapshot.data!.data!.length;
+                                                      snapshot
+                                                          .data!.data!.length;
                                                   sectionIndex++)
                                                 Column(
                                                   children: [
@@ -261,15 +264,18 @@ class _celebrityHomePageState extends State<celebrityHomePage>
                                                       advertisingBannerSection(
                                                         snapshot
                                                             .data
-                                                            ?.data![sectionIndex]
+                                                            ?.data![
+                                                                sectionIndex]
                                                             .active,
                                                         snapshot
                                                             .data
-                                                            ?.data![sectionIndex]
+                                                            ?.data![
+                                                                sectionIndex]
                                                             .imageMobile,
                                                         snapshot
                                                             .data
-                                                            ?.data![sectionIndex]
+                                                            ?.data![
+                                                                sectionIndex]
                                                             .link,
                                                       ),
 //join-us--------------------------------------------------------------------------
@@ -1462,7 +1468,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
       child: SafeArea(
         child: SizedBox(
           height: 70.h,
-         // color: red,
+          // color: red,
           //margin: EdgeInsets.only(top: 15.h),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1500,7 +1506,7 @@ class _celebrityHomePageState extends State<celebrityHomePage>
               InkWell(
                 child: GradientIcon(Icons.search, 35.sp, gradient()),
                 onTap: () {
-                  _showSearch();
+                  endLode ? _showSearch() : print('loding');
                 },
               ),
               //
@@ -1512,13 +1518,16 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   }
 
   //--------------------------------------------------------
-  Future<List<getAllCelebrities>?> getAllCelebrity() async {
+  getAllCelebrity() async {
     try {
       var getSections = await http
           .get(Uri.parse("https://mobile.celebrityads.net/api/celebrities"));
       if (getSections.statusCode == 200) {
         final body = getSections.body;
         AllCelebrities celebrity = AllCelebrities.fromJson(jsonDecode(body));
+        setState(() {
+          endLode = true;
+        });
         return celebrity.data!.celebrities;
       } else {
         return Future.error('serverExceptions');

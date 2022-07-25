@@ -3,6 +3,7 @@ import 'package:celepraty/Celebrity/Requests/Ads/AdvertisinApi.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import '../../../Account/UserForm.dart';
@@ -245,7 +246,30 @@ class _AdvDetialsState extends State<AdvDetials>
                 )
                     :
 //price field-------------------------------------------------------------------------------
-                const SizedBox()),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.r),
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: priceKey,
+                      child: textField2(
+                        context,
+                        money,
+                        widget.price! > 0
+                            ? "سعر الاعلان"
+                            : 'أدخل سعر الاعلان',
+                        14,
+                        false,
+                        price!,
+                        empty,
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        isEdit: widget.price! > 0 ? false : true,
+                      ),
+                    ),
+                  ),
+                )),
 
 //accept buttom-----------------------------------------------------
 
@@ -286,6 +310,7 @@ class _AdvDetialsState extends State<AdvDetials>
                                     widget.state == 6
                                 ? null
                                 : () {
+                              print('object');
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
                                     if (priceKey.currentState?.validate() ==

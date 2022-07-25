@@ -461,13 +461,11 @@ void singOut(context, String token) async {
   if (respons.statusCode == 200) {
     Navigator.pop(context);
     String massage = jsonDecode(respons.body)['message']['ar'];
-    ScaffoldMessenger.of(context)
-        .showSnackBar(snackBar(context, massage, green, done));
     DatabaseHelper.removeRememberToken();
     goTopageReplacement(context, Logging());
   } else {
     Navigator.pop(context);
-    throw Exception('logout field');
+    //throw Exception('logout field');
   }
 }
 
