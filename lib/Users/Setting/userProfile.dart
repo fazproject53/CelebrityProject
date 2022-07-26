@@ -209,16 +209,15 @@ class _userProfileState extends State<userProfile>
                                     ),
                                   ),
                                   onTap: () {
-                                    getImage().whenComplete(() => {
-                                      updateImageUser(userToken)
-                                          .whenComplete(() => {
-                                        if(userImage != null){  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
-                                        }
-                                      })});
+
                                   },
                                 ),
                                 SizedBox(height: 5.h),
-
+                                padding(
+                                  8,
+                                  8,
+                                  text(context, Logging.theUser!.name!, 20, black,
+                                      fontWeight: FontWeight.bold, family: 'Cairo'),),
 
                                 SingleChildScrollView(
                                   child: Container(
