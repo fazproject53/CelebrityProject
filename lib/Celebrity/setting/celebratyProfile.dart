@@ -32,9 +32,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:celepraty/Account/logging.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Account/LoggingSingUpAPI.dart';
 import '../../Account/TheUser.dart';
+import 'MediaAccounts.dart';
 
 CelebrityInformation? thecelerbrity = CelebrityInformation();
 
@@ -45,6 +47,7 @@ class celebratyProfile extends StatefulWidget {
 class _celebratyProfileState extends State<celebratyProfile> {
   String userToken = '';
   Future<CelebrityInformation>? celebrity;
+  Future<Media>? mediaAccounts;
 
   bool isConnectSection = true;
   bool timeoutException = true;
@@ -106,6 +109,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
       setState(() {
         userToken = value;
         celebrity = fetchCelebrities(userToken);
+        mediaAccounts = getAccounts();
       });
     });
   }
@@ -178,6 +182,42 @@ class _celebratyProfileState extends State<celebratyProfile> {
 
   }
 
+  Future<Media> getAccounts() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/social-media'),
+      );
+
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+
+        return Media.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
    // CheckUserConnection();
@@ -186,383 +226,441 @@ class _celebratyProfileState extends State<celebratyProfile> {
       child: Scaffold(
         appBar: AppBarNoIcon("حسابي"),
         body:  SingleChildScrollView(
-            child: FutureBuilder<CelebrityInformation>(
-              future: celebrity,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: mainLoad(context));
-                } else if (snapshot.connectionState == ConnectionState.active ||
-                    snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError) {
-                    if (snapshot.error.toString() ==
-                        'SocketException') {
-                      //
-                      return Center(
-                         child:  Column(children: [
-                            //======================== profile header ===============================
-
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 20.h,
-                                ),
-                          InkWell(
-                                                              child: padding(
-                                                                8,
-                                                                8,
-                                                                CircleAvatar(
-                                                                  backgroundColor: lightGrey.withOpacity(0.30),
-                                                                  child: ClipRRect(
-                                                                    borderRadius: BorderRadius.circular(100.r),
-                                                                    child: Icon(Icons.error, size: 30.h, color: red,),
-                                                                  ),
-                                                                  radius: 55.r,
-                                                                ),
-                                                              ),
-                                                              onTap: () {
-
-                                                              },
-                                                            ),
-                                                            SizedBox(height: 5.h),
-                                                            padding(
-                                                              8,
-                                                              8,
-                                                              text(context, Logging.theUser!.name!, 20, black,)
-                                                            )
-
-                              ],
-                            ), //profile image
-
-                            //=========================== buttons listView =============================
-
-                            SingleChildScrollView(
-                              child: Container(
-                                child: paddingg(
-                                  8,
-                                  0,
-                                  20,
-                                  ListView.separated(
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return MaterialButton(
-                                          onPressed: index == labels.length - 1
-                                              ? () {
-                                            singOut(context, userToken);
-                                          }
-                                              : () {
-                                            goToPagePushRefresh(context,page[index], then: (value){setState(() {
-                                              fetchCelebrities(userToken);
-                                            });});
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) =>
-                                            //           page[index]),
-                                            // ).then((value) => null);
-                                          },
-                                          child: addListViewButton(
-                                            labels[index],
-                                            icons[index],
-                                          ));
-                                    },
-                                    separatorBuilder: (context, index) =>
-                                    const Divider(),
-                                    itemCount: labels.length,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //========================== social media icons row =======================================
-
-                            SizedBox(
-                              height: 50.h,
-                            ),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                        width: 30,
-                                        height: 30,
-                                        child: Image.asset(
-                                          'assets/image/icon- faceboock.png',
-                                        )),
-                                  ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- insta.png',
-                                      ),
-                                    ),
-                                  ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- snapchat.png',
-                                      ),
-                                    ),
-                                  ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- twitter.png',
-                                      ),
-                                    ),
-                                  ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
-                                        height: 30,),
-                                    ),
-                                  ),
-                                ]),
-
-
-                            paddingg(
-                              8,
-                              8,
-                              12,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    copyRight,
-                                    size: 14,
-                                  ),
-                                  text(
-                                      context, 'حقوق الطبع والنشر محفوظة', 14, black),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 30.h,
-                            )
-                          ])
-                        );
-                    } else {
-                      if (!serverExceptions) {
-                        return Container(
-                          height: getSize(context).height/1.5,
-                          child: Center(
-                              child: checkServerException(context)
-                          ),
-                        );}else{
-                        if (!timeoutException) {
+            child: Column(
+              children: [
+                FutureBuilder<CelebrityInformation>(
+                  future: celebrity,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: mainLoad(context));
+                    } else if (snapshot.connectionState == ConnectionState.active ||
+                        snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        if (snapshot.error.toString() ==
+                            'SocketException') {
+                          //
                           return Center(
-                            child: checkTimeOutException(context, reload: (){ setState(() {
-                              celebrity = fetchCelebrities(userToken);});}),
-                          );}
-                      }
-                      return const Center(
-                          child: Text(
-                              'حدث خطا ما اثناء استرجاع البيانات'));
-                    }
-                    //---------------------------------------------------------------------------
-                  } else if (snapshot.hasData) {
-                    return Column(children: [
-                      //======================== profile header ===============================
+                             child:  Column(children: [
+                                //======================== profile header ===============================
 
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          InkWell(
-                            child: padding(
-                              8,
-                              8,
-                              CircleAvatar(
-                                backgroundColor: lightGrey.withOpacity(0.30),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(70.r),
-                                          child: imagefile != null? Image.file(imagefile!,fit: BoxFit.fill,
-                                            height: double.infinity, width: double.infinity,): snapshot.data!.data!.celebrity!.image == null? Container(color: 
-                                            lightGrey.withOpacity(0.30),):
-                                          Image.network(
-                                            snapshot.data!.data!.celebrity!.image!, fit: BoxFit.fill,
-                                            height: double.infinity, width: double.infinity,
-                                            loadingBuilder : (context, child, loadingProgress) {
-                                            if (loadingProgress == null) return child;
-                                            return Center(
-                                                child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
-                                            );
-                                                  },),
-                                        ),
-                                radius: 55.r,
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                              InkWell(
+                                                                  child: padding(
+                                                                    8,
+                                                                    8,
+                                                                    CircleAvatar(
+                                                                      backgroundColor: lightGrey.withOpacity(0.30),
+                                                                      child: ClipRRect(
+                                                                        borderRadius: BorderRadius.circular(100.r),
+                                                                        child: Icon(Icons.error, size: 30.h, color: red,),
+                                                                      ),
+                                                                      radius: 55.r,
+                                                                    ),
+                                                                  ),
+                                                                  onTap: () {
+
+                                                                  },
+                                                                ),
+                                                                SizedBox(height: 5.h),
+                                                                padding(
+                                                                  8,
+                                                                  8,
+                                                                  text(context, Logging.theUser!.name!, 20, black,)
+                                                                )
+
+                                  ],
+                                ), //profile image
+
+                                //=========================== buttons listView =============================
+
+                                SingleChildScrollView(
+                                  child: Container(
+                                    child: paddingg(
+                                      8,
+                                      0,
+                                      20,
+                                      ListView.separated(
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return MaterialButton(
+                                              onPressed: index == labels.length - 1
+                                                  ? () {
+                                                singOut(context, userToken);
+                                              }
+                                                  : () {
+                                                goToPagePushRefresh(context,page[index], then: (value){setState(() {
+                                                  fetchCelebrities(userToken);
+                                                });});
+                                                // Navigator.push(
+                                                //   context,
+                                                //   MaterialPageRoute(
+                                                //       builder: (context) =>
+                                                //           page[index]),
+                                                // ).then((value) => null);
+                                              },
+                                              child: addListViewButton(
+                                                labels[index],
+                                                icons[index],
+                                              ));
+                                        },
+                                        separatorBuilder: (context, index) =>
+                                        const Divider(),
+                                        itemCount: labels.length,
                                       ),
+                                    ),
+                                  ),
+                                ),
+
+                                //========================== social media icons row =======================================
+
+                                SizedBox(
+                                  height: 50.h,
+                                ),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      padding(
+                                        8,
+                                        8,
+                                        Container(
+                                            width: 30,
+                                            height: 30,
+                                            child: Image.asset(
+                                              'assets/image/icon- faceboock.png',
+                                            )),
+                                      ),
+                                      padding(
+                                        8,
+                                        8,
+                                        Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Image.asset(
+                                            'assets/image/icon- insta.png',
+                                          ),
+                                        ),
+                                      ),
+                                      padding(
+                                        8,
+                                        8,
+                                        Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Image.asset(
+                                            'assets/image/icon- snapchat.png',
+                                          ),
+                                        ),
+                                      ),
+                                      padding(
+                                        8,
+                                        8,
+                                        Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Image.asset(
+                                            'assets/image/icon- twitter.png',
+                                          ),
+                                        ),
+                                      ),
+                                      padding(
+                                        8,
+                                        8,
+                                        Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                            height: 30,),
+                                        ),
+                                      ),
+                                    ]),
+
+
+                                paddingg(
+                                  8,
+                                  8,
+                                  12,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        copyRight,
+                                        size: 14,
+                                      ),
+                                      text(
+                                          context, 'حقوق الطبع والنشر محفوظة', 14, black),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 30.h,
+                                )
+                              ])
+                            );
+                        } else {
+                          if (!serverExceptions) {
+                            return Container(
+                              height: getSize(context).height/1.5,
+                              child: Center(
+                                  child: checkServerException(context)
+                              ),
+                            );}else{
+                            if (!timeoutException) {
+                              return Center(
+                                child: checkTimeOutException(context, reload: (){ setState(() {
+                                  celebrity = fetchCelebrities(userToken);});}),
+                              );}
+                          }
+                          return const Center(
+                              child: Text(
+                                  'حدث خطا ما اثناء استرجاع البيانات'));
+                        }
+                        //---------------------------------------------------------------------------
+                      } else if (snapshot.hasData) {
+                        return Column(children: [
+                          //======================== profile header ===============================
+
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              InkWell(
+                                child: padding(
+                                  8,
+                                  8,
+                                  CircleAvatar(
+                                    backgroundColor: lightGrey.withOpacity(0.30),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(70.r),
+                                              child: imagefile != null? Image.file(imagefile!,fit: BoxFit.fill,
+                                                height: double.infinity, width: double.infinity,): snapshot.data!.data!.celebrity!.image == null? Container(color:
+                                                lightGrey.withOpacity(0.30),):
+                                              Image.network(
+                                                snapshot.data!.data!.celebrity!.image!, fit: BoxFit.fill,
+                                                height: double.infinity, width: double.infinity,
+                                                loadingBuilder : (context, child, loadingProgress) {
+                                                if (loadingProgress == null) return child;
+                                                return Center(
+                                                    child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
+                                                );
+                                                      },),
+                                            ),
+                                    radius: 55.r,
+                                          ),
+                                ),
+                                onTap: () {
+                                  getImage().whenComplete(() => {
+                                  updateImage(),
+                                    if(imagefile != null){
+
+                                      showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
+                                            }
+                                      });
+
+                                },
+                              ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              padding(
+                                8,
+                                8,
+                                text(context, snapshot.data!.data!.celebrity!.name!,
+                                    20, black,
+                                    fontWeight: FontWeight.bold, family: 'Cairo'),
+                              ),
+                              padding(
+                                8,
+                                8,
+                                text(
+                                    context,
+                                    'الفئة : ' +
+                                        snapshot
+                                            .data!.data!.celebrity!.category!.name!,
+                                    12,
+                                    textBlack,
+                                    family: 'Cairo'),
+                              ),
+                              paddingg(
+                                20,
+                                20,
+                                3,
+                                text(
+                                    context,
+                                    snapshot.data!.data!.celebrity!.description!,
+                                    12,
+                                    textBlack,
+                                    family: 'Cairo',
+                                    align: TextAlign.center),
+                              ),
+                            ],
+                          ), //profile image
+
+                          //=========================== buttons listView =============================
+
+                          SingleChildScrollView(
+                            child: Container(
+                              child: paddingg(
+                                8,
+                                0,
+                                20,
+                                ListView.separated(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return MaterialButton(
+                                        onPressed: index == labels.length - 1
+                                            ? () {
+                                                singOut(context, userToken);
+                                              }
+                                            : () {
+                                          goToPagePushRefresh(context,page[index], then: (value){setState(() {
+                                            fetchCelebrities(userToken);
+                                          });});
+                                                // Navigator.push(
+                                                //   context,
+                                                //   MaterialPageRoute(
+                                                //       builder: (context) =>
+                                                //           page[index]),
+                                                // ).then((value) => null);
+                                              },
+                                        child: addListViewButton(
+                                          labels[index],
+                                          icons[index],
+                                        ));
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      const Divider(),
+                                  itemCount: labels.length,
+                                ),
+                              ),
                             ),
-                            onTap: () {
-                              getImage().whenComplete(() => {
-                              updateImage(),
-                                if(imagefile != null){
-
-                                  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
-                                        }
-                                  });
-
-                            },
                           ),
+
+                          //========================== social media icons row =======================================
+
                           SizedBox(
-                            height: 10.h,
+                            height: 50.h,
                           ),
-                          padding(
-                            8,
-                            8,
-                            text(context, snapshot.data!.data!.celebrity!.name!,
-                                20, black,
-                                fontWeight: FontWeight.bold, family: 'Cairo'),
-                          ),
-                          padding(
-                            8,
-                            8,
-                            text(
-                                context,
-                                'الفئة : ' +
-                                    snapshot
-                                        .data!.data!.celebrity!.category!.name!,
-                                12,
-                                textBlack,
-                                family: 'Cairo'),
-                          ),
-                          paddingg(
-                            20,
-                            20,
-                            3,
-                            text(
-                                context,
-                                snapshot.data!.data!.celebrity!.description!,
-                                12,
-                                textBlack,
-                                family: 'Cairo',
-                                align: TextAlign.center),
-                          ),
-                        ],
-                      ), //profile image
 
-                      //=========================== buttons listView =============================
+                        ]);
+                      } else {
+                        return const Center(child: Text('Empty data'));
+                      }
+                    } else {
+                      return Center(
+                          child: Text('State: ${snapshot.connectionState}'));
+                    }
+                  },
+                ),
 
-                      SingleChildScrollView(
-                        child: Container(
-                          child: paddingg(
-                            8,
-                            0,
-                            20,
-                            ListView.separated(
-                              primary: false,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return MaterialButton(
-                                    onPressed: index == labels.length - 1
-                                        ? () {
-                                            singOut(context, userToken);
-                                          }
-                                        : () {
-                                      goToPagePushRefresh(context,page[index], then: (value){setState(() {
-                                        fetchCelebrities(userToken);
-                                      });});
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) =>
-                                            //           page[index]),
-                                            // ).then((value) => null);
-                                          },
-                                    child: addListViewButton(
-                                      labels[index],
-                                      icons[index],
-                                    ));
-                              },
-                              separatorBuilder: (context, index) =>
-                                  const Divider(),
-                              itemCount: labels.length,
-                            ),
-                          ),
-                        ),
-                      ),
+    FutureBuilder<Media>(
+    future: mediaAccounts,
+    builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+    return Center(child: mainLoad(context));
+    } else if (snapshot.connectionState == ConnectionState.active ||
+    snapshot.connectionState == ConnectionState.done) {
+    if (snapshot.hasError) {
 
-                      //========================== social media icons row =======================================
-
-                      SizedBox(
-                        height: 50.h,
-                      ),
+    return const Center(
+    child: Text(
+    'حدث خطا ما اثناء استرجاع البيانات'));
+    //---------------------------------------------------------------------------
+    } else if (snapshot.hasData) { return Column(
+                    children: [
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            padding(
-                              8,
-                              8,
-                              Container(
+                            InkWell(
+                              onTap: () async {
+                                var url = snapshot.data!.data!.facebook;
+                                await launch(url!, forceWebView: true);
+                              },
+                              child: padding(
+                                8,
+                                8,
+                                Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Image.asset(
+                                      'assets/image/icon- faceboock.png',
+                                    )),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                var url = snapshot.data!.data!.instagram;
+                                await launch(url!, forceWebView: true);
+                              },
+                              child: padding(
+                                8,
+                                8,
+                                Container(
                                   width: 30,
                                   height: 30,
                                   child: Image.asset(
-                                    'assets/image/icon- faceboock.png',
-                                  )),
-                            ),
-                            padding(
-                              8,
-                              8,
-                              Container(
-                                width: 30,
-                                height: 30,
-                                child: Image.asset(
-                                  'assets/image/icon- insta.png',
+                                    'assets/image/icon- insta.png',
+                                  ),
                                 ),
                               ),
                             ),
-                            padding(
-                              8,
-                              8,
-                              Container(
-                                width: 30,
-                                height: 30,
-                                child: Image.asset(
-                                  'assets/image/icon- snapchat.png',
+                            InkWell(
+                              onTap: () async {
+                                var url = snapshot.data!.data!.snapchat;
+                                await launch(url!, forceWebView: true);
+                              },
+                              child: padding(
+                                8,
+                                8,
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  child: Image.asset(
+                                    'assets/image/icon- snapchat.png',
+                                  ),
                                 ),
                               ),
                             ),
-                            padding(
-                              8,
-                              8,
-                              Container(
-                                width: 30,
-                                height: 30,
-                                child: Image.asset(
-                                  'assets/image/icon- twitter.png',
+                            InkWell(
+                              onTap: () async {
+                                var url = snapshot.data!.data!.twitter;
+                                await launch(url!, forceWebView: true);
+                              },
+                              child: padding(
+                                8,
+                                8,
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  child: Image.asset(
+                                    'assets/image/icon- twitter.png',
+                                  ),
                                 ),
                               ),
                             ),
-                            padding(
-                              8,
-                              8,
-                              Container(
-                                width: 30,
-                                height: 30,
-                                child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
-                                  height: 30,),
+                            InkWell(
+                              onTap: () async {
+                                var url = snapshot.data!.data!.tiktok;
+                                await launch(url!, forceWebView: true);
+                              },
+                              child: padding(
+                                8,
+                                8,
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                    height: 30,),
+                                ),
                               ),
                             ),
                           ]),
-
 
                       paddingg(
                         8,
@@ -579,19 +677,24 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                 context, 'حقوق الطبع والنشر محفوظة', 14, black),
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 30.h,
-                      )
-                    ]);
-                  } else {
-                    return const Center(child: Text('Empty data'));
-                  }
-                } else {
-                  return Center(
-                      child: Text('State: ${snapshot.connectionState}'));
-                }
-              },
+                      ), ],
+                  );
+    } else {
+    return const Center(child: Text('Empty data'));
+    }
+    } else {
+    return Center(
+    child: Text('State: ${snapshot.connectionState}'));
+    }
+  },
+  ),
+
+
+
+                SizedBox(
+                  height: 30.h,
+                )
+              ],
             ),
           ),
 

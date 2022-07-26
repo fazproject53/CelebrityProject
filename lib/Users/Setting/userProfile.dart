@@ -33,9 +33,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:celepraty/Account/logging.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Account/LoggingSingUpAPI.dart';
 import '../../Account/TheUser.dart';
+import '../../Celebrity/setting/MediaAccounts.dart';
 
 class userProfile extends StatefulWidget {
   _userProfileState createState() => _userProfileState();
@@ -53,6 +55,8 @@ class _userProfileState extends State<userProfile>
   Future<UserProfile>? getUsers;
   String userToken = "";
   List<Data>? data;
+  Future<Media>? mediaAccounts;
+
   final labels = [
     'المعلومات الشخصية',
     'الفوترة',
@@ -87,10 +91,47 @@ class _userProfileState extends State<userProfile>
       setState(() {
         userToken = value;
         getUsers = fetchUsers(userToken);
+        mediaAccounts = getAccounts();
       });
     });
     super.initState();
   }
+  Future<Media> getAccounts() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/social-media'),
+      );
+
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+
+        return Media.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+    }catch (e) {
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
+    }
+  }
+
   Future CheckUserConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -179,45 +220,234 @@ class _userProfileState extends State<userProfile>
             child: Column(children: [
               //======================== profile header ===============================
 
-              FutureBuilder<UserProfile>(
-                future: getUsers,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: mainLoad(context));
-                  } else if (snapshot.connectionState ==
-                          ConnectionState.active ||
-                      snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      if (!isConnectSection) {
-                        return Center(
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 30.h,
-                                ),
-                                InkWell(
-                                  child: padding(
-                                    8,
-                                    8,
-                                    CircleAvatar(
-                                      backgroundColor: lightGrey.withOpacity(0.30),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(100.r),
-                                        child: Icon(Icons.error, size: 30.h, color: red,),
+              Column(
+                children:[ FutureBuilder<UserProfile>(
+                  future: getUsers,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: mainLoad(context));
+                    } else if (snapshot.connectionState ==
+                            ConnectionState.active ||
+                        snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        if (!isConnectSection) {
+                          return Center(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 30.h,
+                                  ),
+                                  InkWell(
+                                    child: padding(
+                                      8,
+                                      8,
+                                      CircleAvatar(
+                                        backgroundColor: lightGrey.withOpacity(0.30),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(100.r),
+                                          child: Icon(Icons.error, size: 30.h, color: red,),
+                                        ),
+                                        radius: 55.r,
                                       ),
-                                      radius: 55.r,
+                                    ),
+                                    onTap: () {
+
+                                    },
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  padding(
+                                    8,
+                                    8,
+                                    text(context, Logging.theUser!.name!, 20, black,
+                                        fontWeight: FontWeight.bold, family: 'Cairo'),),
+
+                                  SingleChildScrollView(
+                                    child: Container(
+                                      child: paddingg(
+                                        8,
+                                        0,
+                                        25,
+                                        ListView.separated(
+                                          primary: false,
+                                          shrinkWrap: true,
+                                          itemBuilder: (context, index) {
+                                            return MaterialButton(
+                                                onPressed: index == labels.length - 1
+                                                    ? () {
+                                                  singOut(context, userToken);
+                                                }
+                                                    : () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => page[index]),
+                                                  );
+                                                },
+                                                child: addListViewButton(
+                                                  labels[index],
+                                                  icons[index],
+                                                ));
+                                          },
+                                          separatorBuilder: (context, index) => const Divider(),
+                                          itemCount: labels.length,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  onTap: () {
 
-                                  },
+                                  //========================== social media icons row =======================================
+
+                                  SizedBox(
+                                    height: 50.h,
+                                  ),
+                                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                    padding(
+                                      8,
+                                      8,
+                                      Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Image.asset(
+                                            'assets/image/icon- faceboock.png',
+                                          )),
+                                    ),
+                                    padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- insta.png',
+                                        ),
+                                      ),
+                                    ),
+                                    padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- snapchat.png',
+                                        ),
+                                      ),
+                                    ),
+                                    padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- twitter.png',
+                                        ),
+                                      ),
+                                    ),
+                                    padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        color: white,
+                                        child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                          height: 30,),
+                                      ),
+                                    ),
+                                  ]),
+
+                                  //SvgPicture.asset(assetName),
+                                  paddingg(
+                                    8,
+                                    8,
+                                    12,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          copyRight,
+                                          size: 14,
+                                        ),
+                                        text(context, 'حقوق الطبع والنشر محفوظة', 14, black),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 30.h,
+                                  )
+
+                                ],
+                              ),
+                          );
+                        } else {
+                          if (!serverExceptions) {
+                            return Container(
+                              height: getSize(context).height/1.5,
+                              child: Center(
+                                  child: checkServerException(context)
+                              ),
+                            );}else{
+                            if (!timeoutException) {
+                              return Center(
+                                child: checkTimeOutException(context, reload: (){ setState(() {
+                                  getUsers = fetchUsers(userToken);});}),
+                              );}
+                          }
+                          return const Center(
+                              child: Text(
+                                  'حدث خطا ما اثناء استرجاع البيانات'));
+                        }
+                        //---------------------------------------------------------------------------
+                      } else if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 30.h,
+                            ),
+                            InkWell(
+                              child: padding(
+                                8,
+                                8,
+                                CircleAvatar(
+                                  backgroundColor: lightGrey.withOpacity(0.30),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100.r),
+                                    child: userImage != null? Image.file(userImage!,fit: BoxFit.fill,
+                                      height: double.infinity, width: double.infinity,):snapshot.data!.data!.user!.image == null? Container(color: lightGrey.withOpacity(0.30)): Image.network(
+                                      snapshot.data!.data!.user!.image!,
+                                      fit: BoxFit.fill,
+                                      height: double.infinity,
+                                      width: double.infinity,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Center(
+                                            child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
+                                        );
+                                      },
+                                      errorBuilder: (context, exception, stackTrace) {
+                                        return Icon(Icons.error, size: 30.h, color: red,);},
+                                    ),
+                                  ),
+                                  radius: 55.r,
                                 ),
-                                SizedBox(height: 5.h),
-                                padding(
-                                  8,
-                                  8,
-                                  text(context, Logging.theUser!.name!, 20, black,
-                                      fontWeight: FontWeight.bold, family: 'Cairo'),),
+                              ),
+                              onTap: () {
+                                getImage().whenComplete(() => {
+                                      updateImageUser(userToken)
+                                          .whenComplete(() => {
+                                            if(userImage != null){  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
+                                            }
+                                              })});
+                              },
+                            ),
+                            SizedBox(height: 5.h),
+                            padding(
+                              8,
+                              8,
+                              text(context, snapshot.data!.data!.user!.name!, 20, black,
+                                  fontWeight: FontWeight.bold, family: 'Cairo'),),
 
                                 SingleChildScrollView(
                                   child: Container(
@@ -258,281 +488,150 @@ class _userProfileState extends State<userProfile>
                                 SizedBox(
                                   height: 50.h,
                                 ),
-                                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
+
+                          ],
+                        );
+                      } else {
+                        return const Center(child: Text('Empty data'));
+                      }
+                    } else {
+                      return Center(
+                          child: Text('State: ${snapshot.connectionState}'));
+                    }
+                  },
+                ),
+
+
+                  FutureBuilder<Media>(
+                    future: mediaAccounts,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: mainLoad(context));
+                      } else if (snapshot.connectionState == ConnectionState.active ||
+                          snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasError) {
+
+                          return const Center(
+                              child: Text(
+                                  'حدث خطا ما اثناء استرجاع البيانات'));
+                          //---------------------------------------------------------------------------
+                        } else if (snapshot.hasData) { return Column(
+                          children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      var url = snapshot.data!.data!.facebook;
+                                      await launch(url!, forceWebView: true);
+                                    },
+                                    child: padding(
+                                      8,
+                                      8,
+                                      Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Image.asset(
+                                            'assets/image/icon- faceboock.png',
+                                          )),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () async {
+                                      var url = snapshot.data!.data!.instagram;
+                                      await launch(url!, forceWebView: true);
+                                    },
+                                    child: padding(
+                                      8,
+                                      8,
+                                      Container(
                                         width: 30,
                                         height: 30,
                                         child: Image.asset(
-                                          'assets/image/icon- faceboock.png',
-                                        )),
-                                  ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- insta.png',
+                                          'assets/image/icon- insta.png',
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- snapchat.png',
+                                  InkWell(
+                                    onTap: () async {
+                                      var url = snapshot.data!.data!.snapchat;
+                                      await launch(url!, forceWebView: true);
+                                    },
+                                    child: padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- snapchat.png',
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- twitter.png',
+                                  InkWell(
+                                    onTap: () async {
+                                      var url = snapshot.data!.data!.twitter;
+                                      await launch(url!, forceWebView: true);
+                                    },
+                                    child: padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- twitter.png',
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  padding(
-                                    8,
-                                    8,
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      color: white,
-                                      child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
-                                        height: 30,),
+                                  InkWell(
+                                    onTap: () async {
+                                      var url = snapshot.data!.data!.tiktok;
+                                      await launch(url!, forceWebView: true);
+                                    },
+                                    child: padding(
+                                      8,
+                                      8,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                          height: 30,),
+                                      ),
                                     ),
                                   ),
                                 ]),
 
-                                //SvgPicture.asset(assetName),
-                                paddingg(
-                                  8,
-                                  8,
-                                  12,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        copyRight,
-                                        size: 14,
-                                      ),
-                                      text(context, 'حقوق الطبع والنشر محفوظة', 14, black),
-                                    ],
+                            paddingg(
+                              8,
+                              8,
+                              12,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    copyRight,
+                                    size: 14,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 30.h,
-                                )
-
-                              ],
-                            ),
+                                  text(
+                                      context, 'حقوق الطبع والنشر محفوظة', 14, black),
+                                ],
+                              ),
+                            ), ],
                         );
-                      } else {
-                        if (!serverExceptions) {
-                          return Container(
-                            height: getSize(context).height/1.5,
-                            child: Center(
-                                child: checkServerException(context)
-                            ),
-                          );}else{
-                          if (!timeoutException) {
-                            return Center(
-                              child: checkTimeOutException(context, reload: (){ setState(() {
-                                getUsers = fetchUsers(userToken);});}),
-                            );}
+                        } else {
+                          return const Center(child: Text('Empty data'));
                         }
-                        return const Center(
-                            child: Text(
-                                'حدث خطا ما اثناء استرجاع البيانات'));
+                      } else {
+                        return Center(
+                            child: Text('State: ${snapshot.connectionState}'));
                       }
-                      //---------------------------------------------------------------------------
-                    } else if (snapshot.hasData) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 30.h,
-                          ),
-                          InkWell(
-                            child: padding(
-                              8,
-                              8,
-                              CircleAvatar(
-                                backgroundColor: lightGrey.withOpacity(0.30),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100.r),
-                                  child: userImage != null? Image.file(userImage!,fit: BoxFit.fill,
-                                    height: double.infinity, width: double.infinity,):snapshot.data!.data!.user!.image == null? Container(color: lightGrey.withOpacity(0.30)): Image.network(
-                                    snapshot.data!.data!.user!.image!,
-                                    fit: BoxFit.fill,
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                          child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
-                                      );
-                                    },
-                                    errorBuilder: (context, exception, stackTrace) {
-                                      return Icon(Icons.error, size: 30.h, color: red,);},
-                                  ),
-                                ),
-                                radius: 55.r,
-                              ),
-                            ),
-                            onTap: () {
-                              getImage().whenComplete(() => {
-                                    updateImageUser(userToken)
-                                        .whenComplete(() => {
-                                          if(userImage != null){  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
-                                          }
-                                            })});
-                            },
-                          ),
-                          SizedBox(height: 5.h),
-                          padding(
-                            8,
-                            8,
-                            text(context, snapshot.data!.data!.user!.name!, 20, black,
-                                fontWeight: FontWeight.bold, family: 'Cairo'),),
-
-                              SingleChildScrollView(
-                                child: Container(
-                                  child: paddingg(
-                                    8,
-                                    0,
-                                    25,
-                                    ListView.separated(
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, index) {
-                                        return MaterialButton(
-                                            onPressed: index == labels.length - 1
-                                                ? () {
-                                              singOut(context, userToken);
-                                            }
-                                                : () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => page[index]),
-                                              );
-                                            },
-                                            child: addListViewButton(
-                                              labels[index],
-                                              icons[index],
-                                            ));
-                                      },
-                                      separatorBuilder: (context, index) => const Divider(),
-                                      itemCount: labels.length,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              //========================== social media icons row =======================================
-
-                              SizedBox(
-                                height: 50.h,
-                              ),
-                              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                padding(
-                                  8,
-                                  8,
-                                  Container(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset(
-                                        'assets/image/icon- faceboock.png',
-                                      )),
-                                ),
-                                padding(
-                                  8,
-                                  8,
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    child: Image.asset(
-                                      'assets/image/icon- insta.png',
-                                    ),
-                                  ),
-                                ),
-                                padding(
-                                  8,
-                                  8,
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    child: Image.asset(
-                                      'assets/image/icon- snapchat.png',
-                                    ),
-                                  ),
-                                ),
-                                padding(
-                                  8,
-                                  8,
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    child: Image.asset(
-                                      'assets/image/icon- twitter.png',
-                                    ),
-                                  ),
-                                ),
-                                padding(
-                                  8,
-                                  8,
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    color: white,
-                                    child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
-                                      height: 30,),
-                                  ),
-                                ),
-                              ]),
-
-                              //SvgPicture.asset(assetName),
-                              paddingg(
-                                8,
-                                8,
-                                12,
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      copyRight,
-                                      size: 14,
-                                    ),
-                                    text(context, 'حقوق الطبع والنشر محفوظة', 14, black),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 30.h,
-                              )
-
-                        ],
-                      );
-                    } else {
-                      return const Center(child: Text('Empty data'));
-                    }
-                  } else {
-                    return Center(
-                        child: Text('State: ${snapshot.connectionState}'));
-                  }
-                },
+                    },
+                  ),
+          ]
               ),
               //profile image
 
