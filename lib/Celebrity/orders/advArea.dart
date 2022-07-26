@@ -227,12 +227,22 @@ class _advAreaState extends State<advArea>{
         'فشل الاتصال بالانترنت ',
       )}
         :{
-      Navigator.pop(context),
-      showMassage(
-        context,
-        'خطا',
-        value.replaceAll('false', ''),
-      ),}
+      value == 'serverException'? {
+        Navigator.pop(context),
+        showMassage(
+          context,
+          'خطا',
+          'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',
+        )
+      }:{
+        Navigator.pop(context),
+        showMassage(
+          context,
+          'خطا',
+          'حدث خطا ما الرجاء المحاولة لاحقا ',
+        )
+      }
+    }
     });
 
     // == First dialog closed
