@@ -70,11 +70,13 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   Future<void> _showSearch() async {
     endLode
         ? await showSearch(
+
             context: context,
             delegate: CelebritySearch(
               allCelbrity: allCellbrity,
-              // onSearchChanged: getRecentSearchesCelebrity,
+
             ),
+
           )
         : print('lllllllllloding');
   }

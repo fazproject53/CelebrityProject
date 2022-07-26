@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Account/LoggingSingUpAPI.dart';
 import 'HomeScreen/celebrity_home_page.dart';
-
+TextEditingController s=TextEditingController();
 class CelebritySearch extends SearchDelegate {
   List<String> _oldFilters = [];
   List<dynamic> allCelbrity;
@@ -25,6 +25,7 @@ class CelebritySearch extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     // Action of app bar
     return [
+
       IconButton(
           icon: const Icon(Icons.clear),
           onPressed: () {
@@ -51,6 +52,7 @@ class CelebritySearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     saveToRecentSearchesCelebrity(query);
+
     List _results;
     _results = allCelbrity.where((name) {
       final nameLower = name.name!.toLowerCase();
@@ -71,12 +73,12 @@ class CelebritySearch extends SearchDelegate {
 
 
         ],)
-        : Text('');
+        : const Text('');
   }
 
   @override
   void showResults(BuildContext context) {
-    // saveToRecentSearchesCelebrity(query);
+
     List _results;
     _results = allCelbrity.where((name) {
       final nameLower = name.name!.toLowerCase();
@@ -88,7 +90,7 @@ class CelebritySearch extends SearchDelegate {
         child: text(context, "لاتوجد نتائج عن البحث", 14, Colors.grey),
       );
     } else {
-      showSuggestions(context);
+     showSuggestions(context);
       goTopagepush(
           context,
           CelebrityHome(
@@ -263,6 +265,7 @@ class CelebritySearch extends SearchDelegate {
     final ThemeData theme = Theme.of(context);
     double size = MediaQuery.of(context).size.width;
     return ThemeData(
+
       primarySwatch: Colors.grey,
       appBarTheme: const AppBarTheme(
         backgroundColor: purple,
@@ -272,6 +275,7 @@ class CelebritySearch extends SearchDelegate {
         elevation: 15,
       ),
       textTheme: TextTheme(
+
         titleLarge: TextStyle(
             decoration: TextDecoration.none,
             color: Colors.white,
@@ -286,8 +290,9 @@ class CelebritySearch extends SearchDelegate {
       inputDecorationTheme: InputDecorationTheme(
           isDense: true,
           filled: true,
+
           hintStyle: TextStyle(
-            color: Colors.grey[400],
+            color: Colors.grey[300],
             fontSize: 15.sp,
           ),
           fillColor: Colors.white12,
