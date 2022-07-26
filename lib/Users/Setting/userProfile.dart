@@ -188,20 +188,171 @@ class _userProfileState extends State<userProfile>
                           ConnectionState.active ||
                       snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError) {
-                      if (snapshot.error.toString() ==
-                          'SocketException') {
+                      if (!isConnectSection) {
                         return Center(
-                            child: SizedBox(
-                                height: 300.h,
-                                width: 250.w,
-                                child: internetConnection(
-                                    context, reload: () {
-                                  setState(() {
-                                    getUsers = fetchUsers(userToken);
-                                    isConnectSection = true;
-                                  });
-                                })));
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 30.h,
+                                ),
+                                InkWell(
+                                  child: padding(
+                                    8,
+                                    8,
+                                    CircleAvatar(
+                                      backgroundColor: lightGrey.withOpacity(0.30),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100.r),
+                                        child: Icon(Icons.error, size: 30.h, color: red,),
+                                      ),
+                                      radius: 55.r,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    getImage().whenComplete(() => {
+                                      updateImageUser(userToken)
+                                          .whenComplete(() => {
+                                        if(userImage != null){  showMassage(context, 'تم بنجاح', "تم تغيير الصورة بنجاح",done: done)
+                                        }
+                                      })});
+                                  },
+                                ),
+                                SizedBox(height: 5.h),
+
+
+                                SingleChildScrollView(
+                                  child: Container(
+                                    child: paddingg(
+                                      8,
+                                      0,
+                                      25,
+                                      ListView.separated(
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return MaterialButton(
+                                              onPressed: index == labels.length - 1
+                                                  ? () {
+                                                singOut(context, userToken);
+                                              }
+                                                  : () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => page[index]),
+                                                );
+                                              },
+                                              child: addListViewButton(
+                                                labels[index],
+                                                icons[index],
+                                              ));
+                                        },
+                                        separatorBuilder: (context, index) => const Divider(),
+                                        itemCount: labels.length,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                //========================== social media icons row =======================================
+
+                                SizedBox(
+                                  height: 50.h,
+                                ),
+                                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- faceboock.png',
+                                        )),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- insta.png',
+                                      ),
+                                    ),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- snapchat.png',
+                                      ),
+                                    ),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- twitter.png',
+                                      ),
+                                    ),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      color: white,
+                                      child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                        height: 30,),
+                                    ),
+                                  ),
+                                ]),
+
+                                //SvgPicture.asset(assetName),
+                                paddingg(
+                                  8,
+                                  8,
+                                  12,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        copyRight,
+                                        size: 14,
+                                      ),
+                                      text(context, 'حقوق الطبع والنشر محفوظة', 14, black),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 30.h,
+                                )
+
+                              ],
+                            ),
+                        );
                       } else {
+                        if (!serverExceptions) {
+                          return Container(
+                            height: getSize(context).height/1.5,
+                            child: Center(
+                                child: checkServerException(context)
+                            ),
+                          );}else{
+                          if (!timeoutException) {
+                            return Center(
+                              child: checkTimeOutException(context, reload: (){ setState(() {
+                                getUsers = fetchUsers(userToken);});}),
+                            );}
+                        }
                         return const Center(
                             child: Text(
                                 'حدث خطا ما اثناء استرجاع البيانات'));
@@ -222,7 +373,7 @@ class _userProfileState extends State<userProfile>
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100.r),
                                   child: userImage != null? Image.file(userImage!,fit: BoxFit.fill,
-                                    height: double.infinity, width: double.infinity,):Image.network(
+                                    height: double.infinity, width: double.infinity,):snapshot.data!.data!.user!.image == null? Image.asset('assets/image/user.png'): Image.network(
                                     snapshot.data!.data!.user!.image!,
                                     fit: BoxFit.fill,
                                     height: double.infinity,
@@ -234,6 +385,8 @@ class _userProfileState extends State<userProfile>
                                           child: Lottie.asset('assets/lottie/grey.json', height: 80.h, width: 60.w )
                                       );
                                     },
+                                    errorBuilder: (context, exception, stackTrace) {
+                                      return Icon(Icons.error, size: 30.h, color: red,);},
                                   ),
                                 ),
                                 radius: 55.r,

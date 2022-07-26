@@ -133,7 +133,29 @@ class _InvoiceState extends State<Invoice> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
           appBar: drowAppBar('الفوترة', context),
-          body: SafeArea(
+          body: !isConnectSection?Center(
+              child: Padding(
+                padding:  EdgeInsets.only(top: 0.h),
+                child: SizedBox(
+                    height: 300.h,
+                    width: 250.w,
+                    child: internetConnection(
+                        context, reload: () {
+                      setState(() {
+                        getInvoicess();
+                        isConnectSection = true;
+                      });
+                    })),
+              )): !serverExceptions? Container(
+            height: getSize(context).height/1.5,
+            child: Center(
+                child: checkServerException(context)
+            ),
+          ): !timeoutException? Center(
+            child: checkTimeOutException(context, reload: (){ setState(() {
+              getInvoicess();
+            });}),
+          ): SafeArea(
             child: SingleChildScrollView(
               controller: _controller,
               child: _isFirstLoadRunning? Center(
@@ -677,34 +699,55 @@ class _InvoiceState extends State<Invoice> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-
-    final response = await http.get(
-        Uri.parse('$_baseUrl?page=$_page'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $userToken'
-        });
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      setState(() {
-        _posts = InvoiceModel
-            .fromJson(jsonDecode(response.body))
-            .data!.billings!;
-        phone= InvoiceModel
-            .fromJson(jsonDecode(response.body)).data!.phone!;
-        taxnumber= InvoiceModel
-            .fromJson(jsonDecode(response.body)).data!.taxnumber!;
+try {
+  final response = await http.get(
+      Uri.parse('$_baseUrl?page=$_page'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $userToken'
       });
-      print(response.body);
-
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
-    }
-
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    setState(() {
+      _posts = InvoiceModel
+          .fromJson(jsonDecode(response.body))
+          .data!
+          .billings!;
+      phone = InvoiceModel
+          .fromJson(jsonDecode(response.body))
+          .data!
+          .phone!;
+      taxnumber = InvoiceModel
+          .fromJson(jsonDecode(response.body))
+          .data!
+          .taxnumber!;
+    });
+    print(response.body);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load activity');
+  }
+}catch(e){
+  if (e is SocketException) {
+    setState(() {
+      isConnectSection = false;
+    });
+    return Future.error('SocketException');
+  } else if (e is TimeoutException) {
+    setState(() {
+      timeoutException = false;
+    });
+    return Future.error('TimeoutException');
+  } else {
+    setState(() {
+      serverExceptions = false;
+    });
+    return Future.error('serverExceptions');
+  }
+}
 
     setState(() {
       _isFirstLoadRunning = false;

@@ -1632,30 +1632,6 @@ Widget internetConnection(context, {reload}) {
   );
 }
 
-Widget serverError(context, {reload}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Spacer(),
-      SizedBox(
-          // height: MediaQuery.of(context).size.height / 5,
-          // width: MediaQuery.of(context).size.height / 6,
-          child: Lottie.asset('assets/lottie/srver.json'),height: 200.h, width: 500.w,),
-      SizedBox(
-        height: 10.h,
-      ),
-      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا', 16, black,
-          align: TextAlign.center),
-      SizedBox(
-        height: 15.h,
-      ),
-
-      Spacer(),
-    ],
-  );
-}
-
 //check server Exception--------------------------------------------------------------------------
 Widget checkServerException(context, {reload}) {
   return Column(
@@ -1670,14 +1646,12 @@ Widget checkServerException(context, {reload}) {
       SizedBox(
         height: 10.h,
       ),
-      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا',
-          20, black,
+      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا\nحاول لاحقا',
+          19, black,
           align: TextAlign.center),
       SizedBox(
         height: 5.h,
       ),
-      buttoms(context, 'إعادة تحميل', 14, black, reload,
-          backgrounColor: grey!, horizontal: 20),
       Spacer(),
     ],
   );
@@ -1699,7 +1673,7 @@ Widget checkTimeOutException(context, {reload}) {
       ),
       text(context, 'TimeOutException', 20, black, align: TextAlign.center),
       SizedBox(
-        height: 5.h,
+        height: 15.h,
       ),
       buttoms(context, 'إعادة تحميل', 14, black, reload,
           backgrounColor: grey!, horizontal: 20),

@@ -974,7 +974,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
             if (snapshot.hasError) {
               if (snapshot.error.toString() == 'socketException') {
                 return internetConnection(context);
-              } else{ return serverError(context);}
+              } else{ return checkServerException(context);}
               //---------------------------------------------------------------------------
             } else if (snapshot.hasData) {
               return snapshot.data!.data!.isEmpty?  Center(child: Column(

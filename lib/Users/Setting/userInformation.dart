@@ -164,8 +164,7 @@ class _userInformationState extends State<userInformation> {
               } else if (snapshot.connectionState == ConnectionState.active ||
                   snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasError) {
-                  if (snapshot.error.toString() ==
-                      'SocketException') {
+                  if (!isConnectSection) {
                     return Center(
                         child: Padding(
                           padding:  EdgeInsets.only(top: 150.h),
@@ -181,6 +180,19 @@ class _userInformationState extends State<userInformation> {
                               })),
                         ));
                   } else {
+                    if (!serverExceptions) {
+                      return Container(
+                        height: getSize(context).height/1.5,
+                        child: Center(
+                          child: checkServerException(context)
+                        ),
+                      );}else{
+                      if (!timeoutException) {
+                        return Center(
+                          child: checkTimeOutException(context, reload: (){ setState(() {
+                            getUser = fetchUsers(userToken);});}),
+                        );}
+                    }
                     return const Center(
                         child: Text(
                             'حدث خطا ما اثناء استرجاع البيانات'));
@@ -208,8 +220,7 @@ class _userInformationState extends State<userInformation> {
                           print('country in build ============================ ' + (key +1).toString());
                         }
                       })
-                    }
-                        : '',
+                    } : '',
                   snapshot.data!.data!.user!.city != null? {
                       city = snapshot.data!.data!.user!.city!.name.toString(),
                   citychosen = true, cityi =snapshot.data!.data!.user!.city!.id!}

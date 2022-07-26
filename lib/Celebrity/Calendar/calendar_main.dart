@@ -111,7 +111,7 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                 child: SizedBox(
                                     height: 500.h,
                                     width: 250.w,
-                                    child: serverError(context, reload: () {
+                                    child: checkServerException(context, reload: () {
                                       setState(() {
                                         calender = fetchCalender(userToken!);
                                         serverExceptions = true;
