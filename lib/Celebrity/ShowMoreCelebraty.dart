@@ -339,31 +339,5 @@ class _ShowMoreCelebratyState extends State<ShowMoreCelebraty>
     );
   }
 
-  Widget lodeManyCards() {
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, //عدد العناصر في كل صف
-            crossAxisSpacing: 8.r, // المسافات الراسية
-            childAspectRatio: 0.90.sp, //حجم العناصر
-            mainAxisSpacing: 11.r //المسافات الافقية
 
-            ),
-        itemCount: 10,
-        itemBuilder: (context, i) {
-          return SizedBox(
-            width: 190.w,
-            height: 200.h,
-            child: Shimmer(
-                enabled: true,
-                gradient: LinearGradient(
-                  tileMode: TileMode.mirror,
-                  // begin: Alignment(0.7, 2.0),
-                  //end: Alignment(-0.69, -1.0),
-                  colors: [mainGrey, Colors.white],
-                  stops: const [0.1, 0.88],
-                ),
-                child: Card()),
-          );
-        });
-  }
 }

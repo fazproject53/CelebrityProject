@@ -125,18 +125,15 @@ Widget gradientContainer(double width, Widget child,
           topLeft: Radius.circular(topLeft),
           bottomRight: Radius.circular(bottomRight.r)),
       gradient: gradient == false
-          ? const  LinearGradient(
-        begin:
-        Alignment(0.5, 2.0),
-        end: Alignment(
-            -0.69, -1.0),
-        colors: [
-          Color(0xffe468ca),
-          Color(0xff0ab3d0),
-
-        ],
-        stops: [0.0, 1.0],
-      )
+          ? const LinearGradient(
+              begin: Alignment(0.5, 2.0),
+              end: Alignment(-0.69, -1.0),
+              colors: [
+                Color(0xffe468ca),
+                Color(0xff0ab3d0),
+              ],
+              stops: [0.0, 1.0],
+            )
           : null,
     ),
   );
@@ -154,14 +151,11 @@ Widget gradientContainerNoborder(double width, Widget child,
       ],
       borderRadius: BorderRadius.circular(reids.r),
       gradient: const LinearGradient(
-        begin:
-        Alignment(0.5, 2.0),
-        end: Alignment(
-            -0.69, -1.0),
+        begin: Alignment(0.5, 2.0),
+        end: Alignment(-0.69, -1.0),
         colors: [
           Color(0xffe468ca),
           Color(0xff0ab3d0),
-
         ],
         stops: [0.0, 1.0],
       ),
@@ -178,14 +172,11 @@ Widget gradientContainerNoborder2(double width, double height, Widget child) {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8.0),
       gradient: const LinearGradient(
-        begin:
-        Alignment(0.5, 2.0),
-        end: Alignment(
-            -0.69, -1.0),
+        begin: Alignment(0.5, 2.0),
+        end: Alignment(-0.69, -1.0),
         colors: [
           Color(0xffe468ca),
           Color(0xff0ab3d0),
-
         ],
         stops: [0.0, 1.0],
       ),
@@ -323,7 +314,7 @@ Widget textField(context, icons, String key, double fontSize, bool hintPass,
         filled: true,
         suffixIcon: suffixIcon,
         hintStyle: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
-        fillColor:textGray,
+        fillColor: textGray,
         labelStyle: TextStyle(color: Colors.black87, fontSize: 15.0.sp),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
@@ -375,7 +366,7 @@ Widget textField3(context, icons, String key, double fontSize, bool hintPass,
         filled: true,
         suffixIcon: suffixIcon,
         hintStyle: TextStyle(color: Colors.black87, fontSize: fontSize.sp),
-        fillColor:textGray,
+        fillColor: textGray,
         labelStyle: TextStyle(color: Colors.black87, fontSize: 15.0.sp),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4.r),
@@ -1031,14 +1022,11 @@ divider({
 //gradient color---------------------------------------------------------------------
 LinearGradient gradient() {
   return const LinearGradient(
-    begin:
-    Alignment(0.5, 2.0),
-    end: Alignment(
-        -0.69, -1.0),
+    begin: Alignment(0.5, 2.0),
+    end: Alignment(-0.69, -1.0),
     colors: [
       Color(0xffe468ca),
       Color(0xff0ab3d0),
-
     ],
     stops: [0.0, 1.0],
   );
@@ -1048,7 +1036,6 @@ LinearGradient gradient() {
 Widget textFieldDescOnChange(context, String key, double fontSize,
     bool hintPass, TextEditingController mycontroller, myvali,
     {InputCounterWidgetBuilder? counter, int? maxLenth}) {
-
   return SizedBox(
     height: 150.h,
     child: TextFormField(
@@ -1061,27 +1048,28 @@ Widget textFieldDescOnChange(context, String key, double fontSize,
       maxLength: maxLenth,
       textAlignVertical: TextAlignVertical.top,
       style:
-      TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+          TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
-            borderRadius:BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(8.r),
             borderSide: BorderSide(
               color: newGrey,
               width: 0.5,
-            ),),
+            ),
+          ),
           isDense: false,
           filled: true,
           hintStyle: TextStyle(
               color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
-          fillColor:  lightGrey.withOpacity(0.10),
+          fillColor: lightGrey.withOpacity(0.10),
           labelStyle: TextStyle(
             color: white,
             fontSize: fontSize.sp,
           ),
           alignLabelWithHint: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
-          focusedBorder:
-          OutlineInputBorder(borderSide: BorderSide(color: purple, width: 1)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: purple, width: 1)),
           hintText: key,
           contentPadding: EdgeInsets.all(10.h)),
     ),
@@ -1331,8 +1319,7 @@ Widget drowMenu(
     dropdownMaxHeight: 140.h,
     dropdownWidth: 180.w,
     dropdownDecoration: BoxDecoration(
-        color: white,
-        borderRadius: BorderRadius.all(Radius.circular(4.r))),
+        color: white, borderRadius: BorderRadius.all(Radius.circular(4.r))),
     iconDisabledColor: newGrey,
     iconEnabledColor: newGrey,
     scrollbarAlwaysShow: true,
@@ -1390,11 +1377,11 @@ loadingRequestDialogue(context) {
 }
 
 //lode one card----------------------------------------------------------------------------
-Widget lodeOneData() {
+Widget lodeOneData({double height=200,double width=200}) {
   return Container(
     margin: EdgeInsets.only(left: 18.w, right: 18.w, bottom: 18.h),
-    height: 200.h,
-    width: 200.w,
+    height: height.h,
+    width: width.w,
     child: Shimmer(
         enabled: true,
         gradient: LinearGradient(
@@ -1416,6 +1403,34 @@ Widget lodeOneData() {
   );
 }
 
+//----------------------------------------------------------------------------
+Widget lodeManyCards() {
+  return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, //عدد العناصر في كل صف
+          crossAxisSpacing: 8.r, // المسافات الراسية
+          childAspectRatio: 0.90.sp, //حجم العناصر
+          mainAxisSpacing: 11.r //المسافات الافقية
+
+      ),
+      itemCount: 10,
+      itemBuilder: (context, i) {
+        return SizedBox(
+          width: 190.w,
+          height: 200.h,
+          child: Shimmer(
+              enabled: true,
+              gradient: LinearGradient(
+                tileMode: TileMode.mirror,
+                // begin: Alignment(0.7, 2.0),
+                //end: Alignment(-0.69, -1.0),
+                colors: [mainGrey, Colors.white],
+                stops: const [0.1, 0.88],
+              ),
+              child: Card()),
+        );
+      });
+}
 //show no data----------------------------------------------------------------------
 Widget noData(context) {
   return Center(
@@ -1425,6 +1440,20 @@ Widget noData(context) {
       15,
       black,
     ),
+  );
+}
+
+Widget noExplorer(context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      SizedBox(
+          height: MediaQuery.of(context).size.height / 4,
+          width: MediaQuery.of(context).size.height / 4,
+          child: Lottie.asset('assets/lottie/noExplorer.json')),
+      Center(child: text(context, "لاتوجد فيديوهات حاليا لعرضها", 15, Colors.grey))
+    ],
   );
 }
 
@@ -1457,6 +1486,36 @@ showMassage(context, String titleText, String messageText, {IconData? done}) {
 }
 //----------------------------------------------------------------------
 
+Widget firstLode(double width, double height,
+    {double paddingT = 10,
+    double paddingR = 10,
+    double paddingL = 10,
+    double paddingB = 10}) {
+  return Padding(
+    padding: EdgeInsets.only(
+        top: paddingT, bottom: paddingB, right: paddingR, left: paddingL),
+    child: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, i) {
+          return SizedBox(
+            width: width.w,
+            height: height.h,
+            child: Shimmer(
+                enabled: true,
+                gradient: LinearGradient(
+                  tileMode: TileMode.mirror,
+                  // begin: Alignment(0.7, 2.0),
+                  //end: Alignment(-0.69, -1.0),
+                  colors: [mainGrey, Colors.white],
+                  stops: const [0.1, 0.88],
+                ),
+                child: Card()),
+          );
+        }),
+  );
+}
+
+//----------------------------------------------------------------------
 successfullyDialog(
     context, String massage, String lottie, String bottomName, action,
     {double? height}) {
@@ -1469,7 +1528,7 @@ successfullyDialog(
           titlePadding: EdgeInsets.zero,
           elevation: 5,
           backgroundColor: white,
-          contentPadding: EdgeInsets.only(top: 30.h,right: 10.w,left: 10.w),
+          contentPadding: EdgeInsets.only(top: 30.h, right: 10.w, left: 10.w),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
             height: height ?? 200.h,
@@ -1500,8 +1559,7 @@ successfullyDialog(
       });
 }
 
-failureDialog(
-    context, String massage, String lottie, String bottomName, action,
+failureDialog(context, String massage, String lottie, String bottomName, action,
     {double? height}) {
   return showDialog(
       barrierDismissible: false,
@@ -1512,7 +1570,7 @@ failureDialog(
           titlePadding: EdgeInsets.zero,
           elevation: 5,
           backgroundColor: white,
-          contentPadding: EdgeInsets.only(top: 30.h,right: 10.w,left: 10.w),
+          contentPadding: EdgeInsets.only(top: 30.h, right: 10.w, left: 10.w),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
             height: height ?? 200.h,
@@ -1533,15 +1591,14 @@ failureDialog(
           ),
           actions: [
             Padding(
-              padding: EdgeInsets.only(bottom: 10.h,left: 10.w,right: 10.w),
+              padding: EdgeInsets.only(bottom: 10.h, left: 10.w, right: 10.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buttoms(context, 'الغاء', 18, Colors.grey, (){
+                  buttoms(context, 'الغاء', 18, Colors.grey, () {
                     Navigator.pop(context);
-                  },
-                      backgrounColor: white),
-                  buttoms(context, bottomName, 18, Colors.grey,action ,
+                  }, backgrounColor: white),
+                  buttoms(context, bottomName, 18, Colors.grey, action,
                       backgrounColor: white)
                 ],
               ),
@@ -1550,6 +1607,7 @@ failureDialog(
         );
       });
 }
+
 //snackBar------------------------------------------------------------------------------------
 SnackBar snackBar(context, String title, Color? color, IconData? icon) {
   return SnackBar(
@@ -1572,8 +1630,11 @@ SnackBar snackBar(context, String title, Color? color, IconData? icon) {
 
 //  Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (BuildContext context) =>  ActivityScreen(move: 'nn',)),  (route) => route.isFirst),
 
- gotoPageAndRemovePrevious(context, page) {
-   Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (BuildContext context) =>  page),  (route) => route.isFirst);
+gotoPageAndRemovePrevious(context, page) {
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => page),
+      (route) => route.isFirst);
 }
 
 Widget mainLoad(context) {
@@ -1632,6 +1693,31 @@ Widget internetConnection(context, {reload}) {
   );
 }
 
+Widget serverError(context, {reload}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Spacer(),
+      SizedBox(
+        // height: MediaQuery.of(context).size.height / 5,
+        // width: MediaQuery.of(context).size.height / 6,
+        child: Lottie.asset('assets/lottie/srver.json'), height: 200.h,
+        width: 500.w,
+      ),
+      SizedBox(
+        height: 10.h,
+      ),
+      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا', 16, black,
+          align: TextAlign.center),
+      SizedBox(
+        height: 15.h,
+      ),
+      Spacer(),
+    ],
+  );
+}
+
 //check server Exception--------------------------------------------------------------------------
 Widget checkServerException(context, {reload}) {
   return Column(
@@ -1646,12 +1732,13 @@ Widget checkServerException(context, {reload}) {
       SizedBox(
         height: 10.h,
       ),
-      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا\nحاول لاحقا',
-          19, black,
+      text(context, 'حدثت مشكلة بالخادم سنقوم باصلاحها قريبا', 20, black,
           align: TextAlign.center),
       SizedBox(
         height: 5.h,
       ),
+      buttoms(context, 'إعادة تحميل', 14, black, reload,
+          backgrounColor: grey!, horizontal: 20),
       Spacer(),
     ],
   );
@@ -1673,7 +1760,7 @@ Widget checkTimeOutException(context, {reload}) {
       ),
       text(context, 'TimeOutException', 20, black, align: TextAlign.center),
       SizedBox(
-        height: 15.h,
+        height: 5.h,
       ),
       buttoms(context, 'إعادة تحميل', 14, black, reload,
           backgrounColor: grey!, horizontal: 20),

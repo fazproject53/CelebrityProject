@@ -21,7 +21,10 @@ class UserAdSpace extends StatefulWidget {
 class _UserAdSpaceState extends State<UserAdSpace>
     with AutomaticKeepAliveClientMixin {
   String token = '';
-  bool isConnectAdvertisingOrder = true;
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+  bool _isFirstLoadRunning = false;
   bool hasMore = true;
   bool isLoading = false;
   int page = 1;
@@ -54,61 +57,93 @@ class _UserAdSpaceState extends State<UserAdSpace>
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: refreshRequest,
-        child: isConnectAdvertisingOrder == false
+        child: isConnectSection == false
             ? Center(
                 child: internetConnection(context, reload: () {
                   setState(() {
                     refreshRequest();
-                    isConnectAdvertisingOrder = true;
+                    isConnectSection = true;
                   });
                 }),
               )
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: empty?noData(context):ListView.builder(
-                    controller: scrollController,
-                    itemCount: oldAdvertisingOrder.length + 1,
-                    itemBuilder: (context, i) {
-                      if (oldAdvertisingOrder.length > i) {
-                        return InkWell(
-                            onTap: () {
-                              goToPagePushRefresh(
-                                  context,
-                                  UserAdvSpaceDetails(
-                                    i: i,
-                                    image: oldAdvertisingOrder[i].image,
-                                    link: oldAdvertisingOrder[i].link,
-                                    price: oldAdvertisingOrder[i].price,
-                                    orderId: oldAdvertisingOrder[i].id,
-                                    token: token,
-                                    state: oldAdvertisingOrder[i].status?.id,
-                                    rejectResonName: oldAdvertisingOrder[i]
-                                        .rejectReson
-                                        ?.name!,
-                                    rejectResonId:
-                                        oldAdvertisingOrder[i].rejectReson?.id,
-                                  ), then: (value) {
-                                if (clickUserAdvSpace) {
-                                  setState(() {
-                                    refreshRequest();
-                                    clickUserAdvSpace = false;
-                                  });
-                                }
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                getAdvSpaceData(i, oldAdvertisingOrder),
-                              ],
-                            ));
-                      } else {
-                        return isLoading &&
-                                pageCount >= page &&
-                                oldAdvertisingOrder.isNotEmpty
-                            ? lodeOneData()
-                            : const SizedBox();
-                      }
-                    })));
+            : timeoutException == false
+                ? Center(
+                    child: checkTimeOutException(context, reload: () {
+                      setState(() {
+                        refreshRequest();
+                        timeoutException = true;
+                      });
+                    }),
+                  )
+                : serverExceptions == false
+                    ? Center(
+                        child: checkServerException(context, reload: () {
+                          setState(() {
+                            refreshRequest();
+                            serverExceptions = true;
+                          });
+                        }),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: empty
+                            ? noData(context)
+                            : _isFirstLoadRunning == false && page == 1
+                            ? firstLode(double.infinity, 160)
+                            : ListView.builder(
+                                controller: scrollController,
+                                itemCount: oldAdvertisingOrder.length + 1,
+                                itemBuilder: (context, i) {
+                                  if (oldAdvertisingOrder.length > i) {
+                                    return InkWell(
+                                        onTap: () {
+                                          goToPagePushRefresh(
+                                              context,
+                                              UserAdvSpaceDetails(
+                                                i: i,
+                                                image: oldAdvertisingOrder[i]
+                                                    .image,
+                                                link:
+                                                    oldAdvertisingOrder[i].link,
+                                                price: oldAdvertisingOrder[i]
+                                                    .price,
+                                                orderId:
+                                                    oldAdvertisingOrder[i].id,
+                                                token: token,
+                                                state: oldAdvertisingOrder[i]
+                                                    .status
+                                                    ?.id,
+                                                rejectResonName:
+                                                    oldAdvertisingOrder[i]
+                                                        .rejectReson
+                                                        ?.name!,
+                                                rejectResonId:
+                                                    oldAdvertisingOrder[i]
+                                                        .rejectReson
+                                                        ?.id,
+                                              ), then: (value) {
+                                            if (clickUserAdvSpace) {
+                                              setState(() {
+                                                refreshRequest();
+                                                clickUserAdvSpace = false;
+                                              });
+                                            }
+                                          });
+                                        },
+                                        child: Column(
+                                          children: [
+                                            getAdvSpaceData(
+                                                i, oldAdvertisingOrder),
+                                          ],
+                                        ));
+                                  } else {
+                                    return isLoading &&
+                                            pageCount >= page &&
+                                            oldAdvertisingOrder.isNotEmpty
+                                        ? lodeOneData()
+                                        : const SizedBox();
+                                  }
+                                })));
   }
 
   Widget getAdvSpaceData(int i, List<AdSpaceOrders>? adSpaceOrders) {
@@ -129,113 +164,111 @@ class _UserAdSpaceState extends State<UserAdSpace>
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(
-                        Radius.circular(10.h),
+                      Radius.circular(10.h),
                     ),
-
                   ),
 //status-----------------------------------------------------------------------------------
 
-                child: Stack(
-                  children: [
+                  child: Stack(
+                    children: [
 // image------------------------------------------------------------------------------
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(10.h)),
-                      child: Image.network(
-                        adSpaceOrders![i].image!,
-                        color: black.withOpacity(0.4),
-                        colorBlendMode: BlendMode.darken,
-                        fit: BoxFit.cover,
-                        height: double.infinity,
-                        width: double.infinity,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                              child: Lottie.asset('assets/lottie/grey.json',
-                                  height: 70.h, width: 70.w));
-                        },
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          return Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.sync_problem,
-                                  size: 25.r,
-                                  color: pink,
-                                ),
-                                text(
-                                  context,
-                                  '  اضغط لاعادة تحميل الصورة',
-                                  12,
-                                  Colors.grey,
-                                )
-                              ],
-                            ),
-                          );
-                        },
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10.h)),
+                        child: Image.network(
+                          adSpaceOrders![i].image!,
+                          color: black.withOpacity(0.4),
+                          colorBlendMode: BlendMode.darken,
+                          fit: BoxFit.cover,
+                          height: double.infinity,
+                          width: double.infinity,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Center(
+                                child: Lottie.asset('assets/lottie/grey.json',
+                                    height: 70.h, width: 70.w));
+                          },
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.sync_problem,
+                                    size: 25.r,
+                                    color: pink,
+                                  ),
+                                  text(
+                                    context,
+                                    '  اضغط لاعادة تحميل الصورة',
+                                    12,
+                                    Colors.grey,
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
 
 //status-----------------------------------------------------------------------------------
-                    Padding(
-                      padding: EdgeInsets.all(8.0.r),
-                      child: Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                              padding: EdgeInsets.only(right: 10.w),
-                              child: text(
-                                context,
-                                adSpaceOrders[i].status!.name!,
-                                18,
-                                white,
-                                fontWeight: FontWeight.bold,
-                              ))),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-// celebrity name---------------------------------------------------------------------------------
-
-                        Align(
-                            alignment: Alignment.bottomRight,
+                      Padding(
+                        padding: EdgeInsets.all(8.0.r),
+                        child: Align(
+                            alignment: Alignment.topRight,
                             child: Padding(
-                                padding: EdgeInsets.only(
-                                    right: 16.w, bottom: 10.h),
+                                padding: EdgeInsets.only(right: 10.w),
                                 child: text(
                                   context,
-                                  'اعلان عند ' +
-                                      adSpaceOrders[i].celebrity!.name!,
+                                  adSpaceOrders[i].status!.name!,
                                   18,
                                   white,
                                   fontWeight: FontWeight.bold,
                                 ))),
-//date and icon---------------------------------------------------------------------------------
-                        const Spacer(),
-                        Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding:
-                              EdgeInsets.only(right: 16.w, bottom: 10.h),
-                              child: text(
-                                context,
-                                adSpaceOrders[i].date!,
-                                18,
-                                white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+// celebrity name---------------------------------------------------------------------------------
 
-                        SizedBox(width: 10.w),
-                      ],
-                    )
-                  ],
-                )
-              ),
+                          Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 16.w, bottom: 10.h),
+                                  child: text(
+                                    context,
+                                    'اعلان عند ' +
+                                        adSpaceOrders[i].celebrity!.name!,
+                                    18,
+                                    white,
+                                    fontWeight: FontWeight.bold,
+                                  ))),
+//date and icon---------------------------------------------------------------------------------
+                          const Spacer(),
+                          Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Padding(
+                                padding:
+                                    EdgeInsets.only(right: 16.w, bottom: 10.h),
+                                child: text(
+                                  context,
+                                  adSpaceOrders[i].date!,
+                                  18,
+                                  white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )),
+
+                          SizedBox(width: 10.w),
+                        ],
+                      )
+                    ],
+                  )),
             ),
           ],
         ),
@@ -256,13 +289,12 @@ class _UserAdSpaceState extends State<UserAdSpace>
     }
     setState(() {
       isLoading = true;
+      _isFirstLoadRunning = false;
     });
 
     String url =
         "https://mobile.celebrityads.net/api/user/AdSpaceOrders?page=$page";
-    if (page == 1) {
-      loadingRequestDialogue(context);
-    }
+
     try {
       final respons = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -283,36 +315,27 @@ class _UserAdSpaceState extends State<UserAdSpace>
             oldAdvertisingOrder.addAll(newItem);
             isLoading = false;
             newItemLength = newItem.length;
-            if (page == 1) {
-              Navigator.pop(context);
-            }
+            _isFirstLoadRunning = true;
             page++;
           } else if (newItem.isEmpty && page == 1) {
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            setState(() {
-              empty = true;
-            });
+            _isFirstLoadRunning = true;
+            empty = true;
           }
         });
-        return advertising;
-      } else {
-        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
-      if (page == 1) {
-        Navigator.pop(context);
-      }
       if (e is SocketException) {
         setState(() {
-          isConnectAdvertisingOrder = false;
+          isConnectSection = false;
         });
-        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return 'TimeoutException';
+        setState(() {
+          timeoutException = false;
+        });
       } else {
-        return 'حدثت مشكله في السيرفر';
+        setState(() {
+          serverExceptions = false;
+        });
       }
     }
   } //refreshRequest-----------------------------------------------------------------

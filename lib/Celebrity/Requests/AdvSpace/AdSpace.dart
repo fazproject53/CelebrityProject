@@ -21,7 +21,10 @@ class AdSpace extends StatefulWidget {
 class _AdSpaceState extends State<AdSpace> with AutomaticKeepAliveClientMixin {
   String token = '';
 
-  bool isConnectAdvertisingOrder = true;
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+  bool _isFirstLoadRunning = false;
   bool hasMore = true;
   bool isLoading = false;
   int page = 1;
@@ -53,19 +56,39 @@ class _AdSpaceState extends State<AdSpace> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: refreshRequest,
-      child: isConnectAdvertisingOrder == false
+      child: isConnectSection == false
           ? Center(
-              child: internetConnection(context, reload: () {
-                setState(() {
-                  refreshRequest();
-                  isConnectAdvertisingOrder = true;
-                });
-              }),
-            )
+        child: internetConnection(context, reload: () {
+          setState(() {
+            refreshRequest();
+            isConnectSection = true;
+          });
+        }),
+      )
+          : timeoutException == false
+          ? Center(
+        child: checkTimeOutException(context, reload: () {
+          setState(() {
+            refreshRequest();
+            timeoutException = true;
+          });
+        }),
+      )
+          : serverExceptions == false
+          ? Center(
+        child: checkServerException(context, reload: () {
+          setState(() {
+            refreshRequest();
+            serverExceptions = true;
+          });
+        }),
+      )
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: empty
                   ? noData(context)
+                  : _isFirstLoadRunning == false && page == 1
+                  ? firstLode(double.infinity, 160)
                   : ListView.builder(
                       controller: scrollController,
                       itemCount: oldAdvertisingOrder.length + 1,
@@ -259,13 +282,11 @@ class _AdSpaceState extends State<AdSpace> with AutomaticKeepAliveClientMixin {
     }
     setState(() {
       isLoading = true;
+      _isFirstLoadRunning = false;
     });
     print('pageApi $pageCount pagNumber $page');
     String url =
         "https://mobile.celebrityads.net/api/celebrity/AdSpaceOrders?page=$page";
-    if (page == 1) {
-      loadingRequestDialogue(context);
-    }
     try {
       final respons = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -286,37 +307,30 @@ class _AdSpaceState extends State<AdSpace> with AutomaticKeepAliveClientMixin {
             oldAdvertisingOrder.addAll(newItem);
             isLoading = false;
             newItemLength = newItem.length;
-            if (page == 1) {
-              Navigator.pop(context);
-            }
+            _isFirstLoadRunning = true;
             page++;
           } else if (newItem.isEmpty && page == 1) {
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            setState(() {
+            _isFirstLoadRunning = true;
               empty = true;
-            });
           }
         });
-        return advertising;
-      } else {
-
-        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
-      if (page == 1) {
-        Navigator.pop(context);
-      }
       if (e is SocketException) {
         setState(() {
-          isConnectAdvertisingOrder = false;
+          isConnectSection = false;
         });
-        return 'تحقق من اتصالك بالانترنت';
+
       } else if (e is TimeoutException) {
-        return 'TimeoutException';
+        setState(() {
+          timeoutException = false;
+        });
+
       } else {
-        return 'حدثت مشكله في السيرفر';
+        setState(() {
+          serverExceptions = false;
+        });
+
       }
     }
   } //refreshRequest-----------------------------------------------------------------

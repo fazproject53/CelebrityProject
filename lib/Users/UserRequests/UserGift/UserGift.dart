@@ -21,7 +21,10 @@ class UserGift extends StatefulWidget {
 class _UserGiftState extends State<UserGift>
     with AutomaticKeepAliveClientMixin {
   String token = '';
-  bool isConnectAdvertisingOrder = true;
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+  bool _isFirstLoadRunning = false;
   bool hasMore = true;
   bool isLoading = false;
   int page = 1;
@@ -54,77 +57,117 @@ class _UserGiftState extends State<UserGift>
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: refreshRequest,
-        child: isConnectAdvertisingOrder == false
+        child: isConnectSection == false
             ? Center(
                 child: internetConnection(context, reload: () {
                   setState(() {
                     refreshRequest();
-                    isConnectAdvertisingOrder = true;
+                    isConnectSection = true;
                   });
                 }),
               )
-            :Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: empty?noData(context): ListView.builder(
-                    controller: scrollController,
-                    itemCount: oldAdvertisingOrder.length + 1,
-                    itemBuilder: (context, i) {
-                      if (oldAdvertisingOrder.length > i) {
-                        return InkWell(
-                            onTap: () {
-                              goToPagePushRefresh(
-                                  context,
-                                  UserGiftDetials(
-                                    i: i,
-                                    price: oldAdvertisingOrder[i].price,
-                                    description:
-                                        oldAdvertisingOrder[i].description,
-                                    advTitle:
-                                        oldAdvertisingOrder[i].occasion?.name,
-                                    orderId: oldAdvertisingOrder[i].id,
-                                    celebrityName:
-                                        oldAdvertisingOrder[i].celebrity?.name!,
-                                    celebrityId:
-                                        oldAdvertisingOrder[i].celebrity?.id!,
-                                    celebrityImage: oldAdvertisingOrder[i]
-                                        .celebrity
-                                        ?.image!,
-                                    celebrityPagUrl: oldAdvertisingOrder[i]
-                                        .celebrity
-                                        ?.pageUrl!,
-                                    state: oldAdvertisingOrder[i].status?.id,
-                                    rejectResonName: oldAdvertisingOrder[i]
-                                        .rejectReson
-                                        ?.name!,
-                                    rejectResonId:
-                                        oldAdvertisingOrder[i].rejectReson?.id,
-                                    token: token,
-                                    from: oldAdvertisingOrder[i].from!,
-                                    to: oldAdvertisingOrder[i].to!,
-                                    occasion:
-                                        oldAdvertisingOrder[i].occasion?.name!,
-                                  ),then: (value) {
-                                if (clickUserGift) {
-                                  setState(() {
-                                    refreshRequest();
-                                    clickUserGift = false;
-                                  });
-                                }
-                              } );
-                            },
-                            child: Column(
-                              children: [
-                                getGiftOrder(i, oldAdvertisingOrder),
-                              ],
-                            ));
-                      } else {
-                        return isLoading &&
-                                pageCount >= page &&
-                                oldAdvertisingOrder.isNotEmpty
-                            ? lodeOneData()
-                            : const SizedBox();
-                      }
-                    })));
+            : timeoutException == false
+                ? Center(
+                    child: checkTimeOutException(context, reload: () {
+                      setState(() {
+                        refreshRequest();
+                        timeoutException = true;
+                      });
+                    }),
+                  )
+                : serverExceptions == false
+                    ? Center(
+                        child: checkServerException(context, reload: () {
+                          setState(() {
+                            refreshRequest();
+                            serverExceptions = true;
+                          });
+                        }),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child:empty
+                            ? noData(context)
+                            : _isFirstLoadRunning == false && page == 1
+                            ? firstLode(double.infinity, 160)
+                            : ListView.builder(
+                                controller: scrollController,
+                                itemCount: oldAdvertisingOrder.length + 1,
+                                itemBuilder: (context, i) {
+                                  if (oldAdvertisingOrder.length > i) {
+                                    return InkWell(
+                                        onTap: () {
+                                          goToPagePushRefresh(
+                                              context,
+                                              UserGiftDetials(
+                                                i: i,
+                                                price: oldAdvertisingOrder[i]
+                                                    .price,
+                                                description:
+                                                    oldAdvertisingOrder[i]
+                                                        .description,
+                                                advTitle: oldAdvertisingOrder[i]
+                                                    .occasion
+                                                    ?.name,
+                                                orderId:
+                                                    oldAdvertisingOrder[i].id,
+                                                celebrityName:
+                                                    oldAdvertisingOrder[i]
+                                                        .celebrity
+                                                        ?.name!,
+                                                celebrityId:
+                                                    oldAdvertisingOrder[i]
+                                                        .celebrity
+                                                        ?.id!,
+                                                celebrityImage:
+                                                    oldAdvertisingOrder[i]
+                                                        .celebrity
+                                                        ?.image!,
+                                                celebrityPagUrl:
+                                                    oldAdvertisingOrder[i]
+                                                        .celebrity
+                                                        ?.pageUrl!,
+                                                state: oldAdvertisingOrder[i]
+                                                    .status
+                                                    ?.id,
+                                                rejectResonName:
+                                                    oldAdvertisingOrder[i]
+                                                        .rejectReson
+                                                        ?.name!,
+                                                rejectResonId:
+                                                    oldAdvertisingOrder[i]
+                                                        .rejectReson
+                                                        ?.id,
+                                                token: token,
+                                                from: oldAdvertisingOrder[i]
+                                                    .from!,
+                                                to: oldAdvertisingOrder[i].to!,
+                                                occasion: oldAdvertisingOrder[i]
+                                                    .occasion
+                                                    ?.name!,
+                                              ), then: (value) {
+                                            if (clickUserGift) {
+                                              setState(() {
+                                                refreshRequest();
+                                                clickUserGift = false;
+                                              });
+                                            }
+                                          });
+                                        },
+                                        child: Column(
+                                          children: [
+                                            getGiftOrder(
+                                                i, oldAdvertisingOrder),
+                                          ],
+                                        ));
+                                  } else {
+                                    return isLoading &&
+                                            pageCount >= page &&
+                                            oldAdvertisingOrder.isNotEmpty
+                                        ? lodeOneData()
+                                        : const SizedBox();
+                                  }
+                                })));
   }
 
   Widget getGiftOrder(int i, List<GiftOrders>? giftOrders) {
@@ -231,7 +274,7 @@ class _UserGiftState extends State<UserGift>
                               alignment: Alignment.bottomLeft,
                               child: Padding(
                                 padding:
-                                EdgeInsets.only(right: 16.w, bottom: 10.h),
+                                    EdgeInsets.only(right: 16.w, bottom: 10.h),
                                 child: text(
                                   context,
                                   giftOrders[i].date!,
@@ -246,9 +289,8 @@ class _UserGiftState extends State<UserGift>
                       )
                     ],
                   )),
-              ),
-
-    ],
+            ),
+          ],
         ),
         bottomLeft: 10,
         bottomRight: 10,
@@ -258,6 +300,7 @@ class _UserGiftState extends State<UserGift>
         blur: 5,
         marginT: 5);
   }
+
 //get Advertising Orders------------------------------------------------------------------------
   getUserGift(String token) async {
     print('pageApi $pageCount pagNumber $page');
@@ -266,13 +309,12 @@ class _UserGiftState extends State<UserGift>
     }
     setState(() {
       isLoading = true;
+      _isFirstLoadRunning = false;
     });
 
     String url =
         "https://mobile.celebrityads.net/api/user/GiftOrders?page=$page";
-    if (page == 1) {
-      loadingRequestDialogue(context);
-    }
+
     try {
       final respons = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -282,8 +324,7 @@ class _UserGiftState extends State<UserGift>
 
       if (respons.statusCode == 200) {
         final body = respons.body;
-        UserGiftOrds advertising =
-        UserGiftOrds.fromJson(jsonDecode(body));
+        UserGiftOrds advertising = UserGiftOrds.fromJson(jsonDecode(body));
         var newItem = advertising.data!.giftOrders!;
         pageCount = advertising.data!.pageCount!;
         print('length ${newItem.length}');
@@ -294,36 +335,27 @@ class _UserGiftState extends State<UserGift>
             oldAdvertisingOrder.addAll(newItem);
             isLoading = false;
             newItemLength = newItem.length;
-            if (page == 1) {
-              Navigator.pop(context);
-            }
+            _isFirstLoadRunning = true;
             page++;
           } else if (newItem.isEmpty && page == 1) {
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            setState(() {
-              empty = true;
-            });
+            _isFirstLoadRunning = true;
+            empty = true;
           }
         });
-        return advertising;
-      } else {
-        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
-      if (page == 1) {
-        Navigator.pop(context);
-      }
       if (e is SocketException) {
         setState(() {
-          isConnectAdvertisingOrder = false;
+          isConnectSection = false;
         });
-        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return 'TimeoutException';
+        setState(() {
+          timeoutException = false;
+        });
       } else {
-        return 'حدثت مشكله في السيرفر';
+        setState(() {
+          serverExceptions = false;
+        });
       }
     }
   } //refreshRequest-----------------------------------------------------------------

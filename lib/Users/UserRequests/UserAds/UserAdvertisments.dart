@@ -22,7 +22,10 @@ class UserAdvertisment extends StatefulWidget {
 class _UserAdvertismentState extends State<UserAdvertisment>
     with AutomaticKeepAliveClientMixin {
   String token = '';
-  bool isConnectAdvertisingOrder = true;
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+  bool _isFirstLoadRunning = false;
   bool hasMore = true;
   bool isLoading = false;
   int page = 1;
@@ -55,76 +58,120 @@ class _UserAdvertismentState extends State<UserAdvertisment>
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: refreshRequest,
-      child: isConnectAdvertisingOrder == false
+      child: isConnectSection == false
           ? Center(
               child: internetConnection(context, reload: () {
                 setState(() {
                   refreshRequest();
-                  isConnectAdvertisingOrder = true;
+                  isConnectSection = true;
                 });
               }),
             )
-          : empty?noData(context):Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: oldAdvertisingOrder.length + 1,
-                  itemBuilder: (context, i) {
-                    if (oldAdvertisingOrder.length > i) {
-                      return InkWell(
-                          onTap: () {
-                            goToPagePushRefresh(
-                                context,
-                                UserAdvDetials(
-                                  i: i,
-                                  image: oldAdvertisingOrder[i].file,
-                                  advTitle: oldAdvertisingOrder[i]
-                                      .advertisingAdType
-                                      ?.name,
-                                  description:
-                                      oldAdvertisingOrder[i].description,
-                                  orderId: oldAdvertisingOrder[i].id,
-                                  celebrityName:
-                                      oldAdvertisingOrder[i].celebrity?.name!,
-                                  celebrityId:
-                                      oldAdvertisingOrder[i].celebrity?.id!,
-                                  celebrityImage:
-                                      oldAdvertisingOrder[i].celebrity?.image!,
-                                  celebrityPagUrl: oldAdvertisingOrder[i]
-                                      .celebrity
-                                      ?.pageUrl!,
-                                  platform:
-                                      oldAdvertisingOrder[i].platform?.name,
-                                  state: oldAdvertisingOrder[i].status?.id,
-                                  price: oldAdvertisingOrder[i].price,
-                                  rejectResonName:
-                                      oldAdvertisingOrder[i].rejectReson?.name!,
-                                  rejectResonId:
-                                      oldAdvertisingOrder[i].rejectReson?.id,
-                                  time: oldAdvertisingOrder[i].adTiming?.name!,
-                                  token: token,
-                                ), then: (value) {
-                              if (clickUserAdv) {
-                                setState(() {
-                                  refreshRequest();
-                                  clickUserAdv = false;
-                                });
-                              }
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              body(i, oldAdvertisingOrder),
-                            ],
-                          ));
-                    } else {
-                      return isLoading &&
-                              pageCount >= page &&
-                              oldAdvertisingOrder.isNotEmpty
-                          ? lodeOneData()
-                          : const SizedBox();
-                    }
-                  })),
+          : timeoutException == false
+              ? Center(
+                  child: checkTimeOutException(context, reload: () {
+                    setState(() {
+                      refreshRequest();
+                      timeoutException = true;
+                    });
+                  }),
+                )
+              : serverExceptions == false
+                  ? Center(
+                      child: checkServerException(context, reload: () {
+                        setState(() {
+                          refreshRequest();
+                          serverExceptions = true;
+                        });
+                      }),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: empty
+                          ? noData(context)
+                          : _isFirstLoadRunning == false && page == 1
+                              ? firstLode(double.infinity, 160)
+                              : ListView.builder(
+                                  controller: scrollController,
+                                  itemCount: oldAdvertisingOrder.length + 1,
+                                  itemBuilder: (context, i) {
+                                    if (oldAdvertisingOrder.length > i) {
+                                      return InkWell(
+                                          onTap: () {
+                                            goToPagePushRefresh(
+                                                context,
+                                                UserAdvDetials(
+                                                  i: i,
+                                                  image: oldAdvertisingOrder[i]
+                                                      .file,
+                                                  advTitle:
+                                                      oldAdvertisingOrder[i]
+                                                          .advertisingAdType
+                                                          ?.name,
+                                                  description:
+                                                      oldAdvertisingOrder[i]
+                                                          .description,
+                                                  orderId:
+                                                      oldAdvertisingOrder[i].id,
+                                                  celebrityName:
+                                                      oldAdvertisingOrder[i]
+                                                          .celebrity
+                                                          ?.name!,
+                                                  celebrityId:
+                                                      oldAdvertisingOrder[i]
+                                                          .celebrity
+                                                          ?.id!,
+                                                  celebrityImage:
+                                                      oldAdvertisingOrder[i]
+                                                          .celebrity
+                                                          ?.image!,
+                                                  celebrityPagUrl:
+                                                      oldAdvertisingOrder[i]
+                                                          .celebrity
+                                                          ?.pageUrl!,
+                                                  platform:
+                                                      oldAdvertisingOrder[i]
+                                                          .platform
+                                                          ?.name,
+                                                  state: oldAdvertisingOrder[i]
+                                                      .status
+                                                      ?.id,
+                                                  price: oldAdvertisingOrder[i]
+                                                      .price,
+                                                  rejectResonName:
+                                                      oldAdvertisingOrder[i]
+                                                          .rejectReson
+                                                          ?.name!,
+                                                  rejectResonId:
+                                                      oldAdvertisingOrder[i]
+                                                          .rejectReson
+                                                          ?.id,
+                                                  time: oldAdvertisingOrder[i]
+                                                      .adTiming
+                                                      ?.name!,
+                                                  token: token,
+                                                ), then: (value) {
+                                              if (clickUserAdv) {
+                                                setState(() {
+                                                  refreshRequest();
+                                                  clickUserAdv = false;
+                                                });
+                                              }
+                                            });
+                                          },
+                                          child: Column(
+                                            children: [
+                                              body(i, oldAdvertisingOrder),
+                                            ],
+                                          ));
+                                    } else {
+                                      return isLoading &&
+                                              pageCount >= page &&
+                                              oldAdvertisingOrder.isNotEmpty
+                                          ? lodeOneData()
+                                          : const SizedBox();
+                                    }
+                                  })),
     );
   }
 
@@ -273,13 +320,12 @@ class _UserAdvertismentState extends State<UserAdvertisment>
     }
     setState(() {
       isLoading = true;
+      _isFirstLoadRunning = false;
     });
 
     String url =
         "https://mobile.celebrityads.net/api/user/AdvertisingOrders?page=$page";
-    if (page == 1) {
-      loadingRequestDialogue(context);
-    }
+
     try {
       final respons = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -301,36 +347,27 @@ class _UserAdvertismentState extends State<UserAdvertisment>
             oldAdvertisingOrder.addAll(newItem);
             isLoading = false;
             newItemLength = newItem.length;
-            if (page == 1) {
-              Navigator.pop(context);
-            }
+            _isFirstLoadRunning = true;
             page++;
           } else if (newItem.isEmpty && page == 1) {
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            setState(() {
-              empty = true;
-            });
+            _isFirstLoadRunning = true;
+            empty = true;
           }
         });
-        return advertising;
-      } else {
-        return 'حدثت مشكله في السيرفر';
       }
     } catch (e) {
-      if (page == 1) {
-        Navigator.pop(context);
-      }
       if (e is SocketException) {
         setState(() {
-          isConnectAdvertisingOrder = false;
+          isConnectSection = false;
         });
-        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return 'TimeoutException';
+        setState(() {
+          timeoutException = false;
+        });
       } else {
-        return 'حدثت مشكله في السيرفر';
+        setState(() {
+          serverExceptions = false;
+        });
       }
     }
   } //refreshRequest-----------------------------------------------------------------

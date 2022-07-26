@@ -70,7 +70,6 @@ class GiftOrders {
   String? description;
   String? from;
   String? to;
-  Null? celebrityPromoCode;
   City? rejectReson;
 
   GiftOrders(
@@ -86,7 +85,6 @@ class GiftOrders {
         this.description,
         this.from,
         this.to,
-        this.celebrityPromoCode,
         this.rejectReson});
 
   GiftOrders.fromJson(Map<String, dynamic> json) {
@@ -108,7 +106,6 @@ class GiftOrders {
     description = json['description'];
     from = json['from'];
     to = json['to'];
-    celebrityPromoCode = json['celebrity_promo_code'];
     rejectReson = json['reject_reson'] != null
         ? new City.fromJson(json['reject_reson'])
         : null;
@@ -140,7 +137,6 @@ class GiftOrders {
     data['description'] = this.description;
     data['from'] = this.from;
     data['to'] = this.to;
-    data['celebrity_promo_code'] = this.celebrityPromoCode;
     if (this.rejectReson != null) {
       data['reject_reson'] = this.rejectReson!.toJson();
     }

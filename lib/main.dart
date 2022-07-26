@@ -1,9 +1,6 @@
-//
+
 import 'dart:async';
-import 'package:celepraty/Account/VerifyUser.dart';
 import 'package:celepraty/Account/logging.dart';
-import 'package:celepraty/Celebrity/Activity/activity_screen.dart';
-import 'package:celepraty/Celebrity/blockList.dart';
 import 'package:celepraty/MainScreen/main_screen_navigation.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -12,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Account/LoggingSingUpAPI.dart';
-import 'Users/CreateOrder/buildAdvOrder.dart';
 import 'introduction_screen/introduction_screen.dart';
 
 int? initScreen;
@@ -56,12 +52,6 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
       futureIntro = getIntroData();
     });
   }
-
-  // @override
-  // void dispose() {
-  //   streamSubscription?.cancel();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {

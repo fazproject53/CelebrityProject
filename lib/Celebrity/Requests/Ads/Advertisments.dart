@@ -20,12 +20,15 @@ class Advertisment extends StatefulWidget {
 class _AdvertismentState extends State<Advertisment>
     with AutomaticKeepAliveClientMixin {
   String token = '';
-  bool isConnectAdvertisingOrder = true;
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+  bool _isFirstLoadRunning = false;
   bool hasMore = true;
   bool isLoading = false;
   int page = 1;
   int pageCount = 2;
-  bool empty=false;
+  bool empty = false;
   int? newItemLength;
   List<AdvertisingOrders> oldAdvertisingOrder = [];
   ScrollController scrollController = ScrollController();
@@ -55,64 +58,101 @@ class _AdvertismentState extends State<Advertisment>
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: refreshRequest,
-      child: isConnectAdvertisingOrder == false
+      child: isConnectSection == false
           ? Center(
-        child: internetConnection(context, reload: () {
-          setState(() {
-            refreshRequest();
-            isConnectAdvertisingOrder = true;
-          });
-        }),
-      ):Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: empty?noData(context):ListView.builder(
-              controller: scrollController,
-              itemCount: oldAdvertisingOrder.length + 1,
-              itemBuilder: (context, i) {
-                if (oldAdvertisingOrder.length > i) {
-
-                  return InkWell(
-                      onTap: () {
-                        goToPagePushRefresh(
-                            context,
-                            AdvDetials(
-                              i: i,
-                              image: oldAdvertisingOrder[i].file,
-                              advTitle: oldAdvertisingOrder[i]
-                                  .advertisingAdType!
-                                  .name,
-                              description: oldAdvertisingOrder[i].description,
-                              orderId: oldAdvertisingOrder[i].id,
-                              token: token,
-                              platform: oldAdvertisingOrder[i].platform?.name,
-                              state: oldAdvertisingOrder[i].status?.id,
-                              price: oldAdvertisingOrder[i].price,
-                              rejectResonName:
-                                  oldAdvertisingOrder[i].rejectReson?.name!,
-                              rejectResonId:
-                                  oldAdvertisingOrder[i].rejectReson?.id,
-                            ), then: (value) {
-                          if (clickAdv) {
-                            setState(() {
-                              refreshRequest();
-                              clickAdv = false;
-                            });
-                          }
+              child: internetConnection(context, reload: () {
+                setState(() {
+                  refreshRequest();
+                  isConnectSection = true;
+                });
+              }),
+            )
+          : timeoutException == false
+              ? Center(
+                  child: checkTimeOutException(context, reload: () {
+                    setState(() {
+                      refreshRequest();
+                      timeoutException = true;
+                    });
+                  }),
+                )
+              : serverExceptions == false
+                  ? Center(
+                      child: checkServerException(context, reload: () {
+                        setState(() {
+                          refreshRequest();
+                          serverExceptions = true;
                         });
-                      },
-                      child: Column(
-                        children: [
-                          body(i, oldAdvertisingOrder),
-                        ],
-                      ));
-                } else {
-                  return isLoading &&
-                          pageCount >= page &&
-                          oldAdvertisingOrder.isNotEmpty
-                      ? lodeOneData()
-                      : const SizedBox();
-                }
-              })),
+                      }),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: empty
+                          ? noData(context)
+                          : _isFirstLoadRunning == false && page == 1
+                              ? firstLode(double.infinity, 200)
+                              : ListView.builder(
+                                  controller: scrollController,
+                                  itemCount: oldAdvertisingOrder.length + 1,
+                                  itemBuilder: (context, i) {
+                                    if (oldAdvertisingOrder.length > i) {
+                                      return InkWell(
+                                          onTap: () {
+                                            goToPagePushRefresh(
+                                                context,
+                                                AdvDetials(
+                                                  i: i,
+                                                  image: oldAdvertisingOrder[i]
+                                                      .file,
+                                                  advTitle:
+                                                      oldAdvertisingOrder[i]
+                                                          .advertisingAdType!
+                                                          .name,
+                                                  description:
+                                                      oldAdvertisingOrder[i]
+                                                          .description,
+                                                  orderId:
+                                                      oldAdvertisingOrder[i].id,
+                                                  token: token,
+                                                  platform:
+                                                      oldAdvertisingOrder[i]
+                                                          .platform
+                                                          ?.name,
+                                                  state: oldAdvertisingOrder[i]
+                                                      .status
+                                                      ?.id,
+                                                  price: oldAdvertisingOrder[i]
+                                                      .price,
+                                                  rejectResonName:
+                                                      oldAdvertisingOrder[i]
+                                                          .rejectReson
+                                                          ?.name!,
+                                                  rejectResonId:
+                                                      oldAdvertisingOrder[i]
+                                                          .rejectReson
+                                                          ?.id,
+                                                ), then: (value) {
+                                              if (clickAdv) {
+                                                setState(() {
+                                                  refreshRequest();
+                                                  clickAdv = false;
+                                                });
+                                              }
+                                            });
+                                          },
+                                          child: Column(
+                                            children: [
+                                              body(i, oldAdvertisingOrder),
+                                            ],
+                                          ));
+                                    } else {
+                                      return isLoading &&
+                                              pageCount >= page &&
+                                              oldAdvertisingOrder.isNotEmpty
+                                          ? lodeOneData()
+                                          : const SizedBox();
+                                    }
+                                  })),
     );
   }
 
@@ -365,13 +405,12 @@ class _AdvertismentState extends State<Advertisment>
     }
     setState(() {
       isLoading = true;
+      _isFirstLoadRunning = false;
     });
 
     String url =
         "https://mobile.celebrityads.net/api/celebrity/AdvertisingOrders?page=$page";
-    if (page == 1) {
-      loadingRequestDialogue(context);
-    }
+
     try {
       final respons = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
@@ -392,20 +431,13 @@ class _AdvertismentState extends State<Advertisment>
             oldAdvertisingOrder.addAll(newItem);
             isLoading = false;
             newItemLength = newItem.length;
-            if (page == 1) {
-              Navigator.pop(context);
-            }
+            _isFirstLoadRunning = true;
             page++;
-          } else if(newItem.isEmpty&& page==1){
-            if (page == 1) {
-              Navigator.pop(context);
-            }
-            setState(() {
-              empty = true;
-            });
+          } else if (newItem.isEmpty && page == 1) {
+            _isFirstLoadRunning = true;
+            empty = true;
           }
         });
-        return advertising;
       } else {
         return 'حدثت مشكله في السيرفر';
       }
@@ -415,13 +447,16 @@ class _AdvertismentState extends State<Advertisment>
       }
       if (e is SocketException) {
         setState(() {
-          isConnectAdvertisingOrder = false;
+          isConnectSection = false;
         });
-        return 'تحقق من اتصالك بالانترنت';
       } else if (e is TimeoutException) {
-        return 'TimeoutException';
+        setState(() {
+          timeoutException = false;
+        });
       } else {
-        return 'حدثت مشكله في السيرفر';
+        setState(() {
+          serverExceptions = false;
+        });
       }
     }
   } //refreshRequest-----------------------------------------------------------------
@@ -435,7 +470,4 @@ class _AdvertismentState extends State<Advertisment>
     });
     getAdvertisingOrder(token);
   }
-
-
-
 }
