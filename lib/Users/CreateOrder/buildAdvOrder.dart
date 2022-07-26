@@ -35,6 +35,11 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
   final _formKey3 = GlobalKey<FormState>();
   bool ActiveConnection = false;
   String T = "";
+
+  bool isConnectSection = true;
+  bool timeoutException = true;
+  bool serverExceptions = true;
+
   Future CheckUserConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -51,6 +56,8 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       });
     }
   }
+  
+  bool isLoading = false;
   int? celebrityId;
   int current = 0;
   bool isCompleted = false;
@@ -161,6 +168,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
   }
 
   Future<Platform> fetchPlatform() async {
+    try{
     final response = await http.get(
       Uri.parse('https://mobile.celebrityads.net/api/platforms'),
     );
@@ -174,6 +182,24 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to load activity');
+    }
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
   }
 
@@ -221,7 +247,35 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: isCompleted ? null : drowAppBar('انشاء طلب اعلان', context),
-        body:ActiveConnection?Stepper(
+        body:!isConnectSection?Center(
+            child: Padding(
+              padding:  EdgeInsets.only(top: 0.h),
+              child: SizedBox(
+                  height: 300.h,
+                  width: 250.w,
+                  child: internetConnection(
+                      context, reload: () {
+                    setState(() {
+                      budgets = fetchBudget();
+                      platforms = fetchPlatform();
+                      countries = fetCountries();
+                      categories = fetCategories();
+                      isConnectSection = true;
+                    });
+                  })),
+            )): !serverExceptions? Container(
+          height: getSize(context).height/1.5,
+          child: Center(
+              child: checkServerException(context)
+          ),
+        ): !timeoutException? Center(
+          child: checkTimeOutException(context, reload: (){ setState(() {
+            budgets = fetchBudget();
+            platforms = fetchPlatform();
+            countries = fetCountries();
+            categories = fetCategories();
+          });}),
+        ): isLoading? Center(child: mainLoad(context),):ActiveConnection?Stepper(
           margin: EdgeInsets.symmetric(horizontal: 24),
           steps: getSteps(),
           type: StepperType.horizontal,
@@ -254,12 +308,24 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
                               'فشل الاتصال بالانترنت ',
                             )}
                               :{
-                            Navigator.pop(context),
-                            showMassage(
-                              context,
-                              'خطا',
-                              value.replaceAll('false', ''),
-                            ),}
+                            value == 'serverException'? {
+                              Navigator.pop(context),
+                              showMassage(
+                                context,
+                                'خطا',
+                                'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',
+                              )
+                            }:{
+                              Navigator.pop(context),
+                              showMassage(
+                                context,
+                                'خطا',
+                                'حدث خطا ما الرجاء المحاولة لاحقا ',
+                              )
+                            }
+
+                          }
+
                         });
 
                         // == First dialog closed
@@ -374,6 +440,7 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
   }
 
   Future<CategoryL> fetCategories() async {
+    try{
     final response = await http.get(
       Uri.parse('https://mobile.celebrityads.net/api/categories'),
     );
@@ -388,11 +455,30 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       // then throw an exception.
       throw Exception('Failed to load activity');
     }
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
+    }
   }
 
 
 
   Future<CountryL> fetCountries() async {
+    try{
     final response = await http.get(
       Uri.parse('https://mobile.celebrityads.net/api/countries'),
     );
@@ -407,23 +493,69 @@ class _buildAdvOrderState extends State<buildAdvOrder> {
       // then throw an exception.
       throw Exception('Failed to load activity');
     }
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
+    }
   }
 
   Future<Budget> fetchBudget() async {
-    final response = await http.get(
-      Uri.parse('https://mobile.celebrityads.net/api/budgets'),
-    );
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await http.get(
+        Uri.parse('https://mobile.celebrityads.net/api/budgets'),
+      );
 
-      return Budget.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load activity');
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        setState(() {
+          isLoading = false;
+        });
+        return Budget.fromJson(jsonDecode(response.body));
+        
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load activity');
+      }
+      
+    }catch(e){
+      if (e is SocketException) {
+        setState(() {
+          isConnectSection = false;
+        });
+        return Future.error('SocketException');
+      } else if (e is TimeoutException) {
+        setState(() {
+          timeoutException = false;
+        });
+        return Future.error('TimeoutException');
+      } else {
+        setState(() {
+          serverExceptions = false;
+        });
+        return Future.error('serverExceptions');
+      }
     }
+    
   }
 
 
