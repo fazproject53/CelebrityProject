@@ -179,7 +179,29 @@ class _StudioState extends State<Studio> {
             ),
           ],
         ),
-        body: addp
+        body:!isConnectSection?Center(
+            child: Padding(
+              padding:  EdgeInsets.only(top: 0.h),
+              child: SizedBox(
+                  height: 300.h,
+                  width: 250.w,
+                  child: internetConnection(
+                      context, reload: () {
+                    setState(() {
+                      fetchStudio();
+                      isConnectSection = true;
+                    });
+                  })),
+            )): !serverExceptions? Container(
+          height: getSize(context).height/1.5,
+          child: Center(
+              child: checkServerException(context)
+          ),
+        ): !timeoutException? Center(
+          child: checkTimeOutException(context, reload: (){ setState(() {
+            fetchStudio();
+          });}),
+        ): addp
             ? addphoto()
             : addv
             ? addVideo()
@@ -539,11 +561,24 @@ void fetchStudio() async {
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
-    }catch (err) {
-      if (kDebugMode) {
-        print('first load Something went wrong');
-      }
-    }
+    }catch(e){
+  if (e is SocketException) {
+  setState(() {
+  isConnectSection = false;
+  });
+  return Future.error('SocketException');
+  } else if (e is TimeoutException) {
+  setState(() {
+  timeoutException = false;
+  });
+  return Future.error('TimeoutException');
+  } else {
+  setState(() {
+  serverExceptions = false;
+  });
+  return Future.error('serverExceptions');
+  }
+  }
     setState(() {
       _isFirstLoadRunning = false;
       print(_isFirstLoadRunning.toString()+'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');

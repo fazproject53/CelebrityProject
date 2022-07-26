@@ -130,7 +130,29 @@ class _invoiceScreenState extends State<invoiceScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
           appBar: drowAppBar('الفوترة', context),
-          body: SafeArea(
+          body:  !isConnectSection?Center(
+              child: Padding(
+                padding:  EdgeInsets.only(top: 0.h),
+                child: SizedBox(
+                    height: 300.h,
+                    width: 250.w,
+                    child: internetConnection(
+                        context, reload: () {
+                      setState(() {
+                        getInvoices();
+                        isConnectSection = true;
+                      });
+                    })),
+              )): !serverExceptions? Container(
+            height: getSize(context).height/1.5,
+            child: Center(
+                child: checkServerException(context)
+            ),
+          ): !timeoutException? Center(
+            child: checkTimeOutException(context, reload: (){ setState(() {
+              getInvoices();
+            });}),
+          ):SafeArea(
             child: SingleChildScrollView(
               controller: _controller,
               child: _isFirstLoadRunning? Center(
@@ -839,6 +861,7 @@ void getInvoices() async {
   _isFirstLoadRunning = true;
   });
 
+  try{
   final response = await http.get(
   Uri.parse('$_baseUrl?page=$_page'),
   headers: {
@@ -865,7 +888,24 @@ void getInvoices() async {
   // then throw an exception.
   throw Exception('Failed to load activity');
   }
-
+  }catch(e){
+    if (e is SocketException) {
+      setState(() {
+        isConnectSection = false;
+      });
+      return Future.error('SocketException');
+    } else if (e is TimeoutException) {
+      setState(() {
+        timeoutException = false;
+      });
+      return Future.error('TimeoutException');
+    } else {
+      setState(() {
+        serverExceptions = false;
+      });
+      return Future.error('serverExceptions');
+    }
+  }
 
   setState(() {
     _isFirstLoadRunning = false;

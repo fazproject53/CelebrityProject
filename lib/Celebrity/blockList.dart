@@ -127,7 +127,29 @@ class _blockListState extends State<blockList> {
         textDirection: TextDirection.rtl,
         child: Scaffold(
             appBar: drowAppBar('قائمة الحظر', context),
-            body:!ActiveConnection?Center(
+            body: !isConnectSection?Center(
+                child: Padding(
+                  padding:  EdgeInsets.only(top: 0.h),
+                  child: SizedBox(
+                      height: 300.h,
+                      width: 250.w,
+                      child: internetConnection(
+                          context, reload: () {
+                        setState(() {
+                          getBlockList(userToken!);
+                          isConnectSection = true;
+                        });
+                      })),
+                )): !serverExceptions? Container(
+              height: getSize(context).height/1.5,
+              child: Center(
+                  child: checkServerException(context)
+              ),
+            ): !timeoutException? Center(
+              child: checkTimeOutException(context, reload: (){ setState(() {
+                getBlockList(userToken!);
+              });}),
+            ):!ActiveConnection?Center(
                 child:SizedBox(
                     height: 300.h,
                     width: 250.w,
@@ -378,6 +400,7 @@ class _blockListState extends State<blockList> {
       _isFirstLoadRunning = true;
     });
 
+    try{
       final response = await http.get(
           Uri.parse('$_baseUrl?page=$_page'),
           headers: {
@@ -403,6 +426,24 @@ class _blockListState extends State<blockList> {
         // then throw an exception.
         throw Exception('Failed to load activity');
       }
+  }catch(e){
+  if (e is SocketException) {
+  setState(() {
+  isConnectSection = false;
+  });
+  return Future.error('SocketException');
+  } else if (e is TimeoutException) {
+  setState(() {
+  timeoutException = false;
+  });
+  return Future.error('TimeoutException');
+  } else {
+  setState(() {
+  serverExceptions = false;
+  });
+  return Future.error('serverExceptions');
+  }
+  }
     setState(() {
       _isFirstLoadRunning = false;
     });
