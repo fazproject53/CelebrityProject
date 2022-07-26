@@ -1705,7 +1705,7 @@ class _profileInformaionState extends State<profileInformaion>
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer '
+        'Authorization': 'Bearer $userToken'
       },
       body: jsonEncode(<String, dynamic>{
         'name': name.text,
