@@ -33,7 +33,7 @@ class _profileInformaionState extends State<profileInformaion>
   bool countryChanged = false;
   bool? citychosen;
 
-  int? cityi, countryi, genderi,categoryi;
+  int? cityi, countryi, genderi, categoryi;
   String? userToken;
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -206,23 +206,42 @@ class _profileInformaionState extends State<profileInformaion>
                         ConnectionState.active ||
                         snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasError) {
-                        if (snapshot.error.toString() ==
-                            'SocketException') {
+                        if (!isConnectSection) {
                           return Center(
                               child: Padding(
-                                padding: EdgeInsets.only(top: 180.h),
+                                padding: EdgeInsets.only(top: 150.h),
                                 child: SizedBox(
                                     height: 300.h,
                                     width: 250.w,
                                     child: internetConnection(
                                         context, reload: () {
                                       setState(() {
-                                        celebrities = fetchCelebrities(userToken!);
+                                        celebrities =
+                                            fetchCelebrities(userToken!);
                                         isConnectSection = true;
                                       });
                                     })),
                               ));
                         } else {
+                          if (!serverExceptions) {
+                            return Container(
+                              height: getSize(context).height / 1.5,
+                              child: Center(
+                                  child: checkServerException(context)
+                              ),
+                            );
+                          } else {
+                            if (!timeoutException) {
+                              return Center(
+                                child: checkTimeOutException(
+                                    context, reload: () {
+                                  setState(() {
+                                    celebrities = fetchCelebrities(userToken!);
+                                  });
+                                }),
+                              );
+                            }
+                          }
                           return const Center(
                               child: Text(
                                   'حدث خطا ما اثناء استرجاع البيانات'));
@@ -267,7 +286,7 @@ class _profileInformaionState extends State<profileInformaion>
                               gender = snapshot.data!.data!
                                   .celebrity!.gender!.name!,
                               genderChosen = true,
-                              genderi =  snapshot.data!.data!
+                              genderi = snapshot.data!.data!
                                   .celebrity!.gender!.id
                             }
                                 : gender,
@@ -299,26 +318,27 @@ class _profileInformaionState extends State<profileInformaion>
                               categoriesId.forEach((key, value) {
                                 if (value == snapshot.data!.data!
                                     .celebrity!.category!.name!) {
-                                  categoryi =key;
+                                  categoryi = key;
                                 }
                               })
-
-                        }
+                            }
                                 : '',
                             snapshot.data!.data!.celebrity!
                                 .country !=
                                 null
-                                ?{
+                                ? {
                               getid.forEach((key, value) {
                                 if (value == snapshot.data!.data!
                                     .celebrity!.country!.name!) {
-                                  countryi =key+1;
-                                  print('country in build ============================ ' + (key +1).toString());
+                                  countryi = key + 1;
+                                  print(
+                                      'country in build ============================ ' +
+                                          (key + 1).toString());
                                 }
                               }),
                               country = snapshot.data!.data!
-                                .celebrity!.country!.name!,
-                      }
+                                  .celebrity!.country!.name!,
+                            }
                                 : '',
                             snapshot.data!.data!.celebrity!.city !=
                                 null
@@ -326,7 +346,7 @@ class _profileInformaionState extends State<profileInformaion>
                                 .celebrity!.city!.name
                                 .toString(),
                               citychosen = true,
-                              cityi=  snapshot.data!.data!
+                              cityi = snapshot.data!.data!
                                   .celebrity!.city!.id
                             }
                                 : null,
@@ -660,229 +680,229 @@ class _profileInformaionState extends State<profileInformaion>
                                       14,
                                       red!)),
 
-                              isConnectSection?
+                              isConnectSection ?
 
-                                FutureBuilder(
-                                    future: countries,
-                                    builder: ((context,
-                                        AsyncSnapshot<CountryL> snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
+                              FutureBuilder(
+                                  future: countries,
+                                  builder: ((context,
+                                      AsyncSnapshot<CountryL> snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center();
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.active ||
+                                        snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                      if (snapshot.hasError) {
                                         return Center();
-                                      } else if (snapshot.connectionState ==
-                                          ConnectionState.active ||
-                                          snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                        if (snapshot.hasError) {
-                                          return Center();
-                                          //---------------------------------------------------------------------------
-                                        } else if (snapshot.hasData) {
-                                          _dropdownTestItems3.isEmpty
-                                              ? {
-                                            countrylist.add({
-                                              'no': 0,
-                                              'keyword': 'الدولة'
-                                            }),
-                                            for (int i = 0;
-                                            i <
-                                                snapshot
-                                                    .data!.data!.length;
-                                            i++)
-                                              {
-                                                countrylist.add({
-                                                  'no': i,
-                                                  'keyword':
-                                                  '${snapshot.data!.data![i]
-                                                      .name!}'
-                                                }),
-                                              },
-                                            _dropdownTestItems3 =
-                                                buildDropdownTestItems(
-                                                    countrylist)
-                                          }
-                                              : null;
+                                        //---------------------------------------------------------------------------
+                                      } else if (snapshot.hasData) {
+                                        _dropdownTestItems3.isEmpty
+                                            ? {
+                                          countrylist.add({
+                                            'no': 0,
+                                            'keyword': 'الدولة'
+                                          }),
+                                          for (int i = 0;
+                                          i <
+                                              snapshot
+                                                  .data!.data!.length;
+                                          i++)
+                                            {
+                                              countrylist.add({
+                                                'no': i,
+                                                'keyword':
+                                                '${snapshot.data!.data![i]
+                                                    .name!}'
+                                              }),
+                                            },
+                                          _dropdownTestItems3 =
+                                              buildDropdownTestItems(
+                                                  countrylist)
+                                        }
+                                            : null;
 
-                                          return paddingg(
-                                            15,
-                                            15,
-                                            12,
-                                            DropdownBelow(
-                                              itemWidth: 370.w,
-                                              dropdownColor: white,
+                                        return paddingg(
+                                          15,
+                                          15,
+                                          12,
+                                          DropdownBelow(
+                                            itemWidth: 370.w,
+                                            dropdownColor: white,
 
-                                              ///text style inside the menu
-                                              itemTextstyle: TextStyle(
+                                            ///text style inside the menu
+                                            itemTextstyle: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400,
+                                              color: black,
+                                              fontFamily: 'Cairo',
+                                            ),
+
+                                            ///hint style
+                                            boxTextstyle: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: black,
-                                                fontFamily: 'Cairo',
-                                              ),
+                                                fontFamily: 'Cairo'),
 
-                                              ///hint style
-                                              boxTextstyle: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: black,
-                                                  fontFamily: 'Cairo'),
+                                            ///box style
+                                            boxPadding: EdgeInsets.fromLTRB(
+                                                13.w, 12.h, 13.w, 12.h),
+                                            boxWidth: 500.w,
+                                            boxHeight: 45.h,
+                                            boxDecoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: newGrey,
+                                                    width: 0.5),
+                                                color: lightGrey.withOpacity(
+                                                    0.10),
+                                                borderRadius:
+                                                BorderRadius.circular(8.r)),
 
-                                              ///box style
-                                              boxPadding: EdgeInsets.fromLTRB(
-                                                  13.w, 12.h, 13.w, 12.h),
-                                              boxWidth: 500.w,
-                                              boxHeight: 45.h,
-                                              boxDecoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: newGrey,
-                                                      width: 0.5),
-                                                  color: lightGrey.withOpacity(
-                                                      0.10),
-                                                  borderRadius:
-                                                  BorderRadius.circular(8.r)),
-
-                                              ///Icons
-                                              icon: const Icon(
-                                                Icons.arrow_drop_down,
-                                                color: Colors.grey,
-                                              ),
-                                              hint: Text(
-                                                country,
-                                                textDirection: TextDirection
-                                                    .rtl,
-                                              ),
-                                              value: _selectedTest3,
-                                              items: _dropdownTestItems3,
-                                              onChanged: onChangeDropdownTests3,
+                                            ///Icons
+                                            icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.grey,
                                             ),
-                                          );
-                                        } else {
-                                          return const Center(
-                                              child: Text(
-                                                  'لايوجد لينك لعرضهم حاليا'));
-                                        }
+                                            hint: Text(
+                                              country,
+                                              textDirection: TextDirection
+                                                  .rtl,
+                                            ),
+                                            value: _selectedTest3,
+                                            items: _dropdownTestItems3,
+                                            onChanged: onChangeDropdownTests3,
+                                          ),
+                                        );
                                       } else {
-                                        return Center(
+                                        return const Center(
                                             child: Text(
-                                                'State: ${snapshot
-                                                    .connectionState}'));
+                                                'لايوجد لينك لعرضهم حاليا'));
                                       }
-                                    })):SizedBox(),
+                                    } else {
+                                      return Center(
+                                          child: Text(
+                                              'State: ${snapshot
+                                                  .connectionState}'));
+                                    }
+                                  })) : SizedBox(),
 
-                                isConnectSection?
-                                FutureBuilder(
-                                    future: cities,
-                                    builder: ((context,
-                                        AsyncSnapshot<CityL> snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
+                              isConnectSection ?
+                              FutureBuilder(
+                                  future: cities,
+                                  builder: ((context,
+                                      AsyncSnapshot<CityL> snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center();
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.active ||
+                                        snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                      if (snapshot.hasError) {
                                         return Center();
-                                      } else if (snapshot.connectionState ==
-                                          ConnectionState.active ||
-                                          snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                        if (snapshot.hasError) {
-                                          return Center();
-                                          //---------------------------------------------------------------------------
-                                        } else if (snapshot.hasData) {
-                                          _dropdownTestItems.isEmpty
-                                              ? {
-                                            citilist.add({
-                                              'no': 0,
-                                              'keyword':
-                                              'المدينة'
-                                            }),
-                                            for (int i = 0;
-                                            i <
-                                                snapshot
-                                                    .data!.data!.length;
-                                            i++)
-                                              {
-                                                citilist.add({
-                                                  'no': snapshot.data!.data![i]
-                                                      .id!,
-                                                  'keyword':
-                                                  '${snapshot.data!.data![i]
-                                                      .name!}'
-                                                }),
-                                              },
-                                            _dropdownTestItems =
-                                                buildDropdownTestItems(
-                                                    citilist)
-                                          }
-                                              : null;
+                                        //---------------------------------------------------------------------------
+                                      } else if (snapshot.hasData) {
+                                        _dropdownTestItems.isEmpty
+                                            ? {
+                                          citilist.add({
+                                            'no': 0,
+                                            'keyword':
+                                            'المدينة'
+                                          }),
+                                          for (int i = 0;
+                                          i <
+                                              snapshot
+                                                  .data!.data!.length;
+                                          i++)
+                                            {
+                                              citilist.add({
+                                                'no': snapshot.data!.data![i]
+                                                    .id!,
+                                                'keyword':
+                                                '${snapshot.data!.data![i]
+                                                    .name!}'
+                                              }),
+                                            },
+                                          _dropdownTestItems =
+                                              buildDropdownTestItems(
+                                                  citilist)
+                                        }
+                                            : null;
 
-                                          return paddingg(
-                                            15,
-                                            15,
-                                            12,
-                                            DropdownBelow(
-                                              itemWidth: 370.w,
-                                              dropdownColor: white,
+                                        return paddingg(
+                                          15,
+                                          15,
+                                          12,
+                                          DropdownBelow(
+                                            itemWidth: 370.w,
+                                            dropdownColor: white,
 
-                                              ///text style inside the menu
-                                              itemTextstyle: TextStyle(
+                                            ///text style inside the menu
+                                            itemTextstyle: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400,
+                                              color: black,
+                                              fontFamily: 'Cairo',
+                                            ),
+
+                                            ///hint style
+                                            boxTextstyle: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w400,
                                                 color: black,
-                                                fontFamily: 'Cairo',
-                                              ),
+                                                fontFamily: 'Cairo'),
 
-                                              ///hint style
-                                              boxTextstyle: TextStyle(
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: black,
-                                                  fontFamily: 'Cairo'),
+                                            ///box style
+                                            boxPadding: EdgeInsets.fromLTRB(
+                                                13.w, 12.h, 13.w, 12.h),
+                                            boxWidth: 500.w,
+                                            boxHeight: 45.h,
+                                            boxDecoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: newGrey,
+                                                    width: 0.5),
+                                                color: lightGrey.withOpacity(
+                                                    0.10),
+                                                borderRadius:
+                                                BorderRadius.circular(8.r)),
 
-                                              ///box style
-                                              boxPadding: EdgeInsets.fromLTRB(
-                                                  13.w, 12.h, 13.w, 12.h),
-                                              boxWidth: 500.w,
-                                              boxHeight: 45.h,
-                                              boxDecoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: newGrey,
-                                                      width: 0.5),
-                                                  color: lightGrey.withOpacity(
-                                                      0.10),
-                                                  borderRadius:
-                                                  BorderRadius.circular(8.r)),
-
-                                              ///Icons
-                                              icon: const Icon(
-                                                Icons.arrow_drop_down,
-                                                color: Colors.grey,
-                                              ),
-                                              hint: Text(
-                                                city,
-                                                textDirection: TextDirection
-                                                    .rtl,
-                                              ),
-                                              value: _selectedTest,
-                                              items: _dropdownTestItems,
-                                              onChanged: onChangeDropdownTests,
+                                            ///Icons
+                                            icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.grey,
                                             ),
-                                          );
-                                        } else {
-                                          return const Center(
-                                              child: Text(
-                                                  'لايوجد لينك لعرضهم حاليا'));
-                                        }
+                                            hint: Text(
+                                              city,
+                                              textDirection: TextDirection
+                                                  .rtl,
+                                            ),
+                                            value: _selectedTest,
+                                            items: _dropdownTestItems,
+                                            onChanged: onChangeDropdownTests,
+                                          ),
+                                        );
                                       } else {
-                                        return Center(
+                                        return const Center(
                                             child: Text(
-                                                ''));
+                                                'لايوجد لينك لعرضهم حاليا'));
                                       }
-                                    })):SizedBox(),
+                                    } else {
+                                      return Center(
+                                          child: Text(
+                                              ''));
+                                    }
+                                  })) : SizedBox(),
 
-                                citychosen != null ?
-                                citychosen == false ? Padding(
-                                  padding: const EdgeInsets.only(right: 18.0),
-                                  child: text(
-                                      context, 'الرجاء تحديد المدينة', 14,
-                                      red!),
-                                ) : SizedBox()
-                                    :
-                                SizedBox(),
+                              citychosen != null ?
+                              citychosen == false ? Padding(
+                                padding: const EdgeInsets.only(right: 18.0),
+                                child: text(
+                                    context, 'الرجاء تحديد المدينة', 14,
+                                    red!),
+                              ) : SizedBox()
+                                  :
+                              SizedBox(),
 
                               FutureBuilder(
                                   future: categories,
@@ -1024,7 +1044,6 @@ class _profileInformaionState extends State<profileInformaion>
                                   Center(
                                       child: InkWell(
                                           onTap: () {
-
                                             _selectedTest4 == null &&
                                                 gender == 'الجنس'
                                                 ? setState(() {
@@ -1041,10 +1060,7 @@ class _profileInformaionState extends State<profileInformaion>
                                             { loadingDialogue(context),
                                               updateInformation().then((value) =>
                                               {
-                                                value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                                  Navigator.pop(context),
-                                                  showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                }:    {
+                                                value.contains('true')?{
                                                   Navigator.pop(context),
                                                   countryChanged
                                                       ? setState(() {
@@ -1060,7 +1076,30 @@ class _profileInformaionState extends State<profileInformaion>
                                                         builder: (context) =>
                                                             MainScreen()),
                                                   ),
-                                                  showMassage(context, 'تم بنجاح',value, done: done)
+                                                  showMassage(
+                                                      context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                      done: done)
+                                                }:{
+                                                  value == 'SocketException'?{
+                                                    Navigator.pop(context),
+                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                  }: {
+
+                                                    value == 'serverException'? {
+                                                      Navigator.pop(context),
+                                                      showMassage(
+                                                        context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                    }:{
+                                                      Navigator.pop(context),
+                                                      showMassage(
+                                                        context,
+                                                        'خطا',
+                                                        value.replaceAll('false', ''),
+                                                      )
+                                                    }
+
+
+                                                  }
                                                 }
                                               })}
                                                 : setState(() {
@@ -1107,10 +1146,7 @@ class _profileInformaionState extends State<profileInformaion>
                                               { loadingDialogue(context),
                                                 updateInformation().then((value) =>
                                                 {
-                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                                    Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                  }:    {
+                                                  value.contains('true')?{
                                                     Navigator.pop(context),
                                                     countryChanged
                                                         ? setState(() {
@@ -1126,7 +1162,30 @@ class _profileInformaionState extends State<profileInformaion>
                                                           builder: (context) =>
                                                               MainScreen()),
                                                     ),
-                                                    showMassage(context, 'تم بنجاح',value, done: done)
+                                                    showMassage(
+                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                        done: done)
+                                                  }:{
+                                                    value == 'SocketException'?{
+                                                      Navigator.pop(context),
+                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                    }: {
+
+                                                      value == 'serverException'? {
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                      }:{
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context,
+                                                          'خطا',
+                                                          value.replaceAll('false', ''),
+                                                        )
+                                                      }
+
+
+                                                    }
                                                   }
                                                 })}
                                                   : setState(() {
@@ -1158,7 +1217,6 @@ class _profileInformaionState extends State<profileInformaion>
                                     child: Center(
                                         child: InkWell(
                                             onTap: () {
-
                                               _selectedTest4 == null &&
                                                   gender == 'الجنس'
                                                   ? setState(() {
@@ -1175,10 +1233,7 @@ class _profileInformaionState extends State<profileInformaion>
                                               { loadingDialogue(context),
                                                 updateInformation().then((value) =>
                                                 {
-                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                                    Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                  }:    {
+                                                  value.contains('true')?{
                                                     Navigator.pop(context),
                                                     countryChanged
                                                         ? setState(() {
@@ -1194,7 +1249,30 @@ class _profileInformaionState extends State<profileInformaion>
                                                           builder: (context) =>
                                                               MainScreen()),
                                                     ),
-                                                    showMassage(context, 'تم بنجاح',value, done: done)
+                                                    showMassage(
+                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                        done: done)
+                                                  }:{
+                                                    value == 'SocketException'?{
+                                                      Navigator.pop(context),
+                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                    }: {
+
+                                                      value == 'serverException'? {
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                      }:{
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context,
+                                                          'خطا',
+                                                          value.replaceAll('false', ''),
+                                                        )
+                                                      }
+
+
+                                                    }
                                                   }
                                                 })}
                                                   : setState(() {
@@ -1226,7 +1304,6 @@ class _profileInformaionState extends State<profileInformaion>
                                     child: Center(
                                         child: InkWell(
                                             onTap: () {
-
                                               _selectedTest4 == null &&
                                                   gender == 'الجنس'
                                                   ? setState(() {
@@ -1243,10 +1320,7 @@ class _profileInformaionState extends State<profileInformaion>
                                               { loadingDialogue(context),
                                                 updateInformation().then((value) =>
                                                 {
-                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                                    Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                  }:    {
+                                                  value.contains('true')?{
                                                     Navigator.pop(context),
                                                     countryChanged
                                                         ? setState(() {
@@ -1262,7 +1336,30 @@ class _profileInformaionState extends State<profileInformaion>
                                                           builder: (context) =>
                                                               MainScreen()),
                                                     ),
-                                                    showMassage(context, 'تم بنجاح',value, done: done)
+                                                    showMassage(
+                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                        done: done)
+                                                  }:{
+                                                    value == 'SocketException'?{
+                                                      Navigator.pop(context),
+                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                    }: {
+
+                                                      value == 'serverException'? {
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                      }:{
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context,
+                                                          'خطا',
+                                                          value.replaceAll('false', ''),
+                                                        )
+                                                      }
+
+
+                                                    }
                                                   }
                                                 })}
                                                   : setState(() {
@@ -1294,7 +1391,6 @@ class _profileInformaionState extends State<profileInformaion>
                                     child: Center(
                                         child: InkWell(
                                             onTap: () {
-
                                               _selectedTest4 == null &&
                                                   gender == 'الجنس'
                                                   ? setState(() {
@@ -1311,10 +1407,7 @@ class _profileInformaionState extends State<profileInformaion>
                                               { loadingDialogue(context),
                                                 updateInformation().then((value) =>
                                                 {
-                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                                    Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                  }:    {
+                                                  value.contains('true')?{
                                                     Navigator.pop(context),
                                                     countryChanged
                                                         ? setState(() {
@@ -1330,7 +1423,30 @@ class _profileInformaionState extends State<profileInformaion>
                                                           builder: (context) =>
                                                               MainScreen()),
                                                     ),
-                                                    showMassage(context, 'تم بنجاح',value, done: done)
+                                                    showMassage(
+                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                        done: done)
+                                                  }:{
+                                                    value == 'SocketException'?{
+                                                      Navigator.pop(context),
+                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                    }: {
+
+                                                      value == 'serverException'? {
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                      }:{
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context,
+                                                          'خطا',
+                                                          value.replaceAll('false', ''),
+                                                        )
+                                                      }
+
+
+                                                    }
                                                   }
                                                 })}
                                                   : setState(() {
@@ -1362,7 +1478,6 @@ class _profileInformaionState extends State<profileInformaion>
                                     child: Center(
                                         child: InkWell(
                                             onTap: () {
-
                                               _selectedTest4 == null &&
                                                   gender == 'الجنس'
                                                   ? setState(() {
@@ -1379,10 +1494,7 @@ class _profileInformaionState extends State<profileInformaion>
                                               { loadingDialogue(context),
                                                 updateInformation().then((value) =>
                                                 {
-                                                  value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
-                                                    Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                  }:    {
+                                                  value.contains('true')?{
                                                     Navigator.pop(context),
                                                     countryChanged
                                                         ? setState(() {
@@ -1398,7 +1510,30 @@ class _profileInformaionState extends State<profileInformaion>
                                                           builder: (context) =>
                                                               MainScreen()),
                                                     ),
-                                                    showMassage(context, 'تم بنجاح',value, done: done)
+                                                    showMassage(
+                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                        done: done)
+                                                  }:{
+                                                    value == 'SocketException'?{
+                                                      Navigator.pop(context),
+                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                    }: {
+
+                                                      value == 'serverException'? {
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                      }:{
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context,
+                                                          'خطا',
+                                                          value.replaceAll('false', ''),
+                                                        )
+                                                      }
+
+
+                                                    }
                                                   }
                                                 })}
                                                   : setState(() {
@@ -1406,7 +1541,7 @@ class _profileInformaionState extends State<profileInformaion>
                                                     ? citychosen = false
                                                     : null;
                                               },);
-                    },
+                                            },
                                             child: text(
                                                 context, 'اضافة', 14, black,
                                                 align: TextAlign.center))),
@@ -1438,14 +1573,23 @@ class _profileInformaionState extends State<profileInformaion>
                                               ? {
                                             changePassword().then((value) =>
                                             {
-                                              value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+                                              value == 'SocketException' ||
+                                                  value == 'TimeoutException' ||
+                                                  value == 'ServerException' ? {
                                                 Navigator.pop(context),
-                                                showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                              }:
-                                              value.contains('false')?showMassage(context, 'خطا',value.replaceAll('false', '')):showMassage(context, 'تم بنجاح',"تم التغيير بنجاح", done: done),
+                                                showMassage(context,
+                                                    'فشل الاتصال بالانترنت',
+                                                    "فشل الاتصال بالانترنت حاول لاحقا")
+                                              } :
+                                              value.contains('false')
+                                                  ? showMassage(context, 'خطا',
+                                                  value.replaceAll('false', ''))
+                                                  : showMassage(
+                                                  context, 'تم بنجاح',
+                                                  "تم التغيير بنجاح",
+                                                  done: done),
 
                                             })
-
                                           }
                                               : setState(() {
                                             noMatch =
@@ -1471,27 +1615,47 @@ class _profileInformaionState extends State<profileInformaion>
                                         { loadingDialogue(context),
                                           updateInformation().then((value) =>
                                           {
-                                          value == 'SocketException' ||  value == 'TimeoutException' ||  value == 'ServerException'? {
+                                            value.contains('true')?{
                                               Navigator.pop(context),
-                                              showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                          }:    {
-                                            Navigator.pop(context),
-                                            countryChanged
-                                                ? setState(() {
-                                              helper = 0;
-                                              countryChanged = false;
-                                              celebrities =
-                                                  fetchCelebrities(
-                                                      userToken!);
-                                            })
-                                                : Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      MainScreen()),
-                                            ),
-                                            showMassage(context, 'تم بنجاح',value, done: done)
-                                          }
+                                              countryChanged
+                                                  ? setState(() {
+                                                helper = 0;
+                                                countryChanged = false;
+                                                celebrities =
+                                                    fetchCelebrities(
+                                                        userToken!);
+                                              })
+                                                  : Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MainScreen()),
+                                              ),
+                                              showMassage(
+                                                  context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                  done: done)
+                                            }:{
+                                              value == 'SocketException'?{
+                                                Navigator.pop(context),
+                                                showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                              }: {
+
+                                                value == 'serverException'? {
+                                                  Navigator.pop(context),
+                                                  showMassage(
+                                                    context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                }:{
+                                                  Navigator.pop(context),
+                                                  showMassage(
+                                                    context,
+                                                    'خطا',
+                                                    value.replaceAll('false', ''),
+                                                  )
+                                                }
+
+
+                                              }
+                                            }
                                           })}
                                             : setState(() {
                                           city == 'المدينة'
@@ -1532,58 +1696,60 @@ class _profileInformaionState extends State<profileInformaion>
         catId = key + 1;
       }
     });
-    // try {
-      final response = await http.post(
-        Uri.parse(
-          'https://mobile.celebrityads.net/api/celebrity/profile/update',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $userToken'
-        },
-        body: jsonEncode(<String, dynamic>{
-          'name': name.text,
-          'email': email.text,
-          'password': password.text,
-          'phonenumber': phone.text,
-          'country_id':
-          _selectedTest3 == null ? countryi: countrylist.indexOf(_selectedTest3),
-          'city_id': _selectedTest == null ? cityi : _selectedTest['no'],
-          'category_id':
-          _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
-          'snapchat': snapchat.text,
-          'tiktok': tiktok.text,
-          'youtube': youtube.text,
-          'instagram': instagram.text,
-          'twitter': twitter.text,
-          'facebook': facebook.text,
-          'description': desc.text,
-          'gender_id': _selectedTest4 == null ? genderi : _selectedTest4['no'],
-          'store' : '',
-        }),
-      );
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        print(response.body);
-        return jsonDecode(response.body)['message']['ar'];
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to load activity');
-      }
-    // }catch (e) {
-    //   if (e is SocketException) {
-    //     return 'SocketException';
-    //   } else if(e is TimeoutException) {
-    //     return 'TimeoutException';
-    //   } else {
-    //     return 'serverException';
-    //
-    //   }
-    // }
+    try {
+    final response = await http.post(
+
+      Uri.parse(
+        'https://mobile.celebrityads.net/api/celebrity/profile/update',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer '
+      },
+      body: jsonEncode(<String, dynamic>{
+        'name': name.text,
+        'email': email.text,
+        'password': password.text,
+        'phonenumber': phone.text,
+        'country_id':
+        _selectedTest3 == null ? countryi : countrylist.indexOf(_selectedTest3),
+        'city_id': _selectedTest == null ? cityi : _selectedTest['no'],
+        'category_id':
+        _selectedTest2 == null ? catId : categorylist.indexOf(_selectedTest2),
+        'snapchat': snapchat.text,
+        'tiktok': tiktok.text,
+        'youtube': youtube.text,
+        'instagram': instagram.text,
+        'twitter': twitter.text,
+        'facebook': facebook.text,
+        'description': desc.text,
+        'gender_id': _selectedTest4 == null ? genderi : _selectedTest4['no'],
+        'store': '',
+      }),
+    );
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print(response.body);
+      return jsonDecode(response.body)['message']['ar'] +  jsonDecode(response.body)['success'].toString();
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load activity');
+    }
+  }catch(e) {
+  if (e is SocketException) {
+  return 'SocketException';
+  } else if(e is TimeoutException) {
+  return 'TimeoutException';
+  } else {
+  return 'serverException';
+
   }
+  }
+}
+
 
   Future<String> changePassword() async {
 

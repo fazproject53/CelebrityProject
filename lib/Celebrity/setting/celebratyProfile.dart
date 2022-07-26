@@ -196,21 +196,183 @@ class _celebratyProfileState extends State<celebratyProfile> {
                   if (snapshot.hasError) {
                     if (snapshot.error.toString() ==
                         'SocketException') {
+                      //
                       return Center(
-                          child: Padding(
-                            padding:  EdgeInsets.only(top: 100.h),
-                            child: SizedBox(
-                                height: 300.h,
-                                width: 250.w,
-                                child: internetConnection(
-                                    context, reload: () {
-                                  setState(() {
-                                    celebrity = fetchCelebrities(userToken);
-                                    isConnectSection = true;
-                                  });
-                                })),
-                          ));
+                         child:  Column(children: [
+                            //======================== profile header ===============================
+
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                          InkWell(
+                                                              child: padding(
+                                                                8,
+                                                                8,
+                                                                CircleAvatar(
+                                                                  backgroundColor: lightGrey.withOpacity(0.30),
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.circular(100.r),
+                                                                    child: Icon(Icons.error, size: 30.h, color: red,),
+                                                                  ),
+                                                                  radius: 55.r,
+                                                                ),
+                                                              ),
+                                                              onTap: () {
+
+                                                              },
+                                                            ),
+                                                            SizedBox(height: 5.h),
+                                                            padding(
+                                                              8,
+                                                              8,
+                                                              text(context, Logging.theUser!.name!, 20, black,)
+                                                            )
+
+                              ],
+                            ), //profile image
+
+                            //=========================== buttons listView =============================
+
+                            SingleChildScrollView(
+                              child: Container(
+                                child: paddingg(
+                                  8,
+                                  0,
+                                  20,
+                                  ListView.separated(
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return MaterialButton(
+                                          onPressed: index == labels.length - 1
+                                              ? () {
+                                            singOut(context, userToken);
+                                          }
+                                              : () {
+                                            goToPagePushRefresh(context,page[index], then: (value){setState(() {
+                                              fetchCelebrities(userToken);
+                                            });});
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           page[index]),
+                                            // ).then((value) => null);
+                                          },
+                                          child: addListViewButton(
+                                            labels[index],
+                                            icons[index],
+                                          ));
+                                    },
+                                    separatorBuilder: (context, index) =>
+                                    const Divider(),
+                                    itemCount: labels.length,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            //========================== social media icons row =======================================
+
+                            SizedBox(
+                              height: 50.h,
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Image.asset(
+                                          'assets/image/icon- faceboock.png',
+                                        )),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- insta.png',
+                                      ),
+                                    ),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- snapchat.png',
+                                      ),
+                                    ),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset(
+                                        'assets/image/icon- twitter.png',
+                                      ),
+                                    ),
+                                  ),
+                                  padding(
+                                    8,
+                                    8,
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: SvgPicture.asset('assets/Svg/ttt.svg',width: 30,
+                                        height: 30,),
+                                    ),
+                                  ),
+                                ]),
+
+
+                            paddingg(
+                              8,
+                              8,
+                              12,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    copyRight,
+                                    size: 14,
+                                  ),
+                                  text(
+                                      context, 'حقوق الطبع والنشر محفوظة', 14, black),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30.h,
+                            )
+                          ])
+                        );
                     } else {
+                      if (!serverExceptions) {
+                        return Container(
+                          height: getSize(context).height/1.5,
+                          child: Center(
+                              child: checkServerException(context)
+                          ),
+                        );}else{
+                        if (!timeoutException) {
+                          return Center(
+                            child: checkTimeOutException(context, reload: (){ setState(() {
+                              celebrity = fetchCelebrities(userToken);});}),
+                          );}
+                      }
                       return const Center(
                           child: Text(
                               'حدث خطا ما اثناء استرجاع البيانات'));
@@ -234,7 +396,8 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(70.r),
                                           child: imagefile != null? Image.file(imagefile!,fit: BoxFit.fill,
-                                            height: double.infinity, width: double.infinity,):
+                                            height: double.infinity, width: double.infinity,): snapshot.data!.data!.celebrity!.image == null? Container(color: 
+                                            lightGrey.withOpacity(0.30),):
                                           Image.network(
                                             snapshot.data!.data!.celebrity!.image!, fit: BoxFit.fill,
                                             height: double.infinity, width: double.infinity,

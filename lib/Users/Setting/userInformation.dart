@@ -684,11 +684,7 @@ class _userInformationState extends State<userInformation> {
                                           loadingDialogue(context),
                                           updateUserInformation(userToken)
                                               .then((value) {
-                                                value == 'SocketException'?{
-                                                  Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                }: {
-
+                                                value.contains('true')?{
                                                   Navigator.pop(context),
                                                   countryChanged || cityChanged
                                                       ? setState(() {
@@ -708,8 +704,29 @@ class _userInformationState extends State<userInformation> {
                                                             (context) =>
                                                             MainScreen()),
                                                   ),
-                                                  showMassage(context, 'تم بنجاح',value, done: done)
-                                                };
+                                                  showMassage(context, 'تم بنجاح',value.replaceAll('true', ''), done: done)
+                                                }:{
+                                                  value == 'SocketException'?{
+                                                  Navigator.pop(context),
+                                                  showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                }: {
+
+                                                  value == 'serverException'? {
+                                                    Navigator.pop(context),
+                                                    showMassage(
+                                                      context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                  }:{
+                                                    Navigator.pop(context),
+                                                    showMassage(
+                                                      context,
+                                                      'خطا',
+                                                      value.replaceAll('false', ''),
+                                                    )
+                                                  }
+
+
+                                                }
+
 
 
                                             //   setState(() {
@@ -725,7 +742,7 @@ class _userInformationState extends State<userInformation> {
                                             //         "تم تعديل المعلومات بنجاح"),
                                             //   ))
 
-                                          })}: setState(() {
+                                          };})}: setState(() {
                                           citychosen==false? citychosen = true: null;
                                         },);};
                                     })),
@@ -942,7 +959,7 @@ class _userInformationState extends State<userInformation> {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
+          'Authorization': 'Bearer $userToken'
         },
         body: jsonEncode(<String, dynamic>{
           'name': name.text,
@@ -959,7 +976,7 @@ class _userInformationState extends State<userInformation> {
         // If the server did return a 200 OK response,
         // then parse the JSON.
         print(response.body);
-        return jsonDecode(response.body)['message']['ar'] ;
+        return jsonDecode(response.body)['message']['ar']+ jsonDecode(response.body)['success'].toString() ;
       } else {
         // If the server did not return a 200 OK response,
         // then throw an exception.

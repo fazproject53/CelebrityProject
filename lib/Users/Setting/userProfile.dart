@@ -372,7 +372,7 @@ class _userProfileState extends State<userProfile>
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100.r),
                                   child: userImage != null? Image.file(userImage!,fit: BoxFit.fill,
-                                    height: double.infinity, width: double.infinity,):snapshot.data!.data!.user!.image == null? Image.asset('assets/image/user.png'): Image.network(
+                                    height: double.infinity, width: double.infinity,):snapshot.data!.data!.user!.image == null? Container(color: lightGrey.withOpacity(0.30)): Image.network(
                                     snapshot.data!.data!.user!.image!,
                                     fit: BoxFit.fill,
                                     height: double.infinity,
