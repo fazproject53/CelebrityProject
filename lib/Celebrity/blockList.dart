@@ -12,6 +12,7 @@ import 'package:lottie/lottie.dart';
 
 import '../Account/LoggingSingUpAPI.dart';
 import '../ModelAPI/ModelsAPI.dart';
+import 'TechincalSupport/contact_with_us.dart';
 
 class blockList extends StatefulWidget {
   _blockListState createState() => _blockListState();
@@ -339,7 +340,9 @@ class _blockListState extends State<blockList> {
                                                         align: TextAlign
                                                             .center)),
                                               ),
-                                              onTap: () {}),
+                                              onTap: () {
+                                                goTopageReplacement(context, ContactWithUsHome());
+                                              }),
                                         ],
                                       ),
                                     ],
