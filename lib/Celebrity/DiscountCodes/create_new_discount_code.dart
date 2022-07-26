@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:celepraty/Celebrity/celebrityHomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
@@ -11,6 +12,7 @@ import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../Account/LoggingSingUpAPI.dart';
 
+import '../../celebrity/DiscountCodes/discount_codes_main.dart';
 import '../setting/celebratyProfile.dart';
 import 'ModelDiscountCode.dart';
 
@@ -803,33 +805,32 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                                           .then((value) {
                                                                           print('save change');
                                                                           if(value == 'true'){
+                                                                            gotoPageAndRemovePrevious(context,  const DiscountCodes());
                                                                             showMassage(context, 'تم', 'تم حفظ التغيرات بنجاح', done: done);
                                                                           }
 
-                                                                          // else if (value == 'SocketException') {
-                                                                          //   showMassage(context, 'مشكلة في الانترنت', 'لايوجد اتصال بالانترنت في الوقت الحالي');
-                                                                          // } else if (value == 'serverExceptions') {
-                                                                          //   showMassage(context, 'مشكلة في الخادم', '');
-                                                                          // } else {
-                                                                          //   ///TimeOut
-                                                                          // }
+                                                                          else if (value == 'SocketException') {
+                                                                            showMassage(context, 'مشكلة في الانترنت', 'لايوجد اتصال بالانترنت في الوقت الحالي');
+                                                                          } else if (value == 'serverExceptions') {
+                                                                            showMassage(context, 'مشكلة في الخادم', '');
+                                                                          } else {
+                                                                            ///TimeOut
+                                                                          }
                                                                         })
                                                                       : createNewDiscountCode(userToken!).then((value) {
                                                                     if(value == 'true'){
                                                                       print('save');
-                                                                      showMassage(context, 'تم', 'تم الحفظ بنجاح');
+                                                                      gotoPageAndRemovePrevious(context, const DiscountCodes());
+                                                                      showMassage(context, 'تم', 'تم الحفظ بنجاح', done: done);
                                                                     }
-                                                                    // else if (value == 'SocketException') {
-                                                                    //   showMassage(context, 'مشكلة في الانترنت', 'لايوجد اتصال بالانترنت في الوقت الحالي');
-                                                                    // } else if (value == 'serverExceptions') {
-                                                                    //   showMassage(context, 'مشكلة في الخادم', '');
-                                                                    // } else {
-                                                                    //   ///TimeOut
-                                                                    // }
+                                                                    else if (value == 'SocketException') {
+                                                                      showMassage(context, 'مشكلة في الانترنت', 'لايوجد اتصال بالانترنت في الوقت الحالي');
+                                                                    } else if (value == 'serverExceptions') {
+                                                                      showMassage(context, 'مشكلة في الخادم', '');
+                                                                    } else {
+                                                                      ///TimeOut
+                                                                    }
                                                                   }),
-                                                                  goTopageReplacement(
-                                                                      context,
-                                                                      celebratyProfile())
                                                                 }
                                                               else
                                                                 {
