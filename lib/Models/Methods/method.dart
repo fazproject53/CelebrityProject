@@ -1560,7 +1560,7 @@ successfullyDialog(
 }
 
 failureDialog(context, String massage, String lottie, String bottomName, action,
-    {double? height}) {
+    {double? height, String title = 'الغاء'}) {
   return showDialog(
       barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.70),
@@ -1593,13 +1593,13 @@ failureDialog(context, String massage, String lottie, String bottomName, action,
             Padding(
               padding: EdgeInsets.only(bottom: 10.h, left: 10.w, right: 10.w),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: title == 'الغاء'? MainAxisAlignment.spaceBetween: MainAxisAlignment.center,
                 children: [
-                  buttoms(context, 'الغاء', 18, Colors.grey, () {
+                  buttoms(context, title, 18, Colors.grey, () {
                     Navigator.pop(context);
                   }, backgrounColor: white),
-                  buttoms(context, bottomName, 18, Colors.grey, action,
-                      backgrounColor: white)
+                 title == 'الغاء'? buttoms(context, bottomName, 18, Colors.grey, action,
+                      backgrounColor: white): SizedBox(),
                 ],
               ),
             )
