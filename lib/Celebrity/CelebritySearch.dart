@@ -1,22 +1,15 @@
-import 'package:celepraty/ModelAPI/ModelsAPI.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Account/LoggingSingUpAPI.dart';
 import 'HomeScreen/celebrity_home_page.dart';
-TextEditingController s=TextEditingController();
+
 class CelebritySearch extends SearchDelegate {
   List<String> _oldFilters = [];
   List<dynamic> allCelbrity;
-
-  String? pagIndex;
-
-  CelebritySearch({required this.allCelbrity
-      // , required this.onSearchChanged
-      })
+  CelebritySearch({required this.allCelbrity})
       : super(
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.done,
@@ -26,7 +19,6 @@ class CelebritySearch extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     // Action of app bar
     return [
-
       IconButton(
           icon: const Icon(Icons.clear),
           onPressed: () {
@@ -53,55 +45,46 @@ class CelebritySearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     saveToRecentSearchesCelebrity(query);
-
     List _results;
     _results = allCelbrity.where((name) {
       final nameLower = name.name!.toLowerCase();
       final queryLower = query.toLowerCase();
       return queryLower.compareTo(nameLower) == 0;
     }).toList();
-    print(_results.length);
-    return _results.length == 0
+
+    return _results.isEmpty
         ? Column(
-
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
-                width: MediaQuery.of(context).size.height / 4,
-                child: Lottie.asset('assets/lottie/noSearch.json')),
-          Center(child: text(context, "لاتوجد نتائج عن البحث", 15, Colors.grey)),
-
-
-        ],)
-        : const Text('');
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                  width: MediaQuery.of(context).size.height / 4,
+                  child: Lottie.asset('assets/lottie/noSearch.json')),
+              Center(
+                  child:
+                      text(context, "لاتوجد نتائج عن البحث", 15, Colors.grey)),
+            ],
+          )
+        : buildSuggestions(context);
   }
 
   @override
   void showResults(BuildContext context) {
-
     List _results;
-    _results = allCelbrity.where(( name) {
+    _results = allCelbrity.where((name) {
       final nameLower = name.name!.toLowerCase();
       final queryLower = query.toLowerCase();
       return queryLower.compareTo(nameLower) == 0;
     }).toList();
-    print('=============================');
-    print(_results[0].pageUrl);
-    print('============================');
-    if (_results.length == 0) {
-      Center(
-        child: text(context, "لاتوجد نتائج عن البحث", 14, Colors.grey),
-      );
-    } else {
-     showSuggestions(context);
+    if (_results.isNotEmpty) {
+      query = _results[0].name;
       goTopagepush(
           context,
           CelebrityHome(
-           // pageUrl: '$pagIndex',
             pageUrl: '${_results[0].pageUrl}',
           ));
     }
+
     super.showResults(context);
   }
 
@@ -142,7 +125,6 @@ class CelebritySearch extends SearchDelegate {
                     minLeadingWidth: 5.w,
                     onTap: () {
                       query = suggestion.name!;
-                      //pagIndex = suggestion.pageUrl;
                       showResults(context);
                     },
                     leading: const Icon(Icons.search),
@@ -270,7 +252,6 @@ class CelebritySearch extends SearchDelegate {
     final ThemeData theme = Theme.of(context);
     double size = MediaQuery.of(context).size.width;
     return ThemeData(
-
       primarySwatch: Colors.grey,
       appBarTheme: const AppBarTheme(
         backgroundColor: purple,
@@ -280,7 +261,6 @@ class CelebritySearch extends SearchDelegate {
         elevation: 15,
       ),
       textTheme: TextTheme(
-
         titleLarge: TextStyle(
             decoration: TextDecoration.none,
             color: Colors.white,
@@ -295,7 +275,6 @@ class CelebritySearch extends SearchDelegate {
       inputDecorationTheme: InputDecorationTheme(
           isDense: true,
           filled: true,
-
           hintStyle: TextStyle(
             color: Colors.grey[300],
             fontSize: 15.sp,
