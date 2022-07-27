@@ -394,8 +394,7 @@ class AdSpaceOrders {
   int? price;
   String? image;
   String? link;
-  Null? rejectReson;
-  Null? celebrityPromoCode;
+
 
   AdSpaceOrders(
       {this.id,
@@ -407,8 +406,7 @@ class AdSpaceOrders {
         this.price,
         this.image,
         this.link,
-        this.rejectReson,
-        this.celebrityPromoCode});
+     });
 
   AdSpaceOrders.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -423,8 +421,7 @@ class AdSpaceOrders {
     price = json['price'];
     image = json['image'];
     link = json['link'];
-    rejectReson = json['reject_reson'];
-    celebrityPromoCode = json['celebrity_promo_code'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -446,8 +443,7 @@ class AdSpaceOrders {
     data['price'] = this.price;
     data['image'] = this.image;
     data['link'] = this.link;
-    data['reject_reson'] = this.rejectReson;
-    data['celebrity_promo_code'] = this.celebrityPromoCode;
+
     return data;
   }
 }

@@ -152,7 +152,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
     });
     try {
       final res = await http.get(Uri.parse(
-          "https://mobile.celebrityads.net/api/celebrity-page-studio/$pageUrl?page=$pageStudio"));
+          "https://mobile.celebrityads.net/api/celebrity-page/$pageUrl?page=$pageStudio"));
       introModel studioModel = introModel.fromJson(jsonDecode(res.body));
       var newStudio = studioModel.data!.studio;
       setState(() {
@@ -278,9 +278,15 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                       });
                                     })));
                           } else {
-                            return const Center(
-                                child:
-                                    Text('حدث خطا ما اثناء استرجاع البيانات'));
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Center(
+                                    child:
+                                        Text('حدث خطا ما اثناء استرجاع البيانات')),
+                              ],
+                            );
                           }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {
