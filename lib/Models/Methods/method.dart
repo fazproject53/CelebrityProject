@@ -1734,8 +1734,6 @@ Widget checkServerException(context, {reload}) {
       SizedBox(
         height: 5.h,
       ),
-      buttoms(context, 'إعادة تحميل', 14, black, reload,
-          backgrounColor: grey!, horizontal: 20),
       Spacer(),
     ],
   );

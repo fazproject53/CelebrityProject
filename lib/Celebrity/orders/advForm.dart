@@ -783,36 +783,37 @@ class _advFormState extends State<advForm> {
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
-                                builder: (BuildContext context) {
+                                builder: (BuildContext context2) {
                                   FocusManager.instance.primaryFocus?.unfocus();
                                   addAdOrder().then((value) => {
                                     value.contains('true')
                                         ? {
-                                      goTopageReplacement(context, UserRequestMainPage()),
+                                      gotoPageAndRemovePrevious(context, UserRequestMainPage()),
+                                      Navigator.pop(context2),
                                       //done
-                                      showMassage(context, 'تم بنجاح',
+                                      showMassage(context2, 'تم بنجاح',
                                           value.replaceAll('true', ''),
                                           done: done),
                                     }
                                         :  value == 'SocketException'?
-                                    { Navigator.pop(context),
+                                    { Navigator.pop(context2),
                                       showMassage(
-                                        context,
+                                        context2,
                                         'خطا',
                                         'فشل الاتصال بالانترنت ',
                                       )}
                                         :{
                                       value == 'serverException'? {
-                                        Navigator.pop(context),
+                                        Navigator.pop(context2),
                                         showMassage(
-                                          context,
+                                          context2,
                                           'خطا',
                                           'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',
                                         )
                                       }:{
-                                        Navigator.pop(context),
+                                        Navigator.pop(context2),
                                         showMassage(
-                                          context,
+                                          context2,
                                           'خطا',
                                           'حدث خطا ما الرجاء المحاولة لاحقا ',
                                         )
