@@ -1,3 +1,4 @@
+import 'package:celepraty/ModelAPI/ModelsAPI.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/material.dart';
@@ -80,11 +81,14 @@ class CelebritySearch extends SearchDelegate {
   void showResults(BuildContext context) {
 
     List _results;
-    _results = allCelbrity.where((name) {
+    _results = allCelbrity.where(( name) {
       final nameLower = name.name!.toLowerCase();
       final queryLower = query.toLowerCase();
       return queryLower.compareTo(nameLower) == 0;
     }).toList();
+    print('=============================');
+    print(_results[0].pageUrl);
+    print('============================');
     if (_results.length == 0) {
       Center(
         child: text(context, "لاتوجد نتائج عن البحث", 14, Colors.grey),
@@ -94,7 +98,8 @@ class CelebritySearch extends SearchDelegate {
       goTopagepush(
           context,
           CelebrityHome(
-            pageUrl: '$pagIndex',
+           // pageUrl: '$pagIndex',
+            pageUrl: '${_results[0].pageUrl}',
           ));
     }
     super.showResults(context);
@@ -137,7 +142,7 @@ class CelebritySearch extends SearchDelegate {
                     minLeadingWidth: 5.w,
                     onTap: () {
                       query = suggestion.name!;
-                      pagIndex = suggestion.pageUrl;
+                      //pagIndex = suggestion.pageUrl;
                       showResults(context);
                     },
                     leading: const Icon(Icons.search),
@@ -170,7 +175,7 @@ class CelebritySearch extends SearchDelegate {
   }
 
   Widget buildHistorySuggetion(context, List suggestions) {
-    print('history suggestions $suggestions');
+    // print('history suggestions $suggestions');
     return suggestions.isEmpty && query == ''
         ? const SizedBox()
         : Directionality(
@@ -232,11 +237,11 @@ class CelebritySearch extends SearchDelegate {
                       itemBuilder: (context, index) {
                         return ListTile(
                           minLeadingWidth: 5.w,
-                          // onTap: () {
-                          //   query = suggestions[index];
-                          //   //pagIndex = suggestions[index].;
-                          //   showResults(context);
-                          // },
+                          onTap: () {
+                            query = suggestions[index];
+                            //pagIndex = suggestions[index].;
+                            showResults(context);
+                          },
                           leading: const Icon(Icons.history),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
