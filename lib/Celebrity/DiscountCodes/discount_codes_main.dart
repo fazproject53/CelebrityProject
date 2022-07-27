@@ -394,63 +394,62 @@ class _HomeBodyDiscountState extends State<HomeBodyDiscount> {
                                                           ),
 
                                                           ///Description
-                                                          SizedBox(
-                                                            width: double.infinity,
-                                                            child: Wrap(
-                                                              alignment: WrapAlignment.start,
-                                                              spacing: 5,
-                                                              children: [
-                                                                Container(
-
-                                                                  color: red!,
-                                                                  child: GradientIcon(
-                                                                      discountDes,
-                                                                      25.w,
-                                                                      const LinearGradient(
-                                                                        begin:
-                                                                        Alignment(
-                                                                            0.7,
-                                                                            2.0),
-                                                                        end: Alignment(
-                                                                            -0.69,
-                                                                            -1.0),
-                                                                        colors: [
-                                                                          Color(
-                                                                              0xff0ab3d0),
-                                                                          Color(
-                                                                              0xffe468ca)
-                                                                        ],
-                                                                        stops: [
-                                                                          0.0,
-                                                                          1.0
-                                                                        ],
-                                                                      )),
+                                                          Row(
+                                                            children: [
+                                                              GradientIcon(
+                                                                  discountDes,
+                                                                  25.w,
+                                                                  const LinearGradient(
+                                                                    begin:
+                                                                    Alignment(
+                                                                        0.7,
+                                                                        2.0),
+                                                                    end: Alignment(
+                                                                        -0.69,
+                                                                        -1.0),
+                                                                    colors: [
+                                                                      Color(
+                                                                          0xff0ab3d0),
+                                                                      Color(
+                                                                          0xffe468ca)
+                                                                    ],
+                                                                    stops: [
+                                                                      0.0,
+                                                                      1.0
+                                                                    ],
+                                                                  )),
+                                                              SizedBox(
+                                                                width: 5.w,
+                                                              ),
+                                                              Container(
+                                                                margin: EdgeInsets.only(top:snapshot
+                                                                    .data!
+                                                                    .data!
+                                                                    .promoCode![
+                                                                index]
+                                                                    .description!.length > 70 ? 5: 1),
+                                                                width: 350.w,
+                                                                child: text(
+                                                                  context,
+                                                                  snapshot
+                                                                      .data!
+                                                                      .data!
+                                                                      .promoCode![
+                                                                  index]
+                                                                      .description!,
+                                                                  14.5.sp,
+                                                                  black,
                                                                 ),
-                                                                Container(
-                                                                  height: 28,
-                                                                  width: double.infinity,
-                                                                  color: green,
-                                                                  child: text(
-                                                                    context,
-                                                                    snapshot
-                                                                        .data!
-                                                                        .data!
-                                                                        .promoCode![
-                                                                    index]
-                                                                        .description!,
-                                                                    15.sp,
-                                                                    black,
-                                                                  ),
-                                                                ),
-
-                                                              ],
-                                                            ),
+                                                              ),
+                                                            ],
                                                           ),
+
 
                                                           ///Two button edit and delete
                                                           Container(
+                                                            alignment: Alignment.bottomLeft,
                                                             margin:
-                                                                EdgeInsets.only(
+                                                                EdgeInsets.only(top: 10.h, bottom: 10.h,
                                                                     left: 20.w),
                                                             child: Row(
                                                               mainAxisAlignment:

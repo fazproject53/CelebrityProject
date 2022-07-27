@@ -1036,43 +1036,40 @@ LinearGradient gradient() {
 Widget textFieldDescOnChange(context, String key, double fontSize,
     bool hintPass, TextEditingController mycontroller, myvali,
     {InputCounterWidgetBuilder? counter, int? maxLenth}) {
-  return SizedBox(
-    height: 150.h,
-    child: TextFormField(
-      controller: mycontroller,
-      buildCounter: counter,
-      keyboardType: TextInputType.multiline,
-      validator: myvali,
-      maxLines: null,
-      minLines: 10,
-      maxLength: maxLenth,
-      textAlignVertical: TextAlignVertical.top,
-      style:
-          TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
-      decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(
-              color: newGrey,
-              width: 0.5,
-            ),
+  return TextFormField(
+    controller: mycontroller,
+    buildCounter: counter,
+    keyboardType: TextInputType.multiline,
+    validator: myvali,
+    maxLines: null,
+    minLines: 3,
+    maxLength: maxLenth,
+    textAlignVertical: TextAlignVertical.top,
+    style:
+        TextStyle(color: black, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+    decoration: InputDecoration(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: const BorderSide(
+            color: newGrey,
+            width: 0.5,
           ),
-          isDense: false,
-          filled: true,
-          hintStyle: TextStyle(
-              color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
-          fillColor: lightGrey.withOpacity(0.10),
-          labelStyle: TextStyle(
-            color: white,
-            fontSize: fontSize.sp,
-          ),
-          alignLabelWithHint: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: purple, width: 1)),
-          hintText: key,
-          contentPadding: EdgeInsets.all(10.h)),
-    ),
+        ),
+        isDense: false,
+        filled: true,
+        hintStyle: TextStyle(
+            color: grey, fontSize: fontSize.sp, fontFamily: 'Cairo'),
+        fillColor: lightGrey.withOpacity(0.10),
+        labelStyle: TextStyle(
+          color: white,
+          fontSize: fontSize.sp,
+        ),
+        alignLabelWithHint: true,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: purple, width: 1)),
+        hintText: key,
+        contentPadding: EdgeInsets.all(10.h)),
   );
 }
 
