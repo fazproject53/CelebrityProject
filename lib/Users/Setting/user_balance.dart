@@ -516,7 +516,7 @@ class _UserBalanceHomeState extends State<UserBalanceHome> {
                             buttoms(context, 'إضافة بطاقة جديدة', 15, white, () {
                               _formKey.currentState!.validate()
                                   ? {
-                                showMassage(context, 'تم إرسال طلبك بنجاح', 'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام', done: done)
+                                showMassage(context, 'تم إضافة بطاقة جديدة بنجاح', 'سوف نقوم بالتواصل معك في مدة لاتزيد عن ٣ ايام', done: done)
                                     }
                                   : null;
                             })),

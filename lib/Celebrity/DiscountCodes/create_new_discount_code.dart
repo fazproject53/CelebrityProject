@@ -507,8 +507,8 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                           return 'حقل اجباري';
                                                         } else {
                                                           return value.length >
-                                                                  50
-                                                              ? 'يجب ان لا يزيد الوصف عن 50 حرف'
+                                                                  100
+                                                              ? 'يجب ان لا يزيد الوصف عن 100 حرف'
                                                               : null;
                                                         }
                                                       },
@@ -525,7 +525,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                               color: grey),
                                                         );
                                                       },
-                                                      maxLenth: 50,
+                                                      maxLenth: 100,
                                                       keyboardType:
                                                           TextInputType
                                                               .multiline,
@@ -564,7 +564,7 @@ class _CreateNewDiscountCodeHomeState extends State<CreateNewDiscountCodeHome>
                                                     height: 15.h,
                                                   ),
                                                   SizedBox(
-                                                    height: 150.h,
+                                                    height: 180.h,
                                                     child: ListView(
                                                       children: list.keys
                                                           .map((int key) {

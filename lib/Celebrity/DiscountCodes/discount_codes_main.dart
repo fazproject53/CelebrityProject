@@ -394,45 +394,57 @@ class _HomeBodyDiscountState extends State<HomeBodyDiscount> {
                                                           ),
 
                                                           ///Description
-                                                          Row(
-                                                            children: [
-                                                              GradientIcon(
-                                                                  discountDes,
-                                                                  25.w,
-                                                                  const LinearGradient(
-                                                                    begin:
+                                                          SizedBox(
+                                                            width: double.infinity,
+                                                            child: Wrap(
+                                                              alignment: WrapAlignment.start,
+                                                              spacing: 5,
+                                                              children: [
+                                                                Container(
+
+                                                                  color: red!,
+                                                                  child: GradientIcon(
+                                                                      discountDes,
+                                                                      25.w,
+                                                                      const LinearGradient(
+                                                                        begin:
                                                                         Alignment(
                                                                             0.7,
                                                                             2.0),
-                                                                    end: Alignment(
-                                                                        -0.69,
-                                                                        -1.0),
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xff0ab3d0),
-                                                                      Color(
-                                                                          0xffe468ca)
-                                                                    ],
-                                                                    stops: [
-                                                                      0.0,
-                                                                      1.0
-                                                                    ],
-                                                                  )),
-                                                              SizedBox(
-                                                                width: 5.w,
-                                                              ),
-                                                              text(
-                                                                context,
-                                                                snapshot
-                                                                    .data!
-                                                                    .data!
-                                                                    .promoCode![
-                                                                        index]
-                                                                    .description!,
-                                                                15.sp,
-                                                                black,
-                                                              ),
-                                                            ],
+                                                                        end: Alignment(
+                                                                            -0.69,
+                                                                            -1.0),
+                                                                        colors: [
+                                                                          Color(
+                                                                              0xff0ab3d0),
+                                                                          Color(
+                                                                              0xffe468ca)
+                                                                        ],
+                                                                        stops: [
+                                                                          0.0,
+                                                                          1.0
+                                                                        ],
+                                                                      )),
+                                                                ),
+                                                                Container(
+                                                                  height: 28,
+                                                                  width: double.infinity,
+                                                                  color: green,
+                                                                  child: text(
+                                                                    context,
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data!
+                                                                        .promoCode![
+                                                                    index]
+                                                                        .description!,
+                                                                    15.sp,
+                                                                    black,
+                                                                  ),
+                                                                ),
+
+                                                              ],
+                                                            ),
                                                           ),
 
                                                           ///Two button edit and delete

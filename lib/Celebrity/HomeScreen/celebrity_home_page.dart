@@ -639,7 +639,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                   : Visibility(
                                       visible: _news.isEmpty ? false : true,
                                       child: SizedBox(
-                                        height: 60.h,
+                                        height: 68.h,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           controller: scrollController,

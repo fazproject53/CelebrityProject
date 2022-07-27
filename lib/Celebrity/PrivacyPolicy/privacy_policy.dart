@@ -456,6 +456,7 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                                               .validate()
                                                               ? postFunction(userToken!).then((value)  {
                                                                 if(value == 'true'){
+                                                                  Navigator.pop(context);
                                                                   showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done);
                                                                 }else if (value ==
                                                           'SocketException') {

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:celepraty/Celebrity/Pricing/ModelPricing.dart';
+import 'package:celepraty/Celebrity/setting/celebratyProfile.dart';
 import 'package:celepraty/Models/Methods/classes/GradientIcon.dart';
 import 'package:celepraty/Models/Methods/method.dart';
 import 'package:celepraty/Models/Variables/Variables.dart';
@@ -639,7 +640,9 @@ class _PricingHomeState extends State<PricingHome> {
                                           ? showMassage(context, 'خطأ',
                                     'يجب ان يكون الحد الاعلى للإعلان أكبر') : postFunction(userToken!).then((value) {
                                         if(value == 'true'){
+                                          Navigator.pop(context);
                                           showMassage(context, 'تم الحفظ', 'تم حفظ المدخلات بنجاح', done: done);
+
                                         }else if (value ==
                                             'SocketException') {
                                           showMassage(

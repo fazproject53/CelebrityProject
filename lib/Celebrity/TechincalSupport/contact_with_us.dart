@@ -400,11 +400,13 @@ class _ContactWithUsHomeState extends State<ContactWithUsHome> {
                                                               userToken!)
                                                           .then((value) {
                                                         if (value == 'true') {
+                                                          Navigator.pop(context);
                                                           showMassage(
                                                               context,
                                                               'تم الارسال بنجاح',
                                                               'سوف يتم التواصل معك عبر البريد الالكتروني',
                                                               done: done);
+
                                                         } else if (value ==
                                                             'SocketException') {
                                                           showMassage(
