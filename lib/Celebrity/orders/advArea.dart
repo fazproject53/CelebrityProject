@@ -119,7 +119,7 @@ class _advAreaState extends State<advArea>{
               if(value.contains('https://') || value.contains('http://') ){
                 _validURL = Uri.parse(value).isAbsolute;
               }else{
-                 _validURL = Uri.parse('http://' +value).isAbsolute;
+                 _validURL = Uri.parse('https://' +value).isAbsolute;
               }
 
              return  _validURL? null: 'رابط الفحة غير صحيح';
@@ -309,7 +309,7 @@ class _advAreaState extends State<advArea>{
       request.headers.addAll(headers);
       request.fields["celebrity_id"] = widget.id.toString();
       request.fields["date"] = dateTime.toString();
-      request.fields["link"] = 'http://'+link.text;
+      request.fields["link"] = 'https://'+link.text;
       request.fields["celebrity_promo_code"] = copun.text;
 
       var response = await request.send();
