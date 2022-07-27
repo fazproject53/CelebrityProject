@@ -116,16 +116,19 @@ class _SingUpState extends State<SingUp> {
             SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 60.h),
-//logo---------------------------------------------------------------------------
-              Image.asset(
-                'assets/image/log.png',
-                fit: BoxFit.contain,
-                height: 150.h,
-                width: 150.w,
-              ),
+              SizedBox(height: 80.h),
+              //logo---------------------------------------------------------------------------
+              SizedBox(
+                height: 140.h,
+                //color: red,
+                child: Image.asset(
+                  'assets/image/final-logo.png',
+                  fit: BoxFit.cover,
+                  height: 120.h,
+                  width: 300.w,
+                ),),
 //استمتع يالتواصل--------------------------------------------------
-              text(context, "مرحبا بك في منصة المشاهير", 20, Colors.black87),
+             // text(context, "مرحبا بك في منصة المشاهير", 20, Colors.black87),
 //انشاء حساب--------------------------------------------------
               text(context, "إنشئ حسابك الآن", 17, Colors.black87),
               SizedBox(

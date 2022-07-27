@@ -44,7 +44,6 @@ class _LoggingState extends State<Logging> {
             TextEditingController(text: isFoundEmail == '' ? '' : isFoundEmail);
       });
     });
-
   }
 
   @override
@@ -76,19 +75,23 @@ class _LoggingState extends State<Logging> {
             SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 60.h),
+              SizedBox(height: 80.h),
               //logo---------------------------------------------------------------------------
-              Image.asset(
-                'assets/image/log.png',
-                fit: BoxFit.contain,
-                height: 150.h,
-                width: 150.w,
+              SizedBox(
+                height: 140.h,
+                //color: red,
+                child: Image.asset(
+                  'assets/image/final-logo.png',
+                  fit: BoxFit.cover,
+                  height: 120.h,
+                  width: 300.w,
+                ),
               ),
 
 //مرحبا بك مره اخري--------------------------------------------------
-              text(context, "مرحبا بك مرة اخري", 20, Colors.black87),
+              //   text(context, "مرحبا بك مرة اخري", 20, Colors.black87),
 //تسجيل الدخول--------------------------------------------------
-              text(context, "تسجيل الدخول", 17, Colors.black87),
+              text(context, "تسجيل الدخول", 18, Colors.black87),
               SizedBox(
                 height: 40.h,
               ),
@@ -135,7 +138,8 @@ class _LoggingState extends State<Logging> {
                               if (logKey.currentState?.validate() == true) {
                                 loadingDialogue(context);
                                 databaseHelper
-                                    .loggingMethod(lgoingEmailConttroller.text, lgoingPassConttroller.text)
+                                    .loggingMethod(lgoingEmailConttroller.text,
+                                        lgoingPassConttroller.text)
                                     .then((result) {
 //if user select remember me----------------------------------------------------------------------------
 
@@ -186,8 +190,12 @@ class _LoggingState extends State<Logging> {
                                         'تحقق',
                                         () {
                                           Navigator.pop(context);
-                                          goTopagepush(context,
-                                              VerifyUser(username:lgoingEmailConttroller.text ));
+                                          goTopagepush(
+                                              context,
+                                              VerifyUser(
+                                                  username:
+                                                      lgoingEmailConttroller
+                                                          .text));
                                         },
                                       );
 
@@ -242,8 +250,12 @@ class _LoggingState extends State<Logging> {
                                         'تحقق',
                                         () {
                                           Navigator.pop(context);
-                                          goTopagepush(context,
-                                              VerifyUser(username:lgoingEmailConttroller.text));
+                                          goTopagepush(
+                                              context,
+                                              VerifyUser(
+                                                  username:
+                                                      lgoingEmailConttroller
+                                                          .text));
                                         },
                                       );
 
