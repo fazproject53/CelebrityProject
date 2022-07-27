@@ -30,6 +30,7 @@ class Data {
   Celebrity? celebrity;
   int? newsPageCount;
   List<News>? news;
+  Price? prices;
   int? studioPageCount;
   List<Studio>? studio;
   List<AdSpaceOrders>? adSpaceOrders;
@@ -42,7 +43,8 @@ class Data {
         this.studioPageCount,
         this.studio,
         this.adSpaceOrders,
-        this.status});
+        this.status,
+      this.prices});
 
   Data.fromJson(Map<String, dynamic> json) {
     celebrity = json['celebrity'] != null
@@ -55,7 +57,14 @@ class Data {
         news!.add(new News.fromJson(v));
       });
     }
+
+    prices = json['celebrity-price'] != null
+        ? new Price.fromJson(json['celebrity-price'])
+        : null;
+
+
     studioPageCount = json['studio_page_count'];
+
     if (json['studio'] != null) {
       studio = <Studio>[];
       json['studio'].forEach((v) {
@@ -88,11 +97,54 @@ class Data {
       data['adSpaceOrders'] =
           this.adSpaceOrders!.map((v) => v.toJson()).toList();
     }
+    if (this.prices != null) {
+      data['celebrity-price'] = this.prices!.toJson();
+    }
     data['status'] = this.status;
     return data;
   }
 }
 
+class Price {
+  int? id;
+  int? adSpacePrice;
+  int? giftVoicePrice;
+  int? giftImagePrice;
+  int? giftVedioPrice;
+  int? advertisingPriceFrom;
+  int? advertisingPriceTo;
+
+  Price(
+      {this.id,
+        this.adSpacePrice,
+        this.giftVoicePrice,
+        this.giftImagePrice,
+        this.giftVedioPrice,
+        this.advertisingPriceFrom,
+        this.advertisingPriceTo});
+
+  Price.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    adSpacePrice = json['ad_space_price'];
+    giftVoicePrice = json['gift_voice_price'];
+    giftImagePrice = json['gift_image_price'];
+    giftVedioPrice = json['gift_vedio_price'];
+    advertisingPriceFrom = json['advertising_price_from'];
+    advertisingPriceTo = json['advertising_price_to'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['ad_space_price'] = this.adSpacePrice;
+    data['gift_voice_price'] = this.giftVoicePrice;
+    data['gift_image_price'] = this.giftImagePrice;
+    data['gift_vedio_price'] = this.giftVedioPrice;
+    data['advertising_price_from'] = this.advertisingPriceFrom;
+    data['advertising_price_to'] = this.advertisingPriceTo;
+    return data;
+  }
+}
 class Celebrity {
   int? id;
   String? username;

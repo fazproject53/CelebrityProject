@@ -998,6 +998,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         getSize(context).width,
                                         buttoms(context, 'اطلب حالا', 20, white,
                                             () {
+                                          snapshot.data!.data!.prices != null?
                                           showBottomSheett(
                                               context,
                                               bottomSheetMenu(
@@ -1008,7 +1009,18 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                                       .celebrity!.image!,
                                                   snapshot.data!.data!
                                                       .celebrity!.name!
-                                                      .toString()));
+                                                      .toString())):
+
+                                              failureDialog(
+                                                context,
+                                                'عذرا لا يمكنك الطلب من هذا المشهور\n في الوقت الحالي حاول لاحقا ',
+                                                "assets/lottie/Failuer.json",
+                                                '',
+                                                    () {
+
+                                                },
+                                                title: 'حسنا'
+                                              );
                                         })),
                                   )),
                               SizedBox(

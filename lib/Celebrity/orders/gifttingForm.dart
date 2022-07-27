@@ -198,7 +198,7 @@ class _gifttingFormState extends State<gifttingForm>{
                                           boxPadding:
                                           EdgeInsets.fromLTRB(13.w, 12.h, 13.w, 12.h),
                                           boxWidth: 500.w,
-                                          boxHeight: 40.h,
+                                          boxHeight: 45.h,
                                           boxDecoration: BoxDecoration(
                                               border:  Border.all(color: newGrey, width: 0.5),
                                               color: lightGrey.withOpacity(0.10),

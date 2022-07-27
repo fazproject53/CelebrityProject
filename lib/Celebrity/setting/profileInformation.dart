@@ -335,9 +335,13 @@ class _profileInformaionState extends State<profileInformaion>
                                       'country in build ============================ ' +
                                           (key + 1).toString());
                                 }
+
                               }),
                               country = snapshot.data!.data!
                                   .celebrity!.country!.name!,
+                        print(
+                        'country in build ============================ ' +
+                       countryi.toString()),
                             }
                                 : '',
                             snapshot.data!.data!.celebrity!.city !=
