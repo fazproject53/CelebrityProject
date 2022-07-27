@@ -97,7 +97,7 @@ class _YourBrandHomeState extends State<YourBrandHome> {
 
                       ///Text Description
                       Padding(
-                        padding: EdgeInsets.only(top: 15.h,right: 20.w,left: 50.w),
+                        padding: EdgeInsets.only(top: 15.h,right: 20.w,left: 20.w),
                         child: text(context,snapshot.data!.data!.description!,14,ligthtBlack,
                             align: TextAlign.justify),
                       ),
