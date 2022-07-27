@@ -266,7 +266,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                                                   },
                                                                 ),
                                                                 SizedBox(height: 5.h),
-                                                                padding(
+                                    Logging.theUser == null? Text(''):   padding(
                                                                   8,
                                                                   8,
                                                                   text(context, Logging.theUser!.name!, 20, black,)
