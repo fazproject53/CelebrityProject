@@ -675,7 +675,12 @@ class _userInformationState extends State<userInformation> {
                                             showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
                                           }:
                                           value.contains('false')?showMassage(context, 'خطا',value.replaceAll('false', '')):showMassage(context, 'تم بنجاح',"تم التغيير بنجاح", done: done),
-
+                                            currentPassword.clear(),
+                                            newPassword.clear(),
+                                            confirmPassword.clear(),
+                                            setState(() {
+                                              editPassword =false;
+                                            })
                                           })  , updateUserInformation(userToken).whenComplete(() => fetchUsers(userToken))}: setState((){noMatch = true;})}:null;}
                                       else{
                                         _formKey.currentState!.validate() &&  _formKey2.currentState == null && citychosen == true?

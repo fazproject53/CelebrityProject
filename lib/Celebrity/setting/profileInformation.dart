@@ -1592,7 +1592,12 @@ class _profileInformaionState extends State<profileInformaion>
                                                   context, 'تم بنجاح',
                                                   "تم التغيير بنجاح",
                                                   done: done),
-
+                                              currentPassword.clear(),
+                                              newPassword.clear(),
+                                              confirmPassword.clear(),
+                                              setState(() {
+                                                editPassword =false;
+                                              })
                                             })
                                           }
                                               : setState(() {
