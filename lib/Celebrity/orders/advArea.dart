@@ -115,7 +115,13 @@ class _advAreaState extends State<advArea>{
                 })),
             paddingg(15, 15, 12,textFieldNoIcon(context, 'رابط صفحة المعلن', 14, false, link,(String? value) {if (value == null || value.isEmpty) {
               }else{
-              bool _validURL = Uri.parse(value).isAbsolute;
+              bool _validURL;
+              if(value.contains('https://') || value.contains('http://') ){
+                _validURL = Uri.parse(value).isAbsolute;
+              }else{
+                 _validURL = Uri.parse('http://' +value).isAbsolute;
+              }
+
              return  _validURL? null: 'رابط الفحة غير صحيح';
             }},false),),
 
@@ -303,7 +309,7 @@ class _advAreaState extends State<advArea>{
       request.headers.addAll(headers);
       request.fields["celebrity_id"] = widget.id.toString();
       request.fields["date"] = dateTime.toString();
-      request.fields["link"] = link.text;
+      request.fields["link"] = 'http://'+link.text;
       request.fields["celebrity_promo_code"] = copun.text;
 
       var response = await request.send();
