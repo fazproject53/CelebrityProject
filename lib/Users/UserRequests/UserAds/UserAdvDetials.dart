@@ -170,7 +170,7 @@ class _UserAdvDetialsState extends State<UserAdvDetials>
                             },
                             child: text(
                               context,
-                              'المشهور  ' + widget.celebrityName!,
+                              'من ' + widget.celebrityName!,
                               17,
                               black,
                               //fontWeight: FontWeight.bold,
