@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Account/LoggingSingUpAPI.dart';
 import '../MainScreen/main_screen_navigation.dart';
@@ -46,6 +45,13 @@ class _celebrityHomePageState extends State<celebrityHomePage>
   Future<header>? futureHeader;
   Future<Partner>? futurePartners;
   List<dynamic> allCellbrity = [];
+  final GlobalKey searchKey = GlobalKey();
+  final GlobalKey avdKey = GlobalKey();
+  final GlobalKey exploreKey = GlobalKey();
+  final GlobalKey notificationKey = GlobalKey();
+  final GlobalKey mainKay = GlobalKey();
+  final GlobalKey massageKey = GlobalKey();
+  final GlobalKey profileKay = GlobalKey();
   bool isLoading = true;
   int page = 1;
   @override
@@ -141,234 +147,238 @@ class _celebrityHomePageState extends State<celebrityHomePage>
             onRefresh: onRefresh,
             child: isConnectSection == false
                 ? Center(
-                    child: internetConnection(context, reload: () {
-                      setState(() {
-                        onRefresh();
-                        isConnectSection = true;
-                      });
-                    }),
-                  )
+              child: internetConnection(context, reload: () {
+                setState(() {
+                  onRefresh();
+                  isConnectSection = true;
+                });
+              }),
+            )
                 : timeoutException == false
-                    ? Center(
-                        child: checkTimeOutException(context, reload: () {
-                          setState(() {
-                            onRefresh();
-                            timeoutException = true;
-                          });
-                        }),
-                      )
-                    : serverExceptions == false
-                        ? Center(
-                            child: checkServerException(context, reload: () {
-                              setState(() {
-                                onRefresh();
-                                serverExceptions = true;
-                              });
-                            }),
-                          )
-                        : SingleChildScrollView(
-                            child: Column(
+                ? Center(
+              child: checkTimeOutException(context, reload: () {
+                setState(() {
+                  onRefresh();
+                  timeoutException = true;
+                });
+              }),
+            )
+                : serverExceptions == false
+                ? Center(
+              child: checkServerException(context, reload: () {
+                setState(() {
+                  onRefresh();
+                  serverExceptions = true;
+                });
+              }),
+            )
+                : SingleChildScrollView(
+              child: Column(
+                children: [
+                  search(),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 15.0.h),
+                    child: FutureBuilder<Section>(
+                      future: sections,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Section> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: lodeing());
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.active ||
+                            snapshot.connectionState ==
+                                ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            if (snapshot.error.toString() ==
+                                'SocketException') {
+                              return Center(
+                                  child: SizedBox(
+                                      height: 200.h,
+                                      width: 200.w,
+                                      child: internetConnection(
+                                          context, reload: () {
+                                        setState(() {
+                                          onRefresh();
+                                          isConnectSection = true;
+                                        });
+                                      })));
+                            } else {
+                              return const Center(
+                                  child: Text(
+                                      'حدث خطا ما اثناء استرجاع البيانات'));
+                            }
+                            //---------------------------------------------------------------------------
+                          } else if (snapshot.hasData) {
+                            return Column(
                               children: [
-                                search(),
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 15.0.h),
-                                  child: FutureBuilder<Section>(
-                                    future: sections,
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<Section> snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return Center(child: lodeing());
-                                      } else if (snapshot.connectionState ==
-                                              ConnectionState.active ||
-                                          snapshot.connectionState ==
-                                              ConnectionState.done) {
-                                        if (snapshot.hasError) {
-                                          if (snapshot.error.toString() ==
-                                              'SocketException') {
-                                            return Center(
-                                                child: SizedBox(
-                                                    height: 200.h,
-                                                    width: 200.w,
-                                                    child: internetConnection(
-                                                        context, reload: () {
-                                                      setState(() {
-                                                        onRefresh();
-                                                        isConnectSection = true;
-                                                      });
-                                                    })));
-                                          } else {
-                                            return const Center(
-                                                child: Text(
-                                                    'حدث خطا ما اثناء استرجاع البيانات'));
-                                          }
-                                          //---------------------------------------------------------------------------
-                                        } else if (snapshot.hasData) {
-                                          return Column(
-                                            children: [
-                                              for (int sectionIndex = 0;
-                                                  sectionIndex <
-                                                      snapshot
-                                                          .data!.data!.length;
-                                                  sectionIndex++)
-                                                Column(
-                                                  children: [
+                                for (int sectionIndex = 0;
+                                sectionIndex <
+                                    snapshot
+                                        .data!.data!.length;
+                                sectionIndex++)
+                                  Column(
+                                    children: [
 //category--------------------------------------------------------------------------
 
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'category')
-                                                      categorySection(
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .categoryId,
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .title,
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .active),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'category')
+                                        categorySection(
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .categoryId,
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .title,
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .active),
 
 //header--------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'header')
-                                                      headerSection(snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .active),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'header')
+                                        headerSection(snapshot
+                                            .data
+                                            ?.data![sectionIndex]
+                                            .active),
 //links--------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'links')
-                                                      linksSection(snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .active),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'links')
+                                        linksSection(snapshot
+                                            .data
+                                            ?.data![sectionIndex]
+                                            .active),
 //Advertising-banner--------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'Advertising-banner')
-                                                      advertisingBannerSection(
-                                                        snapshot
-                                                            .data
-                                                            ?.data![
-                                                                sectionIndex]
-                                                            .active,
-                                                        snapshot
-                                                            .data
-                                                            ?.data![
-                                                                sectionIndex]
-                                                            .imageMobile,
-                                                        snapshot
-                                                            .data
-                                                            ?.data![
-                                                                sectionIndex]
-                                                            .link,
-                                                      ),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'Advertising-banner')
+                                        advertisingBannerSection(
+                                          snapshot
+                                              .data
+                                              ?.data![
+                                          sectionIndex]
+                                              .active,
+                                          snapshot
+                                              .data
+                                              ?.data![
+                                          sectionIndex]
+                                              .imageMobile,
+                                          snapshot
+                                              .data
+                                              ?.data![
+                                          sectionIndex]
+                                              .link,
+                                        ),
 //join-us--------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'join-us')
-                                                      joinUsSection(snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .active),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'join-us')
+                                        joinUsSection(snapshot
+                                            .data
+                                            ?.data![sectionIndex]
+                                            .active),
 //new_section---------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'new_section')
-                                                      newSection(
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .active,
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .imageMobile,
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .link),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'new_section')
+                                        newSection(
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .active,
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .imageMobile,
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .link),
 //news ---------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'news')
-                                                      newsSection(
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .active,
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .imageMobile,
-                                                          snapshot
-                                                              .data
-                                                              ?.data![
-                                                                  sectionIndex]
-                                                              .link),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'news')
+                                        newsSection(
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .active,
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .imageMobile,
+                                            snapshot
+                                                .data
+                                                ?.data![
+                                            sectionIndex]
+                                                .link),
 //partners--------------------------------------------------------------------------
-                                                    if (snapshot
-                                                            .data!
-                                                            .data![sectionIndex]
-                                                            .sectionName ==
-                                                        'partners')
-                                                      partnersSection(snapshot
-                                                          .data
-                                                          ?.data![sectionIndex]
-                                                          .active),
-                                                  ],
-                                                )
-                                            ],
-                                          );
-                                        } else {
-                                          return const Center(
-                                              child: Text('Empty data'));
-                                        }
-                                      } else {
-                                        return Center(
-                                            child: Text(
-                                                'State: ${snapshot.connectionState}'));
-                                      }
-                                    },
-                                  ),
-                                ),
+                                      if (snapshot
+                                          .data!
+                                          .data![sectionIndex]
+                                          .sectionName ==
+                                          'partners')
+                                        partnersSection(snapshot
+                                            .data
+                                            ?.data![sectionIndex]
+                                            .active),
+                                    ],
+                                  )
                               ],
-                            ),
-                          ),
+                            );
+                          } else {
+                            return const Center(
+                                child: Text('Empty data'));
+                          }
+                        } else {
+                          return Center(
+                              child: Text(
+                                  'State: ${snapshot.connectionState}'));
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+      )
+
+
     );
   }
+/*
 
+* */
 //"${snapshot.data.data.header[1].title}",------------------------------Slider image-------------------------------------------
   Widget imageSlider(List image) {
     return InkWell(
