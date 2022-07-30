@@ -229,7 +229,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
   Future<introModel> getSectionsData(String pageUrl) async {
     final response = await http.get(
         Uri.parse(
-            'https://mobile.celebrityads.net/api/celebrity-page/$pageUrl'),
+            'https://mobile.celebrityadssssssss.net/api/celebrity-page/$pageUrl'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -277,16 +277,19 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         isConnectSection = true;
                                       });
                                     })));
-                          } else {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Center(
+                          }  else { ///error grt the info from server
+                            return Center(
+                                child: SizedBox(
+                                    height: 500.h,
+                                    width: 250.w,
                                     child:
-                                        Text('حدث خطا ما اثناء استرجاع البيانات')),
-                              ],
-                            );
+                                    checkServerException(context, reload: () {
+                                      setState(() {
+                                        celebrityHome =
+                                            getSectionsData(widget.pageUrl!);
+                                        serverExceptions = true;
+                                      });
+                                    })));
                           }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {
