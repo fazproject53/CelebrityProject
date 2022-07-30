@@ -54,7 +54,7 @@ class _notificationListState extends State<notificationList> {
                                       SizedBox(
                                         height: 10.h,
                                       ),
-                                      text(context, 'مروان بابلو', 15, black, fontWeight: FontWeight.normal),
+                                      text(context, 'اسم المشهور', 15, black, fontWeight: FontWeight.normal),
                                       text(context, ' 12/10/2021', 13,
                                          black.withOpacity(0.80)),
 
