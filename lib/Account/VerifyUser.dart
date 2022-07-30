@@ -98,11 +98,10 @@ class _VerifyUserState extends State<VerifyUser> {
                       EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 20.w),
                   child: text(
                     context,
-                    'تتطلب هذه الخطوة تأكيد عنوان البريد الالكتروني.  يرجى التحقق من صندوق البريد الوارد الخاص بك واتبع التعليمات. ' ' تم ارسال رمز التحقق الى البريد الالكتروني ${widget.username}'
-                   ,
+                    'يرجى التحقق من صندوق البريد الوارد الخاص بك واتبع التعليمات. '' تم ارسال رمز التحقق الى البريد الالكتروني ${widget.username}',
                     15,
                     Colors.black87,
-                    fontWeight: FontWeight.bold,
+                    //fontWeight: FontWeight.bold,
                     align: TextAlign.right,
                   ),
                 ),

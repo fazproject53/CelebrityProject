@@ -113,7 +113,7 @@ class _ResetNewPasswordState extends State<ResetNewPassword> {
                               ' قم باعادة تعين كلمة المرور الجديدة',
                               15,
                               Colors.black87,
-                              fontWeight: FontWeight.bold,
+                              //fontWeight: FontWeight.bold,
                               align: TextAlign.right,
                             ),
                           ),

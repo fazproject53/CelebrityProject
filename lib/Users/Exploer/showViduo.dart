@@ -15,7 +15,7 @@ class ShowVideo extends StatefulWidget {
   State<ShowVideo> createState() => _ShowVideoState();
 }
 
-class _ShowVideoState extends State<ShowVideo> {
+class _ShowVideoState extends State<ShowVideo>  with AutomaticKeepAliveClientMixin{
   bool isPlay = true;
   VideoPlayerController? _controller;
 
@@ -24,40 +24,48 @@ class _ShowVideoState extends State<ShowVideo> {
     super.initState();
     //  WidgetsBinding.instance?.addPostFrameCallback((_) async {
     _controller = VideoPlayerController.network(widget.videoURL)
-      ..initialize().then((_) {
-        _controller?.play();
-        _controller?.setLooping(true);
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
+      ..addListener(()=>setState(() {}))
+      ..setLooping(true)
+    ..initialize().then((_) => _controller?.play());
+     
     // });
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller?.dispose();
+    super.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          _controller!.value.isInitialized && _controller != null
-              ? InkWell(
-                  onTap: () {
-                    _controller?.play();
-                  },
-                  child: VideoPlayer(_controller!))
-              : Center(
-                  child: CircularProgressIndicator(
-                  color: Colors.blue,
-                  backgroundColor: grey,
-                )),
-        ],
-      ),
+      body: viduoFullScreenWidget(controller:_controller)
+      // Stack(
+      //   fit: StackFit.expand,
+      //   children: [
+      //     _controller!.value.isInitialized && _controller != null
+      //         ? InkWell(
+      //             onTap: () {
+      //               _controller?.play();
+      //             },
+      //             child: VideoPlayer(_controller!))
+      //         : Center(
+      //             child: CircularProgressIndicator(
+      //             color: Colors.blue,
+      //             backgroundColor: grey,
+      //           )),
+      //   ],
+      // ),
     );
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
+  viduoFullScreenWidget({VideoPlayerController? controller}) {
+    return ;
   }
 }

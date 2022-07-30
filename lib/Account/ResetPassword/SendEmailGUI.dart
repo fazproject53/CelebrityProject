@@ -92,7 +92,7 @@ class _SendEmailState extends State<SendEmail> {
                     'قم بإدخال اسم المستخدم او عنوان بريدك الالكتروني المرتبط بحسابك',
                     15,
                     Colors.black87,
-                    fontWeight: FontWeight.bold,
+                    //fontWeight: FontWeight.bold,
                     align: TextAlign.right,
                   ),
                 ),

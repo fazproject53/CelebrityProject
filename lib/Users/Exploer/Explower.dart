@@ -4,6 +4,7 @@ import 'package:celepraty/Models/Variables/Variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:async';
@@ -20,7 +21,7 @@ class Explower extends StatefulWidget {
   State<Explower> createState() => _ExplowerState();
 }
 
-class _ExplowerState extends State<Explower> {
+class _ExplowerState extends State<Explower> with AutomaticKeepAliveClientMixin  {
   bool isSelect = false;
   int liksCounter = 100;
   bool hasMore = true;
@@ -82,11 +83,13 @@ class _ExplowerState extends State<Explower> {
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-          appBar: AppBarNoIcon("اكسبلور"),
-          body: RefreshIndicator(
-            onRefresh: refresh,
-            child: isConnectSection == false
+      child: RefreshIndicator(
+        color: white,
+        backgroundColor: purple,
+        onRefresh: refresh,
+        child: Scaffold(
+            appBar: AppBarNoIcon("اكسبلور"),
+            body: isConnectSection == false
                 ? Align(
                     alignment: Alignment.center,
                     child: internetConnection(context, reload: () {
@@ -188,7 +191,7 @@ class _ExplowerState extends State<Explower> {
                                                               crossAxisSpacing: 13
                                                                   .h, // المسافات الراسية
                                                               childAspectRatio:
-                                                                  0.60, //حجم العناصر
+                                                                  0.70, //حجم العناصر
                                                               mainAxisSpacing: 13
                                                                   .w //المسافات الافقية
 
@@ -224,8 +227,8 @@ class _ExplowerState extends State<Explower> {
                                                 ],
                                               ))
                                         ],
-                                      )),
-          )),
+                                      ))),
+      ),
     );
   }
 
@@ -236,184 +239,65 @@ class _ExplowerState extends State<Explower> {
           goTopagepush(
               context,
               ShowVideo(
-                  videoURL: oldCelebraty[index].image!,
-                  videoLikes: oldCelebraty[index].likes!));
+                  videoURL: oldCelebraty[index].vedio!.image!,
+                  videoLikes: oldCelebraty[index].vedio!.likes!));
         },
-        child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(4.r)),
-            child: Stack(fit: StackFit.expand, children: [
-              _controller!.value.isInitialized && _controller != null
-                  ? VideoPlayer(_controller!)
-                  : Center(
-                      child: CircularProgressIndicator(
-                      color: Colors.blue,
-                      backgroundColor: grey,
-                    )),
-              Container(
-                  color: black.withOpacity(0.2),
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Row(
-                        children: [
-                          GradientIcon(Icons.play_arrow, 40.sp, gradient()),
-                          text(context, "${oldCelebraty[index].views}", 15,
-                              white,
-                              fontWeight: FontWeight.bold),
-                        ],
-                      ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: black.withOpacity(0.4),
+            borderRadius: BorderRadius.all(
+              Radius.circular(5.h),
+            ),
+          ),
+          child: Stack(
+              children: [
+            ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(5.h),
+              ),
+              child: Image.network(
+                oldCelebraty[index].thumbnail!,
+                color: black.withOpacity(0.4),
+                colorBlendMode: BlendMode.darken,
+                fit: BoxFit.cover,
+                height: double.infinity,
+                width: double.infinity,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Center(
+                      child: Lottie.asset('assets/lottie/grey.json',
+                          height: 70.h, width: 70.w));
+                },
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return Center(
+                    child: Icon(
+                      error,
+                      size: 40.r,
+                      color: red,
                     ),
-                  )
-
-//       Card(
-//           elevation: 10,
-//           //color: black,
-//           child: Container(
-//             height: double.infinity,
-//             width: double.infinity,
-//             decoration: BoxDecoration(
-//               //color: black,
-//               borderRadius: BorderRadius.all(Radius.circular(4.r)),
-//               // image: DecorationImage(
-//               //   image: AssetImage(
-//               //     videoImage,
-//               //   ),
-//               //   fit: BoxFit.cover,
-//               // )
-//             ),
-//             child: _controller != null && _controller!.value.isInitialized
-//                 ? AspectRatio(
-//                     aspectRatio:10 ,
-//                     child: VideoPlayer(_controller!),
-//                   )
-//                 : const Center(child: CircularProgressIndicator()),
-//
-//             // VideoPlayer(
-//             //
-//             //     VideoPlayerController.network(
-//             //
-//             //       oldCelebraty[index].image!,)
-//             //   ..initialize()),
-//
-// //             Column(
-// //               children: [
-// // //صوره المشهور+الاسم+التصنيف------------------------------------------
-// // //               Expanded(
-// // //                 flex: 2,
-// // //                 child: Align(
-// // //                     alignment: Alignment.topRight,
-// // //                     child: ListTile(
-// // //                       title: text(context, "ليجسي ليجسي", 15, white),
-// // //                       subtitle: text(context, "مطرب", 12, white),
-// // //                     )),
-// // //               ),
-// // //play viduo--------------------------------------------------------
-// //
-// //                 // Expanded(
-// //                 //   flex: 1,
-// //                 //   child: Align(
-// //                 //     alignment: Alignment.center,
-// //                 //     child: CircleAvatar(
-// //                 //       backgroundColor: white.withOpacity(0.12),
-// //                 //       radius: 25.h,
-// //                 //       child: IconButton(
-// //                 //           onPressed: () {
-// //                 //           setState(() {
-// //                 //             goTopagepush(context, viewData());});
-// //                 //           },
-// //                 //           icon: GradientIcon(playViduo, 35.sp, gradient())),
-// //                 //     ),
-// //                 //   ),
-// //                 // ),
-// //
-// // //like icon------------------------------------------
-// // //                 Expanded(
-// // //                   child: Padding(
-// // //                     padding: EdgeInsets.only(left: 10.r, right: 10.r),
-// // //                     child: Align(
-// // //                       alignment: Alignment.bottomLeft,
-// // //                       child: CircleAvatar(
-// // //                         backgroundColor: white.withOpacity(0.0),
-// // //                         radius: 20.h,
-// // //                         child: IconButton(
-// // //                            onPressed: () {
-// // //                           //   setState(() {
-// // //                           //     isSelect = !isSelect;
-// // //                           //   });
-// // //                           //   if (isSelect) {
-// // //                           //     setState(() {
-// // //                           //       liksCounter++;
-// // //                           //     });
-// // //                           //   }
-// // //                            },
-// // //                           icon: GradientIcon(Icons.visibility, 27.sp, gradient()),
-// // //                         ),
-// // //                       ),
-// // //                     ),
-// // //                   ),
-// // //                 ),
-// // //share----------------------------------------------------------------------
-// // //               Padding(
-// // //                 padding: EdgeInsets.only(left: 10.r, right: 10.r),
-// // //                 child: Align(
-// // //                   alignment: Alignment.bottomLeft,
-// // //                   child: CircleAvatar(
-// // //                     backgroundColor: white.withOpacity(0.0),
-// // //                     radius: 20.h,
-// // //                     child: IconButton(
-// // //                       onPressed: () {
-// // //                         setState(() {
-// // //                           isSelect = !isSelect;
-// // //                         });
-// // //                         if (isSelect) {
-// // //                           setState(() {
-// // //                             liksCounter++;
-// // //                           });
-// // //                         }
-// // //                       },
-// // //                       icon: GradientIcon(
-// // //                           isSelect ? like : disLike, 27.sp, gradient()),
-// // //                     ),
-// // //                   ),
-// // //                 ),
-// // //               ),
-// //
-// // //conuter of like number------------------------------------------
-// //                 Expanded(
-// //                   child: Directionality(
-// //                     textDirection: TextDirection.ltr,
-// //                     child: Align(
-// //                       alignment: Alignment.bottomLeft,
-// //                       child: Row(
-// //                         children: [
-// //                           IconButton(
-// //                             onPressed: () {
-// //                               //   setState(() {
-// //                               //     isSelect = !isSelect;
-// //                               //   });
-// //                               //   if (isSelect) {
-// //                               //     setState(() {
-// //                               //       liksCounter++;
-// //                               //     });
-// //                               //   }
-// //                             },
-// //                             icon: GradientIcon(
-// //                                 Icons.play_arrow, 35.sp, gradient()),
-// //                           ),
-// //                           text(context, "${oldCelebraty[index].views}", 15,
-// //                               white,
-// //                               fontWeight: FontWeight.bold),
-// //                         ],
-// //                       ),
-// //                     ),
-// //                   ),
-// //                 ),
-// //               ],
-// //             ),
-//           )),
-                  )
-            ])));
+                  );
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: Row(
+                  children: [
+                    GradientIcon(Icons.play_arrow, 40.sp, gradient()),
+                    text(context, "${oldCelebraty[index].vedio!.views}", 15,
+                        white,
+                        fontWeight: FontWeight.bold),
+                  ],
+                ),
+              ),
+            )
+          ]),
+        ));
   }
 
   //pagination---------------------------------------------------------------------------------
@@ -508,4 +392,8 @@ class _ExplowerState extends State<Explower> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

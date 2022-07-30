@@ -239,11 +239,7 @@ class _AdvertismentState extends State<Advertisment>
                                     padding: EdgeInsets.only(right: 10.w),
                                     child: text(
                                       context,
-                                      advertisingOrders[i].status!.id == 2
-                                          ? 'في انتظار الدفع'
-                                          : advertisingOrders[i].status!.id == 4
-                                              ? 'في انتظار قبول السعر'
-                                              : advertisingOrders[i]
+                                               advertisingOrders[i]
                                                   .status!
                                                   .name!,
                                       18,

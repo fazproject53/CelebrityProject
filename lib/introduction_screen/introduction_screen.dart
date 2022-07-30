@@ -104,7 +104,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                   onTap: () async {
                     SharedPreferences preferences = await SharedPreferences.getInstance();
                     await preferences.setInt('initScreen', 1);
-                    goTopagepush(context,  SingUp());
+                    goTopageReplacement(context,  SingUp());
 
                   },
                   child: Visibility(
@@ -139,7 +139,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                     onTap: () async {
                       SharedPreferences preferences = await SharedPreferences.getInstance();
                       await preferences.setInt('initScreen', 1);
-                      goTopagepush(context,  SingUp());
+                      goTopageReplacement(context,  SingUp());
 
                     },
                     child: Visibility(

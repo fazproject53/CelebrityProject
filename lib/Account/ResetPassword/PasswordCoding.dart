@@ -93,10 +93,10 @@ class _PasswordCodingState extends State<PasswordCoding> {
                       EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 20.w),
                   child: text(
                     context,
-                    'الرجاء إدخال الرمز المكون من 4 أرقام المرسل إلى البريد الالكتروني المدخل',
+                    'يرجى التحقق من صندوق البريد الوارد الخاص بك واتبع التعليمات. '' تم ارسال رمز التحقق الى البريد الالكتروني ${widget.userNameEmail}',
                     15,
                     Colors.black87,
-                    fontWeight: FontWeight.bold,
+                    //fontWeight: FontWeight.bold,
                     align: TextAlign.right,
                   ),
                 ),
