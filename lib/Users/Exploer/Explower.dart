@@ -145,36 +145,7 @@ class _ExplowerState extends State<Explower> with AutomaticKeepAliveClientMixin 
                                                         "اكسبلور المشاهير",
                                                         18,
                                                         black)),
-//filter----------------------------------------------
-                                                //  Expanded(
-                                                //   flex:1,
-                                                //   child: gradientContainer(
-                                                //     double.infinity,
-                                                //     Row(
-                                                //       children: [
-                                                //         Expanded(
-                                                //             flex:2,
-                                                //             child: Padding(
-                                                //               padding:  EdgeInsets.only(right:8.0,bottom: 2),
-                                                //               child: text(context, "فرز حسب", 13, textBlack),
-                                                //             )),
-                                                //         Expanded(
-                                                //
-                                                //           child: Padding(
-                                                //             padding:  EdgeInsets.only(left:8.0,bottom: 2),
-                                                //             child: Icon(
-                                                //               filter,
-                                                //               size: 25.sp,
-                                                //             ),
-                                                //           ),
-                                                //         )
-                                                //       ],
-                                                //     ),
-                                                //     gradient: true,
-                                                //     color: blue,
-                                                //     height: 30,
-                                                //   ),
-                                                // )
+
                                               ])),
 //view data-----------------------------------------------------
 
@@ -239,12 +210,14 @@ class _ExplowerState extends State<Explower> with AutomaticKeepAliveClientMixin 
           goTopagepush(
               context,
               ShowVideo(
+                image:oldCelebraty[index].celebrity!.image! ,
+                  pageURL: oldCelebraty[index].celebrity!.pageUrl!,
                   videoURL: oldCelebraty[index].vedio!.image!,
                   videoLikes: oldCelebraty[index].vedio!.likes!));
         },
         child: Container(
           decoration: BoxDecoration(
-            color: black.withOpacity(0.4),
+            color: black.withOpacity(0.2),
             borderRadius: BorderRadius.all(
               Radius.circular(5.h),
             ),
@@ -257,7 +230,7 @@ class _ExplowerState extends State<Explower> with AutomaticKeepAliveClientMixin 
               ),
               child: Image.network(
                 oldCelebraty[index].thumbnail!,
-                color: black.withOpacity(0.4),
+                color: black.withOpacity(0.2),
                 colorBlendMode: BlendMode.darken,
                 fit: BoxFit.cover,
                 height: double.infinity,
