@@ -66,15 +66,35 @@ class _YourBrandHomeState extends State<YourBrandHome> {
                         child: SizedBox(
                             height: 500.h,
                             width: 250.w,
-                            child: internetConnection(context, reload: () {
+                            child:
+                            internetConnection(context, reload: () {
                               setState(() {
                                 brand = getBrandInfo(userToken!);
                                 isConnectSection = true;
                               });
                             })));
-                  } else {
-                    return const Center(
-                        child: Text('حدث خطا ما اثناء استرجاع البيانات'));
+                  }  else { ///Error grt the info from server
+                    return Padding(
+                      padding:  EdgeInsets.only(top: 120.h),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                height: 500.h,
+                                width: 250.w,
+                                child:
+                                checkServerException(context, reload: () {
+                                  setState(() {
+                                    brand = getBrandInfo(userToken!);
+                                    serverExceptions = true;
+                                  });
+                                })),
+                          ],
+                        ),
+                      ),
+                    );
                   }
                   //---------------------------------------------------------------------------
                 }else if (snapshot.hasData) {

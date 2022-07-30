@@ -1567,22 +1567,18 @@ failureDialog(context, String massage, String lottie, String bottomName, action,
           titlePadding: EdgeInsets.zero,
           elevation: 5,
           backgroundColor: white,
-          contentPadding: EdgeInsets.only(top: 30.h, right: 10.w, left: 10.w),
+          contentPadding: EdgeInsets.only(right: 10.w, left: 10.w),
           actionsPadding: EdgeInsets.zero,
           content: SizedBox(
-            height: height ?? 200.h,
+            height: height ?? 150.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                text(context, massage, 18, black, align: TextAlign.center),
-                Expanded(
-                  child: Lottie.asset(
-                    lottie,
-                    fit: BoxFit.cover,
-                    //height: 90.h
+                 Lottie.asset(lottie, height: 10.h , width: 10.h
                   ),
-                ),
+
+                text(context, massage, 18, black, align: TextAlign.center),
               ],
             ),
           ),

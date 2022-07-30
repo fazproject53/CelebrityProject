@@ -229,7 +229,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
   Future<introModel> getSectionsData(String pageUrl) async {
     final response = await http.get(
         Uri.parse(
-            'https://mobile.celebrityadssssssss.net/api/celebrity-page/$pageUrl'),
+            'https://mobile.celebrityads.net/api/celebrity-page/$pageUrl'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -277,19 +277,29 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                         isConnectSection = true;
                                       });
                                     })));
-                          }  else { ///error grt the info from server
-                            return Center(
-                                child: SizedBox(
-                                    height: 500.h,
-                                    width: 250.w,
-                                    child:
-                                    checkServerException(context, reload: () {
-                                      setState(() {
-                                        celebrityHome =
-                                            getSectionsData(widget.pageUrl!);
-                                        serverExceptions = true;
-                                      });
-                                    })));
+                          }  else { ///Error grt the info from server
+                            return Padding(
+                              padding: EdgeInsets.only(top: 120.h),
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                        height: 500.h,
+                                        width: 250.w,
+                                        child:
+                                        checkServerException(context, reload: () {
+                                          setState(() {
+                                            celebrityHome =
+                                                getSectionsData(widget.pageUrl!);
+                                            serverExceptions = true;
+                                          });
+                                        })),
+                                  ],
+                                ),
+                              ),
+                            );
                           }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {
@@ -438,15 +448,18 @@ class _CelebrityHomeState extends State<CelebrityHome>
                                             ),
                                           ),
 
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 12.h, right: 25.w),
-                                            child: text(
-                                              context,
-                                              snapshot.data!.data!.celebrity!
-                                                  .description!,
-                                              14,
-                                              white.withOpacity(0.9),
+                                          Visibility(
+                                            visible: snapshot.data!.data!.celebrity!.description!.isEmpty ? false: true,
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 12.h, right: 25.w),
+                                              child: text(
+                                                context,
+                                                snapshot.data!.data!.celebrity!
+                                                    .description!,
+                                                14,
+                                                white.withOpacity(0.9),
+                                              ),
                                             ),
                                           ),
                                           Container(
@@ -1337,9 +1350,10 @@ class _CelebrityHomeState extends State<CelebrityHome>
                 color: white,
               ),
               padding: EdgeInsets.only(top: 15.h, right: 20.w, left: 20.w),
-              height: 380.h,
+              height: 500.h,
               width: 380.w,
               child: SingleChildScrollView(
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   textDirection: TextDirection.rtl,
@@ -1353,7 +1367,7 @@ class _CelebrityHomeState extends State<CelebrityHome>
                       ],
                     ),
                     SizedBox(
-                      height: 15.h,
+                      height: 20.h,
                     ),
 
                     ///Adv Title

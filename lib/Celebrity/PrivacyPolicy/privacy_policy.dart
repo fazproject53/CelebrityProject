@@ -102,22 +102,40 @@ class _PrivacyPolicyHomeState extends State<PrivacyPolicyHome>
                                 snapshot.connectionState ==
                                     ConnectionState.done) {
                               if (snapshot.hasError) {
-                                if (snapshot.error.toString() ==
-                                    'SocketException') {
+                                if (snapshot.error.toString() == 'SocketException') {
                                   return Center(
                                       child: SizedBox(
                                           height: 500.h,
                                           width: 250.w,
-                                          child: internetConnection(context,
-                                              reload: () {
+                                          child:
+                                          internetConnection(context, reload: () {
                                             setState(() {
                                               pp = fetchCelebritie(userToken!);
                                               isConnectSection = true;
                                             });
                                           })));
-                                } else {
-                                  return const Center(
-                                      child: Text('حدث خطا ما اثناء استرجاع البيانات'));
+                                }  else { ///Error grt the info from server
+                                  return Padding(
+                                    padding:  EdgeInsets.only(top: 120.h),
+                                    child: Center(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                              height: 500.h,
+                                              width: 250.w,
+                                              child:
+                                              checkServerException(context, reload: () {
+                                                setState(() {
+                                                  pp = fetchCelebritie(userToken!);
+                                                  serverExceptions = true;
+                                                });
+                                              })),
+                                        ],
+                                      ),
+                                    ),
+                                  );
                                 }
                                 //---------------------------------------------------------------------------
                               } else if (snapshot.hasData) {

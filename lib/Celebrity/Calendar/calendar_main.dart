@@ -106,32 +106,28 @@ class _CelebrityCalenderHomeState extends State<CelebrityCalenderHome> {
                                         print('The error is SocketException');
                                       });
                                     })));
-                          } else if(snapshot.error.toString() == 'ServerException'){
-                            return Center(
-                                child: SizedBox(
-                                    height: 500.h,
-                                    width: 250.w,
-                                    child: checkServerException(context, reload: () {
-                                      setState(() {
-                                        calender = fetchCalender(userToken!);
-                                        serverExceptions = true;
-
-                                        print('The error is timeoutException');
-                                      });
-                                    })));
-                          }else{ /// TimeOut Exception
-                            return Center(
-                                child: SizedBox(
-                                    height: 500.h,
-                                    width: 250.w,
-                                    child: internetConnection(context, reload: () {
-                                      setState(() {
-                                        calender = fetchCalender(userToken!);
-                                        timeoutException = true;
-
-                                        print('The error is TimeOut');
-                                      });
-                                    })));
+                          } else{
+                            return Padding(
+                              padding:  EdgeInsets.only(top: 120.h),
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                        height: 500.h,
+                                        width: 250.w,
+                                        child:
+                                        checkServerException(context, reload: () {
+                                          setState(() {
+                                            calender = fetchCalender(userToken!);
+                                            serverExceptions = true;
+                                          });
+                                        })),
+                                  ],
+                                ),
+                              ),
+                            );
                           }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {

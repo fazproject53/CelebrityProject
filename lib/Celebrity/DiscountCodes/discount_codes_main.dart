@@ -135,9 +135,28 @@ class _HomeBodyDiscountState extends State<HomeBodyDiscount> {
                                       });
                                     })));
                           } else {
-                            return const Center(
-                                child:
-                                    Text('حدث خطا ما اثناء استرجاع البيانات'));
+                            return Padding(
+                              padding:  EdgeInsets.only(top: 120.h),
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                        height: 500.h,
+                                        width: 250.w,
+                                        child:
+                                        checkServerException(context, reload: () {
+                                          setState(() {
+                                            discount =
+                                                fetchDiscountCode(userToken!);
+                                            serverExceptions = true;
+                                          });
+                                        })),
+                                  ],
+                                ),
+                              ),
+                            );
                           }
                           //---------------------------------------------------------------------------
                         } else if (snapshot.hasData) {

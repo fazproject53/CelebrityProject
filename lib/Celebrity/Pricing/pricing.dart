@@ -105,8 +105,28 @@ class _PricingHomeState extends State<PricingHome> {
                                 });
                               })));
                     } else {
-                      return const Center(
-                          child: Text('حدث خطا ما اثناء استرجاع البيانات'));
+                      return Padding(
+                        padding:  EdgeInsets.only(top: 120.h),
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  height: 500.h,
+                                  width: 250.w,
+                                  child:
+                                  checkServerException(context, reload: () {
+                                    setState(() {
+                                      pricing = fetchCelebrityPricing(userToken!);
+                                      serverExceptions = true;
+                                    });
+                                  })),
+                            ],
+                          ),
+                        ),
+                      );
+
                     }
                     //---------------------------------------------------------------------------
                   } else if (snapshot.hasData) {
