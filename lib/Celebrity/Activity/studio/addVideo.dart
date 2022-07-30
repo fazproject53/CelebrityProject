@@ -103,7 +103,7 @@ class _addVideoState extends State<addVideo> {
               paddingg(
                   15,
                   25,
-                  5, text(context, '* ملاحظة : يجب ان يكون امتداد الفيديو mp4.', 11.5, darkWhite!)),
+                  5, text(context, '* ملاحظة : يجب ان يكون امتداد الفيديو mp4.', 11.5, darkWhite)),
               SizedBox(height: 20.h),
               padding(
                 15,
