@@ -479,7 +479,7 @@ class _celebratyProfileState extends State<celebratyProfile> {
                                 8,
                                 text(
                                     context,
-                                    'الفئة : ' +
+                                    'التصنيف : ' +
                                         snapshot
                                             .data!.data!.celebrity!.category!.name!,
                                     12,
