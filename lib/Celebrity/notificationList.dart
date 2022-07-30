@@ -33,14 +33,18 @@ class _notificationListState extends State<notificationList> {
                               Row(
                                 children: [
                                   Container(
-                                    margin: EdgeInsets.only(right: 20.w),
+                                    height: 120.h,
+                                    margin: EdgeInsets.only(right: 15.w),
                                     alignment: Alignment.centerRight,
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.r)),
-                                    child: Image.asset(
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.r),),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.r),
+                                      child: Image.asset(
                                       'assets/image/user2.jpeg',
                                       fit: BoxFit.fill,
-                                      height: 100.h,
+                                      height: double.infinity.h,
                                       width: 95.w,
+                                    ),
                                     ),
                                   ),
                                   SizedBox(width: 15.w,),
