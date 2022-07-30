@@ -504,7 +504,7 @@ Widget textFieldNoIcon(context, String key, double fontSize, bool hintPass,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: purple, width: 1.w)),
-          suffix: child,
+          suffixIcon: child,
           hintText: key,
           contentPadding: EdgeInsets.all(10.h)),
     ),

@@ -190,1504 +190,1497 @@ class _profileInformaionState extends State<profileInformaion>
       child: Scaffold(
         appBar: drowAppBar('المعلومات الشخصية', context),
         body: SingleChildScrollView(
-          child: Container(
-            child: Form(
-              key: _formKey,
-              child: paddingg(
-                12,
-                12,
-                5,
-                FutureBuilder<CelebrityInformation>(
-                  future: celebrities,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: mainLoad(context));
-                    } else if (snapshot.connectionState ==
-                        ConnectionState.active ||
-                        snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasError) {
-                        if (!isConnectSection) {
-                          return Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 150.h),
-                                child: SizedBox(
-                                    height: 300.h,
-                                    width: 250.w,
-                                    child: internetConnection(
-                                        context, reload: () {
-                                      setState(() {
-                                        celebrities =
-                                            fetchCelebrities(userToken!);
-                                        isConnectSection = true;
-                                      });
-                                    })),
-                              ));
-                        } else {
-                          if (!serverExceptions) {
-                            return Container(
-                              height: getSize(context).height / 1.5,
-                              child: Center(
-                                  child: checkServerException(context)
-                              ),
-                            );
-                          } else {
-                            if (!timeoutException) {
-                              return Center(
-                                child: checkTimeOutException(
+          child: paddingg(
+            12,
+            12,
+            5,
+            FutureBuilder<CelebrityInformation>(
+              future: celebrities,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: mainLoad(context));
+                } else if (snapshot.connectionState ==
+                    ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    if (!isConnectSection) {
+                      return Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 150.h),
+                            child: SizedBox(
+                                height: 300.h,
+                                width: 250.w,
+                                child: internetConnection(
                                     context, reload: () {
                                   setState(() {
-                                    celebrities = fetchCelebrities(userToken!);
+                                    celebrities =
+                                        fetchCelebrities(userToken!);
+                                    isConnectSection = true;
                                   });
-                                }),
-                              );
-                            }
-                          }
-                          return const Center(
-                              child: Text(
-                                  'حدث خطا ما اثناء استرجاع البيانات'));
+                                })),
+                          ));
+                    } else {
+                      if (!serverExceptions) {
+                        return Container(
+                          height: getSize(context).height / 1.5,
+                          child: Center(
+                              child: checkServerException(context)
+                          ),
+                        );
+                      } else {
+                        if (!timeoutException) {
+                          return Center(
+                            child: checkTimeOutException(
+                                context, reload: () {
+                              setState(() {
+                                celebrities = fetchCelebrities(userToken!);
+                              });
+                            }),
+                          );
                         }
-                        //---------------------------------------------------------------------------
-                      } else if (snapshot.hasData) {
-                        snapshot.data != null
+                      }
+                      return const Center(
+                          child: Text(
+                              'حدث خطا ما اثناء استرجاع البيانات'));
+                    }
+                    //---------------------------------------------------------------------------
+                  } else if (snapshot.hasData) {
+                    snapshot.data != null
+                        ? {
+                      helper == 0
+                          ? {
+                        name.text = snapshot
+                            .data!.data!.celebrity!.name!,
+                        email.text = snapshot
+                            .data!.data!.celebrity!.email!,
+                        password.text = "********",
+                        desc.text = snapshot.data!.data!
+                            .celebrity!.description!,
+                        snapshot.data!.data!.celebrity!
+                            .phonenumber! !=
+                            ""
                             ? {
-                          helper == 0
-                              ? {
-                            name.text = snapshot
-                                .data!.data!.celebrity!.name!,
-                            email.text = snapshot
-                                .data!.data!.celebrity!.email!,
-                            password.text = "********",
-                            desc.text = snapshot.data!.data!
-                                .celebrity!.description!,
-                            snapshot.data!.data!.celebrity!
-                                .phonenumber! !=
-                                ""
-                                ? {
-                              number = snapshot
-                                  .data!
-                                  .data!
-                                  .celebrity!
-                                  .phonenumber!
-                                  .length -
-                                  9,
-                              phone.text = snapshot
-                                  .data!
-                                  .data!
-                                  .celebrity!
-                                  .phonenumber!
-                                  .substring(number!),
-                            }
-                                : phone.text = snapshot.data!.data!
-                                .celebrity!.phonenumber!,
-                            snapshot.data!.data!.celebrity!
-                                .gender !=
-                                null
-                                ? {
-                              gender = snapshot.data!.data!
-                                  .celebrity!.gender!.name!,
-                              genderChosen = true,
-                              genderi = snapshot.data!.data!
-                                  .celebrity!.gender!.id
-                            }
-                                : gender,
-                            pageLink.text = snapshot
-                                .data!.data!.celebrity!.pageUrl!,
-                            snapchat.text = snapshot
-                                .data!.data!.celebrity!.snapchat!
-                                .toString(),
-                            tiktok.text = snapshot
-                                .data!.data!.celebrity!.tiktok!
-                                .toString(),
-                            youtube.text = snapshot
-                                .data!.data!.celebrity!.youtube!
-                                .toString(),
-                            instagram.text = snapshot
-                                .data!.data!.celebrity!.instagram!
-                                .toString(),
-                            facebook.text = snapshot
-                                .data!.data!.celebrity!.facebook!
-                                .toString(),
-                            twitter.text = snapshot
-                                .data!.data!.celebrity!.twitter!
-                                .toString(),
-                            snapshot.data!.data!.celebrity!
-                                .category !=
-                                null
-                                ? {category = snapshot.data!.data!
-                                .celebrity!.category!.name!,
-                              categoriesId.forEach((key, value) {
-                                if (value == snapshot.data!.data!
-                                    .celebrity!.category!.name!) {
-                                  categoryi = key;
-                                }
-                              })
-                            }
-                                : '',
-                            snapshot.data!.data!.celebrity!
-                                .country !=
-                                null
-                                ? {
-                              getid.forEach((key, value) {
-                                if (value == snapshot.data!.data!
-                                    .celebrity!.country!.name!) {
-                                  countryi = key + 1;
-                                  print(
-                                      'country in build ============================ ' +
-                                          (key + 1).toString());
-                                }
-
-                              }),
-                              country = snapshot.data!.data!
-                                  .celebrity!.country!.name!,
-                        print(
-                        'country in build ============================ ' +
-                       countryi.toString()),
-                            }
-                                : '',
-                            snapshot.data!.data!.celebrity!.city !=
-                                null
-                                ? {city = snapshot.data!.data!
-                                .celebrity!.city!.name
-                                .toString(),
-                              citychosen = true,
-                              cityi = snapshot.data!.data!
-                                  .celebrity!.city!.id
-                            }
-                                : null,
-
-                            helper = 1,
-                          }
-                              : null
+                          number = snapshot
+                              .data!
+                              .data!
+                              .celebrity!
+                              .phonenumber!
+                              .length -
+                              9,
+                          phone.text = snapshot
+                              .data!
+                              .data!
+                              .celebrity!
+                              .phonenumber!
+                              .substring(number!),
                         }
-                            : null;
+                            : phone.text = snapshot.data!.data!
+                            .celebrity!.phonenumber!,
+                        snapshot.data!.data!.celebrity!
+                            .gender !=
+                            null
+                            ? {
+                          gender = snapshot.data!.data!
+                              .celebrity!.gender!.name!,
+                          genderChosen = true,
+                          genderi = snapshot.data!.data!
+                              .celebrity!.gender!.id
+                        }
+                            : gender,
+                        pageLink.text = snapshot
+                            .data!.data!.celebrity!.pageUrl!,
+                        snapchat.text = snapshot
+                            .data!.data!.celebrity!.snapchat!
+                            .toString(),
+                        tiktok.text = snapshot
+                            .data!.data!.celebrity!.tiktok!
+                            .toString(),
+                        youtube.text = snapshot
+                            .data!.data!.celebrity!.youtube!
+                            .toString(),
+                        instagram.text = snapshot
+                            .data!.data!.celebrity!.instagram!
+                            .toString(),
+                        facebook.text = snapshot
+                            .data!.data!.celebrity!.facebook!
+                            .toString(),
+                        twitter.text = snapshot
+                            .data!.data!.celebrity!.twitter!
+                            .toString(),
+                        snapshot.data!.data!.celebrity!
+                            .category !=
+                            null
+                            ? {category = snapshot.data!.data!
+                            .celebrity!.category!.name!,
+                          categoriesId.forEach((key, value) {
+                            if (value == snapshot.data!.data!
+                                .celebrity!.category!.name!) {
+                              categoryi = key;
+                            }
+                          })
+                        }
+                            : '',
+                        snapshot.data!.data!.celebrity!
+                            .country !=
+                            null
+                            ? {
+                          getid.forEach((key, value) {
+                            if (value == snapshot.data!.data!
+                                .celebrity!.country!.name!) {
+                              countryi = key + 1;
+                              print(
+                                  'country in build ============================ ' +
+                                      (key + 1).toString());
+                            }
 
-                        return Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                height: 30.h,
-                              ),
-                              padding(
-                                10,
-                                12,
-                                Container(
-                                    alignment: Alignment.topRight,
-                                    child: const Text(
-                                      'قم بملئ او تعديل  معلوماتك الشخصية',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color: textBlack,
-                                          fontFamily: 'Cairo'),
-                                    )),
-                              ),
+                          }),
+                          country = snapshot.data!.data!
+                              .celebrity!.country!.name!,
+                    print(
+                    'country in build ============================ ' +
+                   countryi.toString()),
+                        }
+                            : '',
+                        snapshot.data!.data!.celebrity!.city !=
+                            null
+                            ? {city = snapshot.data!.data!
+                            .celebrity!.city!.name
+                            .toString(),
+                          citychosen = true,
+                          cityi = snapshot.data!.data!
+                              .celebrity!.city!.id
+                        }
+                            : null,
 
-                              //========================== form ===============================================
+                        helper = 1,
+                      }
+                          : null
+                    }
+                        : null;
 
-                              const SizedBox(
-                                height: 30,
-                              ),
+                    return Container(
+                      child: Form(
+                        key: _formKey,
+                        child: paddingg(
+                          12,
+                          12,
+                          5, Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                SizedBox(
+                                  height: 30.h,
+                                ),
+                                padding(
+                                  10,
+                                  12,
+                                  Container(
+                                      alignment: Alignment.topRight,
+                                      child: const Text(
+                                        'قم بملئ او تعديل  معلوماتك الشخصية',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: textBlack,
+                                            fontFamily: 'Cairo'),
+                                      )),
+                                ),
 
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                textFieldNoIcon(
-                                    context,
-                                    'الاسم',
-                                    14,
-                                    false,
-                                    name,
-                                        (String? value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'حقل اجباري';
-                                      }
-                                      return null;
-                                    },
-                                    false),
-                              ),
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                textFieldDesc(context, 'الوصف الخاص بالمشهور',
-                                    14, false, desc, (String? value) {
-                                      if (value == null ||
-                                          value.isEmpty) {} else {
-                                        return value.length > 150
-                                            ? 'يجب ان لا يزيد الوصف عن 150 حرف'
-                                            : null;
-                                      }
-                                      return null;
-                                    }, counter: (context,
-                                        {required currentLength,
-                                          required isFocused,
-                                          maxLength}) {
-                                      return Container(
-                                          child: Text('${maxLength!}' +
-                                              '/' +
-                                              '${currentLength}'));
-                                    }, maxLenth: 200),
-                              ),
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                textFieldNoIcon(
-                                    context,
-                                    'البريد الالكتروني',
-                                    14,
-                                    false,
-                                    email, (String? value) {
-                                  if (value == null || value.isEmpty) {} else {
-                                    return value.contains('@') &&
-                                        value.contains('.com')
-                                        ? null
-                                        : 'صيغة البريد الالكتروني غير صحيحة ';
-                                  }
-                                  return null;
-                                },
-                                    false),
-                              ),
-                              Container(
-                                height: 65.h,
-                                child: paddingg(
+                                //========================== form ===============================================
+
+                                const SizedBox(
+                                  height: 30,
+                                ),
+
+                                paddingg(
                                   15,
                                   15,
                                   12,
                                   textFieldNoIcon(
                                       context,
-                                      'كلمة المرور',
+                                      'الاسم',
                                       14,
-                                      true,
-                                      password, (String? value) {
-                                    if (value == null || value.isEmpty) {}
-                                    return null;
-                                  },
                                       false,
-                                      child: IconButton(onPressed: () {
-                                        setState(() {
-                                          editPassword = !editPassword;
-                                        });
-                                      }, icon: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(Icons.edit, color: black),
-                                      ))),
-                                ),
-                              ),
-
-                              editPassword
-                                  ? Form(
-                                key: _formKey2,
-                                child: Column(
-                                  children: [
-                                    paddingg(
-                                      15,
-                                      15,
-                                      12,
-                                      textFieldNoIcon(
-                                          context,
-                                          'كلمة المرور الحالية',
-                                          14,
-                                          true,
-                                          currentPassword,
-                                              (String? value) {
-                                            if (value == null ||
-                                                value.isEmpty) {}
-                                            return null;
-                                          },
-                                          false),
-                                    ),
-                                    paddingg(
-                                      15,
-                                      15,
-                                      12,
-                                      textFieldNoIcon(
-                                          context,
-                                          'كلمة المرور الجديدة',
-                                          14,
-                                          true,
-                                          newPassword, (String? value) {
-                                        if (value == null ||
-                                            value.isEmpty) {
+                                      name,
+                                          (String? value) {
+                                        if (value == null || value.isEmpty) {
                                           return 'حقل اجباري';
                                         }
                                         return null;
                                       },
-                                          false),
-                                    ),
-                                    paddingg(
-                                      15,
-                                      15,
-                                      12,
-                                      textFieldNoIcon(
-                                          context,
-                                          'تاكيد كلمة المرور ',
-                                          14,
-                                          true,
-                                          confirmPassword,
-                                              (String? value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'حقل اجباري';
-                                            }
-                                            return noMatch
-                                                ? 'كلمة المرور وتاكيد كلمة المرور غير متطابقين'
-                                                : null;
-                                          },
-                                          false),
-                                    ),
-                                  ],
+                                      false),
                                 ),
-                              )
-                                  : const SizedBox(
-                                height: 0,
-                              ),
-                              Container(
-                                height: 65.h,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 7,
-                                      child: paddingg(
+
+
+                                paddingg(
+                                  15,
+                                  15,
+                                  12,
+                                  textFieldDesc(context, 'الوصف الخاص بالمشهور',
+                                      14, false, desc, (String? value) {
+                                        if (value == null ||
+                                            value.isEmpty) {} else {
+                                          return value.length > 150
+                                              ? 'يجب ان لا يزيد الوصف عن 150 حرف'
+                                              : null;
+                                        }
+                                        return null;
+                                      }, counter: (context,
+                                          {required currentLength,
+                                            required isFocused,
+                                            maxLength}) {
+                                        return Container(
+                                            child: Text('${maxLength!}' +
+                                                '/' +
+                                                '${currentLength}'));
+                                      }, maxLenth: 200),
+                                ),
+                                paddingg(
+                                  15,
+                                  15,
+                                  12,
+                                  textFieldNoIcon(
+                                      context,
+                                      'البريد الالكتروني',
+                                      14,
+                                      false,
+                                      email, (String? value) {
+                                    if (value == null || value.isEmpty) {} else {
+                                      return value.contains('@') &&
+                                          value.contains('.com')
+                                          ? null
+                                          : 'صيغة البريد الالكتروني غير صحيحة ';
+                                    }
+                                    return null;
+                                  },
+                                      false),
+                                ),
+                                Container(
+                                  height: 65.h,
+                                  child: paddingg(
+                                    15,
+                                    15,
+                                    12,
+                                    textFieldNoIcon(
+                                        context,
+                                        'كلمة المرور',
+                                        14,
+                                        true,
+                                        password, (String? value) {
+                                      if (value == null || value.isEmpty) {}
+                                      return null;
+                                    },
+                                        false,
+                                        child: IconButton(onPressed: () {
+                                          setState(() {
+                                            editPassword = !editPassword;
+                                          });
+                                        }, icon: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(Icons.edit, color: black),
+                                        ))),
+                                  ),
+                                ),
+
+                                editPassword
+                                    ? Form(
+                                  key: _formKey2,
+                                  child: Column(
+                                    children: [
+                                      paddingg(
                                         15,
                                         15,
                                         12,
                                         textFieldNoIcon(
-                                          context,
-                                          'رقم الجوال',
-                                          14,
-                                          false,
-                                          phone, (String? value) {
-                                          RegExp regExp = RegExp(
-                                              r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                                          if (value != null) {
-                                            if (value.isNotEmpty) {
-                                              if (value.length != 9) {
-                                                return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
-                                              }
-                                              if (value.startsWith('0')) {
-                                                return 'رقم الجوال يجب ان لا يبدا ب 0 ';
-                                              }
-                                              // if(!regExp.hasMatch(value)){
-                                              //   return "رقم الجوال غير صالح";
-                                              // }
-                                            }
+                                            context,
+                                            'كلمة المرور الحالية',
+                                            14,
+                                            true,
+                                            currentPassword,
+                                                (String? value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {}
+                                              return null;
+                                            },
+                                            false),
+                                      ),
+                                      paddingg(
+                                        15,
+                                        15,
+                                        12,
+                                        textFieldNoIcon(
+                                            context,
+                                            'كلمة المرور الجديدة',
+                                            14,
+                                            true,
+                                            newPassword, (String? value) {
+                                          if (value == null ||
+                                              value.isEmpty) {
+                                            return 'حقل اجباري';
                                           }
-
                                           return null;
                                         },
-                                          false,
-                                          child: Container(
-                                            width: 60.w,
-                                            child: CountryCodePicker(
-                                              padding: EdgeInsets.all(0),
-                                              onChanged: print,
-                                              // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                              initialSelection: country ==
-                                                  'السعودية'
-                                                  ? 'SA'
-                                                  : country == 'فلسطين'
-                                                  ? 'PS'
-                                                  : country == 'الاردن'
-                                                  ? 'JO'
-                                                  : country == 'الامارات'
-                                                  ? 'AE'
-                                                  : 'SA',
-                                              countryFilter: const [
-                                                'SA',
-                                                'BH',
-                                                'KW',
-                                                'OM',
-                                                'AE',
-                                                'KW',
-                                                'QA',
-                                              ],
-                                              showFlagDialog: true,
-                                              showFlag: false,
-                                              // optional. Shows only country name and flag
-                                              showCountryOnly: false,
-                                              textStyle: TextStyle(
-                                                  color: black,
-                                                  fontSize: 15.sp),
-                                              // optional. Shows only country name and flag when popup is closed.
-                                              showOnlyCountryWhenClosed: false,
-                                              // optional. aligns the flag and the Text left
-                                              alignLeft: true,
-                                            ),
-                                          ),),
+                                            false),
                                       ),
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-
-                              // ===========dropdown lists ==================
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                DropdownBelow(
-                                  itemWidth: 370.w,
-                                  dropdownColor: white,
-
-                                  ///text style inside the menu
-                                  itemTextstyle: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: black,
-                                    fontFamily: 'Cairo',
+                                      paddingg(
+                                        15,
+                                        15,
+                                        12,
+                                        textFieldNoIcon(
+                                            context,
+                                            'تاكيد كلمة المرور ',
+                                            14,
+                                            true,
+                                            confirmPassword,
+                                                (String? value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'حقل اجباري';
+                                              }
+                                              return noMatch
+                                                  ? 'كلمة المرور وتاكيد كلمة المرور غير متطابقين'
+                                                  : null;
+                                            },
+                                            false),
+                                      ),
+                                    ],
                                   ),
+                                )
+                                    : const SizedBox(
+                                  height: 0,
+                                ),
 
-                                  ///hint style
-                                  boxTextstyle: TextStyle(
+                                isConnectSection ?
+
+                                FutureBuilder(
+                                    future: countries,
+                                    builder: ((context,
+                                        AsyncSnapshot<CountryL> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center();
+                                      } else if (snapshot.connectionState ==
+                                          ConnectionState.active ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          return Center();
+                                          //---------------------------------------------------------------------------
+                                        } else if (snapshot.hasData) {
+                                          _dropdownTestItems3.isEmpty
+                                              ? {
+                                            countrylist.add({
+                                              'no': 0,
+                                              'keyword': 'الدولة'
+                                            }),
+                                            for (int i = 0;
+                                            i <
+                                                snapshot
+                                                    .data!.data!.length;
+                                            i++)
+                                              {
+                                                countrylist.add({
+                                                  'no': i,
+                                                  'keyword':
+                                                  '${snapshot.data!.data![i]
+                                                      .name!}'
+                                                }),
+                                              },
+                                            _dropdownTestItems3 =
+                                                buildDropdownTestItems(
+                                                    countrylist)
+                                          }
+                                              : null;
+
+                                          return paddingg(
+                                            15,
+                                            15,
+                                            12,
+                                            DropdownBelow(
+                                              itemWidth: 370.w,
+                                              dropdownColor: white,
+
+                                              ///text style inside the menu
+                                              itemTextstyle: TextStyle(
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w400,
+                                                color: black,
+                                                fontFamily: 'Cairo',
+                                              ),
+
+                                              ///hint style
+                                              boxTextstyle: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: black,
+                                                  fontFamily: 'Cairo'),
+
+                                              ///box style
+                                              boxPadding: EdgeInsets.fromLTRB(
+                                                  13.w, 12.h, 13.w, 12.h),
+                                              boxWidth: 500.w,
+                                              boxHeight: 45.h,
+                                              boxDecoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: newGrey,
+                                                      width: 0.5),
+                                                  color: lightGrey.withOpacity(
+                                                      0.10),
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.r)),
+
+                                              ///Icons
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.grey,
+                                              ),
+                                              hint: Text(
+                                                country,
+                                                textDirection: TextDirection
+                                                    .rtl,
+                                              ),
+                                              value: _selectedTest3,
+                                              items: _dropdownTestItems3,
+                                              onChanged: onChangeDropdownTests3,
+                                            ),
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text(
+                                                  'لايوجد لينك لعرضهم حاليا'));
+                                        }
+                                      } else {
+                                        return Center(
+                                            child: Text(
+                                                'State: ${snapshot
+                                                    .connectionState}'));
+                                      }
+                                    })) : SizedBox(),
+
+                                isConnectSection ?
+                                FutureBuilder(
+                                    future: cities,
+                                    builder: ((context,
+                                        AsyncSnapshot<CityL> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center();
+                                      } else if (snapshot.connectionState ==
+                                          ConnectionState.active ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          return Center();
+                                          //---------------------------------------------------------------------------
+                                        } else if (snapshot.hasData) {
+                                          _dropdownTestItems.isEmpty
+                                              ? {
+                                            citilist.add({
+                                              'no': 0,
+                                              'keyword':
+                                              'المدينة'
+                                            }),
+                                            for (int i = 0;
+                                            i <
+                                                snapshot
+                                                    .data!.data!.length;
+                                            i++)
+                                              {
+                                                citilist.add({
+                                                  'no': snapshot.data!.data![i]
+                                                      .id!,
+                                                  'keyword':
+                                                  '${snapshot.data!.data![i]
+                                                      .name!}'
+                                                }),
+                                              },
+                                            _dropdownTestItems =
+                                                buildDropdownTestItems(
+                                                    citilist)
+                                          }
+                                              : null;
+
+                                          return paddingg(
+                                            15,
+                                            15,
+                                            12,
+                                            DropdownBelow(
+                                              itemWidth: 370.w,
+                                              dropdownColor: white,
+
+                                              ///text style inside the menu
+                                              itemTextstyle: TextStyle(
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w400,
+                                                color: black,
+                                                fontFamily: 'Cairo',
+                                              ),
+
+                                              ///hint style
+                                              boxTextstyle: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: black,
+                                                  fontFamily: 'Cairo'),
+
+                                              ///box style
+                                              boxPadding: EdgeInsets.fromLTRB(
+                                                  13.w, 12.h, 13.w, 12.h),
+                                              boxWidth: 500.w,
+                                              boxHeight: 45.h,
+                                              boxDecoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: newGrey,
+                                                      width: 0.5),
+                                                  color: lightGrey.withOpacity(
+                                                      0.10),
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.r)),
+
+                                              ///Icons
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.grey,
+                                              ),
+                                              hint: Text(
+                                                city,
+                                                textDirection: TextDirection
+                                                    .rtl,
+                                              ),
+                                              value: _selectedTest,
+                                              items: _dropdownTestItems,
+                                              onChanged: onChangeDropdownTests,
+                                            ),
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text(
+                                                  'لايوجد لينك لعرضهم حاليا'));
+                                        }
+                                      } else {
+                                        return Center(
+                                            child: Text(
+                                                ''));
+                                      }
+                                    })) : SizedBox(),
+
+                                citychosen != null ?
+                                citychosen == false ? Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: text(
+                                      context, 'الرجاء تحديد المدينة', 14,
+                                      red!),
+                                ) : SizedBox()
+                                    :
+                                SizedBox(),
+
+                                paddingg(
+                                  15,
+                                  15,
+                                  12,
+                                  textFieldNoIcon(context, 'رقم الجوال', 14,
+                                    false, phone, (String? value) {
+                                      RegExp regExp = new RegExp(
+                                          r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                                      if (value != null) {
+                                        if (value.isNotEmpty) {
+                                          if (value.length != 9) {
+                                            return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
+                                          }
+                                          if (value.startsWith('0')) {
+                                            return 'رقم الجوال يجب ان لا يبدا ب 0 ';
+                                          }
+                                          // if(!regExp.hasMatch(value)){
+                                          //   return "رقم الجوال غير صالح";
+                                          // }
+                                        }
+                                      }
+
+                                      return null;
+                                    }, false, child:  Container(
+                                      width: 20.w,
+                                      height: 32.h,
+                                      child: CountryCodePicker(
+                                        padding: EdgeInsets.all(0),
+                                        onChanged: print,
+                                        // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                        initialSelection: country == 'السعودية'
+                                            ? 'SA'
+                                            : country == 'فلسطين'
+                                            ? 'PS'
+                                            : country == 'الاردن'
+                                            ? 'JO'
+                                            : country == 'الامارات'
+                                            ? 'AE'
+                                            : 'SA',
+                                        countryFilter: const [
+                                          'SA',
+                                          'BH',
+                                          'KW',
+                                          'OM',
+                                          'AE',
+                                          'KW',
+                                          'QA',
+                                        ],
+                                        showFlag: false,
+                                        // optional. Shows only country name and flag
+                                        showCountryOnly: false,
+                                        showFlagDialog: true,
+                                        textStyle:  TextStyle(color: black, fontSize: 13.5.sp),
+                                        // optional. Shows only country name and flag when popup is closed.
+                                        showOnlyCountryWhenClosed: false,
+                                        // optional. aligns the flag and the Text left
+                                        alignLeft: true,
+                                      ),
+                                    ), ),
+                                ),
+
+                                // ===========dropdown lists ==================
+
+
+                                paddingg(
+                                  15,
+                                  15,
+                                  12,
+                                  DropdownBelow(
+                                    itemWidth: 370.w,
+                                    dropdownColor: white,
+
+                                    ///text style inside the menu
+                                    itemTextstyle: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
                                       color: black,
-                                      fontFamily: 'Cairo'),
+                                      fontFamily: 'Cairo',
+                                    ),
 
-                                  ///box style
-                                  boxPadding: EdgeInsets.fromLTRB(
-                                      13.w, 12.h, 13.w, 12.h),
-                                  boxWidth: 500.w,
-                                  boxHeight: 45.h,
-                                  boxDecoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: newGrey, width: 0.5),
-                                      color: lightGrey.withOpacity(0.10),
-                                      borderRadius: BorderRadius.circular(8.r)),
+                                    ///hint style
+                                    boxTextstyle: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: black,
+                                        fontFamily: 'Cairo'),
 
-                                  ///Icons
-                                  icon: const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Colors.grey,
+                                    ///box style
+                                    boxPadding: EdgeInsets.fromLTRB(
+                                        13.w, 12.h, 13.w, 12.h),
+                                    boxWidth: 500.w,
+                                    boxHeight: 45.h,
+                                    boxDecoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: newGrey, width: 0.5),
+                                        color: lightGrey.withOpacity(0.10),
+                                        borderRadius: BorderRadius.circular(8.r)),
+
+                                    ///Icons
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.grey,
+                                    ),
+                                    hint: Text(
+                                      gender,
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    value: _selectedTest4,
+                                    items: _dropdownTestItems4,
+                                    onChanged: onChangeDropdownTests4,
                                   ),
-                                  hint: Text(
-                                    gender,
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                  value: _selectedTest4,
-                                  items: _dropdownTestItems4,
-                                  onChanged: onChangeDropdownTests4,
                                 ),
-                              ),
 
-                              genderChosen == true
-                                  ? SizedBox()
-                                  : paddingg(
-                                  10,
-                                  20,
-                                  3,
-                                  text(
-                                      context,
-                                      'تحديد نوع الجنس اجباري لتحديث المعلومات',
-                                      14,
-                                      red!)),
+                                genderChosen == true
+                                    ? SizedBox()
+                                    : paddingg(
+                                    10,
+                                    20,
+                                    3,
+                                    text(
+                                        context,
+                                        'تحديد نوع الجنس اجباري لتحديث المعلومات',
+                                        14,
+                                        red!)),
 
-                              isConnectSection ?
 
-                              FutureBuilder(
-                                  future: countries,
-                                  builder: ((context,
-                                      AsyncSnapshot<CountryL> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center();
-                                    } else if (snapshot.connectionState ==
-                                        ConnectionState.active ||
-                                        snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                      if (snapshot.hasError) {
+                                FutureBuilder(
+                                    future: categories,
+                                    builder: ((context,
+                                        AsyncSnapshot<CategoryL> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
                                         return Center();
-                                        //---------------------------------------------------------------------------
-                                      } else if (snapshot.hasData) {
-                                        _dropdownTestItems3.isEmpty
-                                            ? {
-                                          countrylist.add({
-                                            'no': 0,
-                                            'keyword': 'الدولة'
-                                          }),
-                                          for (int i = 0;
-                                          i <
-                                              snapshot
-                                                  .data!.data!.length;
-                                          i++)
-                                            {
-                                              countrylist.add({
-                                                'no': i,
-                                                'keyword':
-                                                '${snapshot.data!.data![i]
-                                                    .name!}'
-                                              }),
-                                            },
-                                          _dropdownTestItems3 =
-                                              buildDropdownTestItems(
-                                                  countrylist)
-                                        }
-                                            : null;
-
-                                        return paddingg(
-                                          15,
-                                          15,
-                                          12,
-                                          DropdownBelow(
-                                            itemWidth: 370.w,
-                                            dropdownColor: white,
-
-                                            ///text style inside the menu
-                                            itemTextstyle: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: black,
-                                              fontFamily: 'Cairo',
-                                            ),
-
-                                            ///hint style
-                                            boxTextstyle: TextStyle(
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: black,
-                                                fontFamily: 'Cairo'),
-
-                                            ///box style
-                                            boxPadding: EdgeInsets.fromLTRB(
-                                                13.w, 12.h, 13.w, 12.h),
-                                            boxWidth: 500.w,
-                                            boxHeight: 45.h,
-                                            boxDecoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: newGrey,
-                                                    width: 0.5),
-                                                color: lightGrey.withOpacity(
-                                                    0.10),
-                                                borderRadius:
-                                                BorderRadius.circular(8.r)),
-
-                                            ///Icons
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              color: Colors.grey,
-                                            ),
-                                            hint: Text(
-                                              country,
-                                              textDirection: TextDirection
-                                                  .rtl,
-                                            ),
-                                            value: _selectedTest3,
-                                            items: _dropdownTestItems3,
-                                            onChanged: onChangeDropdownTests3,
-                                          ),
-                                        );
-                                      } else {
-                                        return const Center(
-                                            child: Text(
-                                                'لايوجد لينك لعرضهم حاليا'));
-                                      }
-                                    } else {
-                                      return Center(
-                                          child: Text(
-                                              'State: ${snapshot
-                                                  .connectionState}'));
-                                    }
-                                  })) : SizedBox(),
-
-                              isConnectSection ?
-                              FutureBuilder(
-                                  future: cities,
-                                  builder: ((context,
-                                      AsyncSnapshot<CityL> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center();
-                                    } else if (snapshot.connectionState ==
-                                        ConnectionState.active ||
-                                        snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return Center();
-                                        //---------------------------------------------------------------------------
-                                      } else if (snapshot.hasData) {
-                                        _dropdownTestItems.isEmpty
-                                            ? {
-                                          citilist.add({
-                                            'no': 0,
-                                            'keyword':
-                                            'المدينة'
-                                          }),
-                                          for (int i = 0;
-                                          i <
-                                              snapshot
-                                                  .data!.data!.length;
-                                          i++)
-                                            {
-                                              citilist.add({
-                                                'no': snapshot.data!.data![i]
-                                                    .id!,
-                                                'keyword':
-                                                '${snapshot.data!.data![i]
-                                                    .name!}'
-                                              }),
-                                            },
-                                          _dropdownTestItems =
-                                              buildDropdownTestItems(
-                                                  citilist)
-                                        }
-                                            : null;
-
-                                        return paddingg(
-                                          15,
-                                          15,
-                                          12,
-                                          DropdownBelow(
-                                            itemWidth: 370.w,
-                                            dropdownColor: white,
-
-                                            ///text style inside the menu
-                                            itemTextstyle: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: black,
-                                              fontFamily: 'Cairo',
-                                            ),
-
-                                            ///hint style
-                                            boxTextstyle: TextStyle(
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: black,
-                                                fontFamily: 'Cairo'),
-
-                                            ///box style
-                                            boxPadding: EdgeInsets.fromLTRB(
-                                                13.w, 12.h, 13.w, 12.h),
-                                            boxWidth: 500.w,
-                                            boxHeight: 45.h,
-                                            boxDecoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: newGrey,
-                                                    width: 0.5),
-                                                color: lightGrey.withOpacity(
-                                                    0.10),
-                                                borderRadius:
-                                                BorderRadius.circular(8.r)),
-
-                                            ///Icons
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              color: Colors.grey,
-                                            ),
-                                            hint: Text(
-                                              city,
-                                              textDirection: TextDirection
-                                                  .rtl,
-                                            ),
-                                            value: _selectedTest,
-                                            items: _dropdownTestItems,
-                                            onChanged: onChangeDropdownTests,
-                                          ),
-                                        );
-                                      } else {
-                                        return const Center(
-                                            child: Text(
-                                                'لايوجد لينك لعرضهم حاليا'));
-                                      }
-                                    } else {
-                                      return Center(
-                                          child: Text(
-                                              ''));
-                                    }
-                                  })) : SizedBox(),
-
-                              citychosen != null ?
-                              citychosen == false ? Padding(
-                                padding: const EdgeInsets.only(right: 18.0),
-                                child: text(
-                                    context, 'الرجاء تحديد المدينة', 14,
-                                    red!),
-                              ) : SizedBox()
-                                  :
-                              SizedBox(),
-
-                              FutureBuilder(
-                                  future: categories,
-                                  builder: ((context,
-                                      AsyncSnapshot<CategoryL> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center();
-                                    } else if (snapshot.connectionState ==
-                                        ConnectionState.active ||
-                                        snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return SizedBox();
-                                        //---------------------------------------------------------------------------
-                                      } else if (snapshot.hasData) {
-                                        _dropdownTestItems2.isEmpty
-                                            ? {
-                                          categorylist.add({
-                                            'no': 0,
-                                            'keyword': 'التصنيف'
-                                          }),
-                                          for (int i = 0;
-                                          i <
-                                              snapshot
-                                                  .data!.data!.length;
-                                          i++)
-                                            {
-                                              categorylist.add({
-                                                'no': i,
-                                                'keyword':
-                                                '${snapshot.data!.data![i]
-                                                    .name}'
-                                              }),
-                                            },
-                                          _dropdownTestItems2 =
-                                              buildDropdownTestItems(
-                                                  categorylist)
-                                        }
-                                            : null;
-
-                                        return paddingg(
-                                          15,
-                                          15,
-                                          12,
-                                          DropdownBelow(
-                                            itemWidth: 370.w,
-                                            dropdownColor: white,
-
-                                            ///text style inside the menu
-                                            itemTextstyle: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.w400,
-                                              color: black,
-                                              fontFamily: 'Cairo',
-                                            ),
-
-                                            ///hint style
-                                            boxTextstyle: TextStyle(
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: black,
-                                                fontFamily: 'Cairo'),
-
-                                            ///box style
-                                            boxPadding: EdgeInsets.fromLTRB(
-                                                13.w, 12.h, 13.w, 12.h),
-                                            boxWidth: 500.w,
-                                            boxHeight: 45.h,
-                                            boxDecoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: newGrey, width: 0.5),
-                                                color: lightGrey.withOpacity(
-                                                    0.10),
-
-                                                borderRadius:
-                                                BorderRadius.circular(8.r)),
-
-                                            ///Icons
-                                            icon: const Icon(
-                                              Icons.arrow_drop_down,
-                                              color: Colors.grey,
-                                            ),
-                                            hint: Text(
-                                              category,
-                                              textDirection: TextDirection.rtl,
-                                            ),
-                                            value: _selectedTest2,
-                                            items: _dropdownTestItems2,
-                                            onChanged: onChangeDropdownTests2,
-                                          ),
-                                        );
-                                      } else {
-                                        return const Center(
-                                            child: Text(
-                                                'لايوجد لينك لعرضهم حاليا'));
-                                      }
-                                    } else {
-                                      return Center(
-                                          child: Text(
-                                              'State: ${snapshot
-                                                  .connectionState}'));
-                                    }
-                                  })),
-
-                              //=========== end dropdown ==================================
-
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                textFieldNoIcon(
-                                    context,
-                                    'رابط الصفحة',
-                                    14,
-                                    false,
-                                    pageLink,
-                                        (String? value) {
-                                      if (value == null || value.isEmpty) {}
-                                      return null;
-                                    },
-                                    false),
-                              ),
-
-                              //===================================== اضافة روابط الصفحات =======================================================
-                              textFeildWithButton(
-                                context,
-                                textFieldNoIcon2(
-                                  context,
-                                  'رابط صفحة سناب شات',
-                                  14,
-                                  false,
-                                  snapchat,
-                                      (String? value) {},
-                                ),
-                                gradientContainerWithHeight(
-                                  getSize(context).width / 4,
-                                  47,
-                                  Center(
-                                      child: InkWell(
-                                          onTap: () {
-                                            _selectedTest4 == null &&
-                                                gender == 'الجنس'
-                                                ? setState(() {
-                                              genderChosen = false;
-                                            })
-                                                : setState(() {
-                                              genderChosen = true;
-                                            });
-                                            _formKey.currentState!.validate() &&
-                                                _formKey2.currentState == null &&
-                                                genderChosen == true &&
-                                                citychosen == true
-                                                ?
-                                            { loadingDialogue(context),
-                                              updateInformation().then((value) =>
-                                              {
-                                                value.contains('true')?{
-                                                  Navigator.pop(context),
-                                                  countryChanged
-                                                      ? setState(() {
-                                                    helper = 0;
-                                                    countryChanged = false;
-                                                    celebrities =
-                                                        fetchCelebrities(
-                                                            userToken!);
-                                                  })
-                                                      : Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MainScreen()),
-                                                  ),
-                                                  showMassage(
-                                                      context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                      done: done)
-                                                }:{
-                                                  value == 'SocketException'?{
-                                                    Navigator.pop(context),
-                                                    showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                  }: {
-
-                                                    value == 'serverException'? {
-                                                      Navigator.pop(context),
-                                                      showMassage(
-                                                        context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                    }:{
-                                                      Navigator.pop(context),
-                                                      showMassage(
-                                                        context,
-                                                        'خطا',
-                                                        value.replaceAll('false', ''),
-                                                      )
-                                                    }
-
-
-                                                  }
-                                                }
-                                              })}
-                                                : setState(() {
-                                              city == 'المدينة'
-                                                  ? citychosen = false
-                                                  : null;
-                                            },);
-                                          },
-                                          child: text(
-                                              context, 'اضافة', 14, black,
-                                              align: TextAlign.center))),
-                                ),
-                              ),
-                              textFeildWithButton(
-                                context,
-                                textFieldNoIcon2(
-                                  context,
-                                  'رابط صفحة تيك توك',
-                                  14,
-                                  false,
-                                  tiktok,
-                                      (String? value) {},
-                                ),
-                                gradientContainerWithHeight(
-                                  getSize(context).width / 4,
-                                  47,
-                                  Container(
-                                    child: Center(
-                                        child: InkWell(
-                                            onTap: () {
-                                              _selectedTest4 == null &&
-                                                  gender == 'الجنس'
-                                                  ? setState(() {
-                                                genderChosen = false;
-                                              })
-                                                  : setState(() {
-                                                genderChosen = true;
-                                              });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
-                                                  genderChosen == true &&
-                                                  citychosen == true
-                                                  ?
-                                              { loadingDialogue(context),
-                                                updateInformation().then((value) =>
-                                                {
-                                                  value.contains('true')?{
-                                                    Navigator.pop(context),
-                                                    countryChanged
-                                                        ? setState(() {
-                                                      helper = 0;
-                                                      countryChanged = false;
-                                                      celebrities =
-                                                          fetchCelebrities(
-                                                              userToken!);
-                                                    })
-                                                        : Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              MainScreen()),
-                                                    ),
-                                                    showMassage(
-                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                        done: done)
-                                                  }:{
-                                                    value == 'SocketException'?{
-                                                      Navigator.pop(context),
-                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                    }: {
-
-                                                      value == 'serverException'? {
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                      }:{
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context,
-                                                          'خطا',
-                                                          value.replaceAll('false', ''),
-                                                        )
-                                                      }
-
-
-                                                    }
-                                                  }
-                                                })}
-                                                  : setState(() {
-                                                city == 'المدينة'
-                                                    ? citychosen = false
-                                                    : null;
-                                              },);
-                                            },
-                                            child: text(
-                                                context, 'اضافة', 14, black,
-                                                align: TextAlign.center))),
-                                  ),
-                                ),
-                              ),
-                              textFeildWithButton(
-                                context,
-                                textFieldNoIcon2(
-                                  context,
-                                  'رابط صفحة يوتيوب',
-                                  14,
-                                  false,
-                                  youtube,
-                                      (String? value) {},
-                                ),
-                                gradientContainerWithHeight(
-                                  getSize(context).width / 4,
-                                  47,
-                                  Container(
-                                    child: Center(
-                                        child: InkWell(
-                                            onTap: () {
-                                              _selectedTest4 == null &&
-                                                  gender == 'الجنس'
-                                                  ? setState(() {
-                                                genderChosen = false;
-                                              })
-                                                  : setState(() {
-                                                genderChosen = true;
-                                              });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
-                                                  genderChosen == true &&
-                                                  citychosen == true
-                                                  ?
-                                              { loadingDialogue(context),
-                                                updateInformation().then((value) =>
-                                                {
-                                                  value.contains('true')?{
-                                                    Navigator.pop(context),
-                                                    countryChanged
-                                                        ? setState(() {
-                                                      helper = 0;
-                                                      countryChanged = false;
-                                                      celebrities =
-                                                          fetchCelebrities(
-                                                              userToken!);
-                                                    })
-                                                        : Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              MainScreen()),
-                                                    ),
-                                                    showMassage(
-                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                        done: done)
-                                                  }:{
-                                                    value == 'SocketException'?{
-                                                      Navigator.pop(context),
-                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                    }: {
-
-                                                      value == 'serverException'? {
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                      }:{
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context,
-                                                          'خطا',
-                                                          value.replaceAll('false', ''),
-                                                        )
-                                                      }
-
-
-                                                    }
-                                                  }
-                                                })}
-                                                  : setState(() {
-                                                city == 'المدينة'
-                                                    ? citychosen = false
-                                                    : null;
-                                              },);
-                                            },
-                                            child: text(
-                                                context, 'اضافة', 14, black,
-                                                align: TextAlign.center))),
-                                  ),
-                                ),
-                              ),
-                              textFeildWithButton(
-                                context,
-                                textFieldNoIcon2(
-                                  context,
-                                  'رابط صفحة الانستجرام',
-                                  14,
-                                  false,
-                                  instagram,
-                                      (String? value) {},
-                                ),
-                                gradientContainerWithHeight(
-                                  getSize(context).width / 4,
-                                  47,
-                                  Container(
-                                    child: Center(
-                                        child: InkWell(
-                                            onTap: () {
-                                              _selectedTest4 == null &&
-                                                  gender == 'الجنس'
-                                                  ? setState(() {
-                                                genderChosen = false;
-                                              })
-                                                  : setState(() {
-                                                genderChosen = true;
-                                              });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
-                                                  genderChosen == true &&
-                                                  citychosen == true
-                                                  ?
-                                              { loadingDialogue(context),
-                                                updateInformation().then((value) =>
-                                                {
-                                                  value.contains('true')?{
-                                                    Navigator.pop(context),
-                                                    countryChanged
-                                                        ? setState(() {
-                                                      helper = 0;
-                                                      countryChanged = false;
-                                                      celebrities =
-                                                          fetchCelebrities(
-                                                              userToken!);
-                                                    })
-                                                        : Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              MainScreen()),
-                                                    ),
-                                                    showMassage(
-                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                        done: done)
-                                                  }:{
-                                                    value == 'SocketException'?{
-                                                      Navigator.pop(context),
-                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                    }: {
-
-                                                      value == 'serverException'? {
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                      }:{
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context,
-                                                          'خطا',
-                                                          value.replaceAll('false', ''),
-                                                        )
-                                                      }
-
-
-                                                    }
-                                                  }
-                                                })}
-                                                  : setState(() {
-                                                city == 'المدينة'
-                                                    ? citychosen = false
-                                                    : null;
-                                              },);
-                                            },
-                                            child: text(
-                                                context, 'اضافة', 14, black,
-                                                align: TextAlign.center))),
-                                  ),
-                                ),
-                              ),
-                              textFeildWithButton(
-                                context,
-                                textFieldNoIcon2(
-                                  context,
-                                  'رابط صفحة تويتر',
-                                  14,
-                                  false,
-                                  twitter,
-                                      (String? value) {},
-                                ),
-                                gradientContainerWithHeight(
-                                  getSize(context).width / 4,
-                                  47,
-                                  Container(
-                                    child: Center(
-                                        child: InkWell(
-                                            onTap: () {
-                                              _selectedTest4 == null &&
-                                                  gender == 'الجنس'
-                                                  ? setState(() {
-                                                genderChosen = false;
-                                              })
-                                                  : setState(() {
-                                                genderChosen = true;
-                                              });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
-                                                  genderChosen == true &&
-                                                  citychosen == true
-                                                  ?
-                                              { loadingDialogue(context),
-                                                updateInformation().then((value) =>
-                                                {
-                                                  value.contains('true')?{
-                                                    Navigator.pop(context),
-                                                    countryChanged
-                                                        ? setState(() {
-                                                      helper = 0;
-                                                      countryChanged = false;
-                                                      celebrities =
-                                                          fetchCelebrities(
-                                                              userToken!);
-                                                    })
-                                                        : Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              MainScreen()),
-                                                    ),
-                                                    showMassage(
-                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                        done: done)
-                                                  }:{
-                                                    value == 'SocketException'?{
-                                                      Navigator.pop(context),
-                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                    }: {
-
-                                                      value == 'serverException'? {
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                      }:{
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context,
-                                                          'خطا',
-                                                          value.replaceAll('false', ''),
-                                                        )
-                                                      }
-
-
-                                                    }
-                                                  }
-                                                })}
-                                                  : setState(() {
-                                                city == 'المدينة'
-                                                    ? citychosen = false
-                                                    : null;
-                                              },);
-                                            },
-                                            child: text(
-                                                context, 'اضافة', 14, black,
-                                                align: TextAlign.center))),
-                                  ),
-                                ),
-                              ),
-                              textFeildWithButton(
-                                context,
-                                textFieldNoIcon2(
-                                  context,
-                                  'رابط صفحة الفيسبوك',
-                                  14,
-                                  false,
-                                  facebook,
-                                      (String? value) {},
-                                ),
-                                gradientContainerWithHeight(
-                                  getSize(context).width / 4,
-                                  47,
-                                  Container(
-                                    child: Center(
-                                        child: InkWell(
-                                            onTap: () {
-                                              _selectedTest4 == null &&
-                                                  gender == 'الجنس'
-                                                  ? setState(() {
-                                                genderChosen = false;
-                                              })
-                                                  : setState(() {
-                                                genderChosen = true;
-                                              });
-                                              _formKey.currentState!.validate() &&
-                                                  _formKey2.currentState == null &&
-                                                  genderChosen == true &&
-                                                  citychosen == true
-                                                  ?
-                                              { loadingDialogue(context),
-                                                updateInformation().then((value) =>
-                                                {
-                                                  value.contains('true')?{
-                                                    Navigator.pop(context),
-                                                    countryChanged
-                                                        ? setState(() {
-                                                      helper = 0;
-                                                      countryChanged = false;
-                                                      celebrities =
-                                                          fetchCelebrities(
-                                                              userToken!);
-                                                    })
-                                                        : Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              MainScreen()),
-                                                    ),
-                                                    showMassage(
-                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                        done: done)
-                                                  }:{
-                                                    value == 'SocketException'?{
-                                                      Navigator.pop(context),
-                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                                    }: {
-
-                                                      value == 'serverException'? {
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                      }:{
-                                                        Navigator.pop(context),
-                                                        showMassage(
-                                                          context,
-                                                          'خطا',
-                                                          value.replaceAll('false', ''),
-                                                        )
-                                                      }
-
-
-                                                    }
-                                                  }
-                                                })}
-                                                  : setState(() {
-                                                city == 'المدينة'
-                                                    ? citychosen = false
-                                                    : null;
-                                              },);
-                                            },
-                                            child: text(
-                                                context, 'اضافة', 14, black,
-                                                align: TextAlign.center))),
-                                  ),
-                                ),
-                              ),
-
-                              //===================== button ================================
-
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              padding(
-                                15,
-                                15,
-                                gradientContainerNoborder(
-                                    getSize(context).width,
-                                    buttoms(context, 'حفظ', 20, white, () {
-                                      if (currentPassword.text.isNotEmpty &&
-                                          newPassword.text.isNotEmpty) {
-                                        _formKey2.currentState == null
-                                            ? null
-                                            : _formKey2.currentState!
-                                            .validate()
-                                            ? {
-                                          newPassword.text ==
-                                              confirmPassword
-                                                  .text
+                                      } else if (snapshot.connectionState ==
+                                          ConnectionState.active ||
+                                          snapshot.connectionState ==
+                                              ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          return SizedBox();
+                                          //---------------------------------------------------------------------------
+                                        } else if (snapshot.hasData) {
+                                          _dropdownTestItems2.isEmpty
                                               ? {
-                                            changePassword().then((value) =>
-                                            {
-                                              value == 'SocketException' ||
-                                                  value == 'TimeoutException' ||
-                                                  value == 'ServerException' ? {
-                                                Navigator.pop(context),
-                                                showMassage(context,
-                                                    'فشل الاتصال بالانترنت',
-                                                    "فشل الاتصال بالانترنت حاول لاحقا")
-                                              } :
-                                              value.contains('false')
-                                                  ? showMassage(context, 'خطا',
-                                                  value.replaceAll('false', ''))
-                                                  : showMassage(
-                                                  context, 'تم بنجاح',
-                                                  "تم التغيير بنجاح",
-                                                  done: done),
-                                              currentPassword.clear(),
-                                              newPassword.clear(),
-                                              confirmPassword.clear(),
-                                              setState(() {
-                                                editPassword =false;
-                                              })
-                                            })
+                                            categorylist.add({
+                                              'no': 0,
+                                              'keyword': 'التصنيف'
+                                            }),
+                                            for (int i = 0;
+                                            i <
+                                                snapshot
+                                                    .data!.data!.length;
+                                            i++)
+                                              {
+                                                categorylist.add({
+                                                  'no': i,
+                                                  'keyword':
+                                                  '${snapshot.data!.data![i]
+                                                      .name}'
+                                                }),
+                                              },
+                                            _dropdownTestItems2 =
+                                                buildDropdownTestItems(
+                                                    categorylist)
                                           }
-                                              : setState(() {
-                                            noMatch =
-                                            true;
-                                          })
-                                        }
-                                            : null;
-                                      }
-                                      else {
-                                        _selectedTest4 == null &&
-                                            gender == 'الجنس'
-                                            ? setState(() {
-                                          genderChosen = false;
-                                        })
-                                            : setState(() {
-                                          genderChosen = true;
-                                        });
-                                        _formKey.currentState!.validate() &&
-                                            _formKey2.currentState == null &&
-                                            genderChosen == true &&
-                                            citychosen == true
-                                            ?
-                                        { loadingDialogue(context),
-                                          updateInformation().then((value) =>
-                                          {
-                                            value.contains('true')?{
-                                              Navigator.pop(context),
-                                              countryChanged
-                                                  ? setState(() {
-                                                helper = 0;
-                                                countryChanged = false;
-                                                celebrities =
-                                                    fetchCelebrities(
-                                                        userToken!);
-                                              })
-                                                  : Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MainScreen()),
-                                              ),
-                                              showMassage(
-                                                  context, 'تم بنجاح', value.replaceAll('true', ''),
-                                                  done: done)
-                                            }:{
-                                              value == 'SocketException'?{
-                                                Navigator.pop(context),
-                                                showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
-                                              }: {
-
-                                                value == 'serverException'? {
-                                                  Navigator.pop(context),
-                                                  showMassage(
-                                                    context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
-                                                }:{
-                                                  Navigator.pop(context),
-                                                  showMassage(
-                                                    context,
-                                                    'خطا',
-                                                    value.replaceAll('false', ''),
-                                                  )
-                                                }
-
-
-                                              }
-                                            }
-                                          })}
-                                            : setState(() {
-                                          city == 'المدينة'
-                                              ? citychosen = false
                                               : null;
-                                        },);
+
+                                          return paddingg(
+                                            15,
+                                            15,
+                                            12,
+                                            DropdownBelow(
+                                              itemWidth: 370.w,
+                                              dropdownColor: white,
+
+                                              ///text style inside the menu
+                                              itemTextstyle: TextStyle(
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w400,
+                                                color: black,
+                                                fontFamily: 'Cairo',
+                                              ),
+
+                                              ///hint style
+                                              boxTextstyle: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: black,
+                                                  fontFamily: 'Cairo'),
+
+                                              ///box style
+                                              boxPadding: EdgeInsets.fromLTRB(
+                                                  13.w, 12.h, 13.w, 12.h),
+                                              boxWidth: 500.w,
+                                              boxHeight: 45.h,
+                                              boxDecoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: newGrey, width: 0.5),
+                                                  color: lightGrey.withOpacity(
+                                                      0.10),
+
+                                                  borderRadius:
+                                                  BorderRadius.circular(8.r)),
+
+                                              ///Icons
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Colors.grey,
+                                              ),
+                                              hint: Text(
+                                                category,
+                                                textDirection: TextDirection.rtl,
+                                              ),
+                                              value: _selectedTest2,
+                                              items: _dropdownTestItems2,
+                                              onChanged: onChangeDropdownTests2,
+                                            ),
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child: Text(
+                                                  'لايوجد لينك لعرضهم حاليا'));
+                                        }
+                                      } else {
+                                        return Center(
+                                            child: Text(
+                                                'State: ${snapshot
+                                                    .connectionState}'));
                                       }
                                     })),
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                            ]);
-                      } else {
-                        return const Center(child: Text('Empty data'));
-                      }
-                    } else {
-                      return Center(
-                          child: Text('State: ${snapshot.connectionState}'));
-                    }
-                  },
-                ),
-              ),
+
+                                //=========== end dropdown ==================================
+
+                                paddingg(
+                                  15,
+                                  15,
+                                  12,
+                                  textFieldNoIcon(
+                                      context,
+                                      'رابط الصفحة',
+                                      14,
+                                      false,
+                                      pageLink,
+                                          (String? value) {
+                                        if (value == null || value.isEmpty) {}
+                                        return null;
+                                      },
+                                      false),
+                                ),
+
+                                //===================================== اضافة روابط الصفحات =======================================================
+                                textFeildWithButton(
+                                  context,
+                                  textFieldNoIcon2(
+                                    context,
+                                    'رابط صفحة سناب شات',
+                                    14,
+                                    false,
+                                    snapchat,
+                                        (String? value) {},
+                                  ),
+                                  gradientContainerWithHeight(
+                                    getSize(context).width / 4,
+                                    47,
+                                    Center(
+                                        child: InkWell(
+                                            onTap: () {
+                                              _selectedTest4 == null &&
+                                                  gender == 'الجنس'
+                                                  ? setState(() {
+                                                genderChosen = false;
+                                              })
+                                                  : setState(() {
+                                                genderChosen = true;
+                                              });
+                                              _formKey.currentState!.validate() &&
+                                                  _formKey2.currentState == null &&
+                                                  genderChosen == true &&
+                                                  citychosen == true
+                                                  ?
+                                              { loadingDialogue(context),
+                                                updateInformation().then((value) =>
+                                                {
+                                                  value.contains('true')?{
+                                                    Navigator.pop(context),
+                                                    countryChanged
+                                                        ? setState(() {
+                                                      helper = 0;
+                                                      countryChanged = false;
+                                                      celebrities =
+                                                          fetchCelebrities(
+                                                              userToken!);
+                                                    })
+                                                        : Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MainScreen()),
+                                                    ),
+                                                    showMassage(
+                                                        context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                        done: done)
+                                                  }:{
+                                                    value == 'SocketException'?{
+                                                      Navigator.pop(context),
+                                                      showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                    }: {
+
+                                                      value == 'serverException'? {
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                      }:{
+                                                        Navigator.pop(context),
+                                                        showMassage(
+                                                          context,
+                                                          'خطا',
+                                                          value.replaceAll('false', ''),
+                                                        )
+                                                      }
+
+
+                                                    }
+                                                  }
+                                                })}
+                                                  : setState(() {
+                                                city == 'المدينة'
+                                                    ? citychosen = false
+                                                    : null;
+                                              },);
+                                            },
+                                            child: text(
+                                                context, 'اضافة', 14, black,
+                                                align: TextAlign.center))),
+                                  ),
+                                ),
+                                textFeildWithButton(
+                                  context,
+                                  textFieldNoIcon2(
+                                    context,
+                                    'رابط صفحة تيك توك',
+                                    14,
+                                    false,
+                                    tiktok,
+                                        (String? value) {},
+                                  ),
+                                  gradientContainerWithHeight(
+                                    getSize(context).width / 4,
+                                    47,
+                                    Container(
+                                      child: Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                _selectedTest4 == null &&
+                                                    gender == 'الجنس'
+                                                    ? setState(() {
+                                                  genderChosen = false;
+                                                })
+                                                    : setState(() {
+                                                  genderChosen = true;
+                                                });
+                                                _formKey.currentState!.validate() &&
+                                                    _formKey2.currentState == null &&
+                                                    genderChosen == true &&
+                                                    citychosen == true
+                                                    ?
+                                                { loadingDialogue(context),
+                                                  updateInformation().then((value) =>
+                                                  {
+                                                    value.contains('true')?{
+                                                      Navigator.pop(context),
+                                                      countryChanged
+                                                          ? setState(() {
+                                                        helper = 0;
+                                                        countryChanged = false;
+                                                        celebrities =
+                                                            fetchCelebrities(
+                                                                userToken!);
+                                                      })
+                                                          : Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MainScreen()),
+                                                      ),
+                                                      showMassage(
+                                                          context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                          done: done)
+                                                    }:{
+                                                      value == 'SocketException'?{
+                                                        Navigator.pop(context),
+                                                        showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                      }: {
+
+                                                        value == 'serverException'? {
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                        }:{
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context,
+                                                            'خطا',
+                                                            value.replaceAll('false', ''),
+                                                          )
+                                                        }
+
+
+                                                      }
+                                                    }
+                                                  })}
+                                                    : setState(() {
+                                                  city == 'المدينة'
+                                                      ? citychosen = false
+                                                      : null;
+                                                },);
+                                              },
+                                              child: text(
+                                                  context, 'اضافة', 14, black,
+                                                  align: TextAlign.center))),
+                                    ),
+                                  ),
+                                ),
+
+
+                                textFeildWithButton(
+                                  context,
+                                  textFieldNoIcon2(
+                                    context,
+                                    'رابط صفحة يوتيوب',
+                                    14,
+                                    false,
+                                    youtube,
+                                        (String? value) {},
+                                  ),
+                                  gradientContainerWithHeight(
+                                    getSize(context).width / 4,
+                                    47,
+                                    Container(
+                                      child: Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                _selectedTest4 == null &&
+                                                    gender == 'الجنس'
+                                                    ? setState(() {
+                                                  genderChosen = false;
+                                                })
+                                                    : setState(() {
+                                                  genderChosen = true;
+                                                });
+                                                _formKey.currentState!.validate() &&
+                                                    _formKey2.currentState == null &&
+                                                    genderChosen == true &&
+                                                    citychosen == true
+                                                    ?
+                                                { loadingDialogue(context),
+                                                  updateInformation().then((value) =>
+                                                  {
+                                                    value.contains('true')?{
+                                                      Navigator.pop(context),
+                                                      countryChanged
+                                                          ? setState(() {
+                                                        helper = 0;
+                                                        countryChanged = false;
+                                                        celebrities =
+                                                            fetchCelebrities(
+                                                                userToken!);
+                                                      })
+                                                          : Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MainScreen()),
+                                                      ),
+                                                      showMassage(
+                                                          context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                          done: done)
+                                                    }:{
+                                                      value == 'SocketException'?{
+                                                        Navigator.pop(context),
+                                                        showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                      }: {
+
+                                                        value == 'serverException'? {
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                        }:{
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context,
+                                                            'خطا',
+                                                            value.replaceAll('false', ''),
+                                                          )
+                                                        }
+
+
+                                                      }
+                                                    }
+                                                  })}
+                                                    : setState(() {
+                                                  city == 'المدينة'
+                                                      ? citychosen = false
+                                                      : null;
+                                                },);
+                                              },
+                                              child: text(
+                                                  context, 'اضافة', 14, black,
+                                                  align: TextAlign.center))),
+                                    ),
+                                  ),
+                                ),
+                                textFeildWithButton(
+                                  context,
+                                  textFieldNoIcon2(
+                                    context,
+                                    'رابط صفحة الانستجرام',
+                                    14,
+                                    false,
+                                    instagram,
+                                        (String? value) {},
+                                  ),
+                                  gradientContainerWithHeight(
+                                    getSize(context).width / 4,
+                                    47,
+                                    Container(
+                                      child: Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                _selectedTest4 == null &&
+                                                    gender == 'الجنس'
+                                                    ? setState(() {
+                                                  genderChosen = false;
+                                                })
+                                                    : setState(() {
+                                                  genderChosen = true;
+                                                });
+                                                _formKey.currentState!.validate() &&
+                                                    _formKey2.currentState == null &&
+                                                    genderChosen == true &&
+                                                    citychosen == true
+                                                    ?
+                                                { loadingDialogue(context),
+                                                  updateInformation().then((value) =>
+                                                  {
+                                                    value.contains('true')?{
+                                                      Navigator.pop(context),
+                                                      countryChanged
+                                                          ? setState(() {
+                                                        helper = 0;
+                                                        countryChanged = false;
+                                                        celebrities =
+                                                            fetchCelebrities(
+                                                                userToken!);
+                                                      })
+                                                          : Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MainScreen()),
+                                                      ),
+                                                      showMassage(
+                                                          context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                          done: done)
+                                                    }:{
+                                                      value == 'SocketException'?{
+                                                        Navigator.pop(context),
+                                                        showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                      }: {
+
+                                                        value == 'serverException'? {
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                        }:{
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context,
+                                                            'خطا',
+                                                            value.replaceAll('false', ''),
+                                                          )
+                                                        }
+
+
+                                                      }
+                                                    }
+                                                  })}
+                                                    : setState(() {
+                                                  city == 'المدينة'
+                                                      ? citychosen = false
+                                                      : null;
+                                                },);
+                                              },
+                                              child: text(
+                                                  context, 'اضافة', 14, black,
+                                                  align: TextAlign.center))),
+                                    ),
+                                  ),
+                                ),
+                                textFeildWithButton(
+                                  context,
+                                  textFieldNoIcon2(
+                                    context,
+                                    'رابط صفحة تويتر',
+                                    14,
+                                    false,
+                                    twitter,
+                                        (String? value) {},
+                                  ),
+                                  gradientContainerWithHeight(
+                                    getSize(context).width / 4,
+                                    47,
+                                    Container(
+                                      child: Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                _selectedTest4 == null &&
+                                                    gender == 'الجنس'
+                                                    ? setState(() {
+                                                  genderChosen = false;
+                                                })
+                                                    : setState(() {
+                                                  genderChosen = true;
+                                                });
+                                                _formKey.currentState!.validate() &&
+                                                    _formKey2.currentState == null &&
+                                                    genderChosen == true &&
+                                                    citychosen == true
+                                                    ?
+                                                { loadingDialogue(context),
+                                                  updateInformation().then((value) =>
+                                                  {
+                                                    value.contains('true')?{
+                                                      Navigator.pop(context),
+                                                      countryChanged
+                                                          ? setState(() {
+                                                        helper = 0;
+                                                        countryChanged = false;
+                                                        celebrities =
+                                                            fetchCelebrities(
+                                                                userToken!);
+                                                      })
+                                                          : Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MainScreen()),
+                                                      ),
+                                                      showMassage(
+                                                          context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                          done: done)
+                                                    }:{
+                                                      value == 'SocketException'?{
+                                                        Navigator.pop(context),
+                                                        showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                      }: {
+
+                                                        value == 'serverException'? {
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                        }:{
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context,
+                                                            'خطا',
+                                                            value.replaceAll('false', ''),
+                                                          )
+                                                        }
+
+
+                                                      }
+                                                    }
+                                                  })}
+                                                    : setState(() {
+                                                  city == 'المدينة'
+                                                      ? citychosen = false
+                                                      : null;
+                                                },);
+                                              },
+                                              child: text(
+                                                  context, 'اضافة', 14, black,
+                                                  align: TextAlign.center))),
+                                    ),
+                                  ),
+                                ),
+                                textFeildWithButton(
+                                  context,
+                                  textFieldNoIcon2(
+                                    context,
+                                    'رابط صفحة الفيسبوك',
+                                    14,
+                                    false,
+                                    facebook,
+                                        (String? value) {},
+                                  ),
+                                  gradientContainerWithHeight(
+                                    getSize(context).width / 4,
+                                    47,
+                                    Container(
+                                      child: Center(
+                                          child: InkWell(
+                                              onTap: () {
+                                                _selectedTest4 == null &&
+                                                    gender == 'الجنس'
+                                                    ? setState(() {
+                                                  genderChosen = false;
+                                                })
+                                                    : setState(() {
+                                                  genderChosen = true;
+                                                });
+                                                _formKey.currentState!.validate() &&
+                                                    _formKey2.currentState == null &&
+                                                    genderChosen == true &&
+                                                    citychosen == true
+                                                    ?
+                                                { loadingDialogue(context),
+                                                  updateInformation().then((value) =>
+                                                  {
+                                                    value.contains('true')?{
+                                                      Navigator.pop(context),
+                                                      countryChanged
+                                                          ? setState(() {
+                                                        helper = 0;
+                                                        countryChanged = false;
+                                                        celebrities =
+                                                            fetchCelebrities(
+                                                                userToken!);
+                                                      })
+                                                          : Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                MainScreen()),
+                                                      ),
+                                                      showMassage(
+                                                          context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                          done: done)
+                                                    }:{
+                                                      value == 'SocketException'?{
+                                                        Navigator.pop(context),
+                                                        showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                      }: {
+
+                                                        value == 'serverException'? {
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                        }:{
+                                                          Navigator.pop(context),
+                                                          showMassage(
+                                                            context,
+                                                            'خطا',
+                                                            value.replaceAll('false', ''),
+                                                          )
+                                                        }
+
+
+                                                      }
+                                                    }
+                                                  })}
+                                                    : setState(() {
+                                                  city == 'المدينة'
+                                                      ? citychosen = false
+                                                      : null;
+                                                },);
+                                              },
+                                              child: text(
+                                                  context, 'اضافة', 14, black,
+                                                  align: TextAlign.center))),
+                                    ),
+                                  ),
+                                ),
+
+                                //===================== button ================================
+
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                padding(
+                                  15,
+                                  15,
+                                  gradientContainerNoborder(
+                                      getSize(context).width,
+                                      buttoms(context, 'حفظ', 20, white, () {
+                                        if (currentPassword.text.isNotEmpty &&
+                                            newPassword.text.isNotEmpty) {
+                                          _formKey2.currentState == null
+                                              ? null
+                                              : _formKey2.currentState!
+                                              .validate()
+                                              ? {
+                                            newPassword.text ==
+                                                confirmPassword
+                                                    .text
+                                                ? {
+                                              changePassword().then((value) =>
+                                              {
+                                                value == 'SocketException' ||
+                                                    value == 'TimeoutException' ||
+                                                    value == 'ServerException' ? {
+                                                  Navigator.pop(context),
+                                                  showMassage(context,
+                                                      'فشل الاتصال بالانترنت',
+                                                      "فشل الاتصال بالانترنت حاول لاحقا")
+                                                } :
+                                                value.contains('false')
+                                                    ? showMassage(context, 'خطا',
+                                                    value.replaceAll('false', ''))
+                                                    : showMassage(
+                                                    context, 'تم بنجاح',
+                                                    "تم التغيير بنجاح",
+                                                    done: done),
+                                                currentPassword.clear(),
+                                                newPassword.clear(),
+                                                confirmPassword.clear(),
+                                                setState(() {
+                                                  editPassword =false;
+                                                })
+                                              })
+                                            }
+                                                : setState(() {
+                                              noMatch =
+                                              true;
+                                            })
+                                          }
+                                              : null;
+                                        }
+                                        else {
+                                          _selectedTest4 == null &&
+                                              gender == 'الجنس'
+                                              ? setState(() {
+                                            genderChosen = false;
+                                          })
+                                              : setState(() {
+                                            genderChosen = true;
+                                          });
+                                          _formKey.currentState!.validate() &&
+                                              _formKey2.currentState == null &&
+                                              genderChosen == true &&
+                                              citychosen == true
+                                              ?
+                                          { loadingDialogue(context),
+                                            updateInformation().then((value) =>
+                                            {
+                                              value.contains('true')?{
+                                                Navigator.pop(context),
+                                                countryChanged
+                                                    ? setState(() {
+                                                  helper = 0;
+                                                  countryChanged = false;
+                                                  celebrities =
+                                                      fetchCelebrities(
+                                                          userToken!);
+                                                })
+                                                    : Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          MainScreen()),
+                                                ),
+                                                showMassage(
+                                                    context, 'تم بنجاح', value.replaceAll('true', ''),
+                                                    done: done)
+                                              }:{
+                                                value == 'SocketException'?{
+                                                  Navigator.pop(context),
+                                                  showMassage(context,'فشل الاتصال بالانترنت', "فشل الاتصال بالانترنت حاول لاحقا")
+                                                }: {
+
+                                                  value == 'serverException'? {
+                                                    Navigator.pop(context),
+                                                    showMassage(
+                                                      context, 'خطا', 'حدثت مشكلة في الخادم سنقوم باصلاحها قريبا ',)
+                                                  }:{
+                                                    Navigator.pop(context),
+                                                    showMassage(
+                                                      context,
+                                                      'خطا',
+                                                      value.replaceAll('false', ''),
+                                                    )
+                                                  }
+
+
+                                                }
+                                              }
+                                            })}
+                                              : setState(() {
+                                            city == 'المدينة'
+                                                ? citychosen = false
+                                                : null;
+                                          },);
+                                        }
+                                      })),
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                              ]),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(child: Text('Empty data'));
+                  }
+                } else {
+                  return Center(
+                      child: Text('State: ${snapshot.connectionState}'));
+                }
+              },
             ),
           ),
         ),
