@@ -293,66 +293,6 @@ class _userInformationState extends State<userInformation> {
                                       return null;
                                     }, false),
                               ),
-                              paddingg(
-                                15,
-                                15,
-                                12,
-                                textFieldNoIcon(context, 'رقم الجوال', 14,
-                                  false, phone, (String? value) {
-                                    RegExp regExp = new RegExp(
-                                        r'(^(?:[+0]9)?[0-9]{10,12}$)');
-                                    if (value != null) {
-                                      if (value.isNotEmpty) {
-                                        if (value.length != 9) {
-                                          return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
-                                        }
-                                        if (value.startsWith('0')) {
-                                          return 'رقم الجوال يجب ان لا يبدا ب 0 ';
-                                        }
-                                        // if(!regExp.hasMatch(value)){
-                                        //   return "رقم الجوال غير صالح";
-                                        // }
-                                      }
-                                    }
-
-                                    return null;
-                                  }, false, child: Container(
-                                    width: 60.w,
-                                    height: 32.h,
-                                    child: CountryCodePicker(
-                                      padding: EdgeInsets.all(0),
-                                      onChanged: print,
-                                      // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                                      initialSelection: country == 'السعودية'
-                                          ? 'SA'
-                                          : country == 'فلسطين'
-                                          ? 'PS'
-                                          : country == 'الاردن'
-                                          ? 'JO'
-                                          : country == 'الامارات'
-                                          ? 'AE'
-                                          : 'SA',
-                                      countryFilter: const [
-                                        'SA',
-                                        'BH',
-                                        'KW',
-                                        'OM',
-                                        'AE',
-                                        'KW',
-                                        'QA',
-                                      ],
-                                      showFlag: false,
-                                      // optional. Shows only country name and flag
-                                      showCountryOnly: false,
-                                      showFlagDialog: true,
-                                      textStyle:  TextStyle(color: black, fontSize: 13.5.sp),
-                                      // optional. Shows only country name and flag when popup is closed.
-                                      showOnlyCountryWhenClosed: false,
-                                      // optional. aligns the flag and the Text left
-                                      alignLeft: true,
-                                    ),
-                                  ),),
-                              ),
 
                               paddingg(
                                 15,
@@ -644,6 +584,67 @@ class _userInformationState extends State<userInformation> {
                                     }
                                   })),
 
+
+                              paddingg(
+                                15,
+                                15,
+                                12,
+                                textFieldNoIcon(context, 'رقم الجوال', 14,
+                                  false, phone, (String? value) {
+                                    RegExp regExp = new RegExp(
+                                        r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                                    if (value != null) {
+                                      if (value.isNotEmpty) {
+                                        if (value.length != 9) {
+                                          return "رقم الجوال يجب ان يتكون من 9 ارقام  ";
+                                        }
+                                        if (value.startsWith('0')) {
+                                          return 'رقم الجوال يجب ان لا يبدا ب 0 ';
+                                        }
+                                        // if(!regExp.hasMatch(value)){
+                                        //   return "رقم الجوال غير صالح";
+                                        // }
+                                      }
+                                    }
+
+                                    return null;
+                                  }, false, child:  Container(
+                                    width: 60.w,
+                                    height: 32.h,
+                                    child: CountryCodePicker(
+                                      padding: EdgeInsets.all(0),
+                                      onChanged: print,
+                                      // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                                      initialSelection: country == 'السعودية'
+                                          ? 'SA'
+                                          : country == 'فلسطين'
+                                          ? 'PS'
+                                          : country == 'الاردن'
+                                          ? 'JO'
+                                          : country == 'الامارات'
+                                          ? 'AE'
+                                          : 'SA',
+                                      countryFilter: const [
+                                        'SA',
+                                        'BH',
+                                        'KW',
+                                        'OM',
+                                        'AE',
+                                        'KW',
+                                        'QA',
+                                      ],
+                                      showFlag: false,
+                                      // optional. Shows only country name and flag
+                                      showCountryOnly: false,
+                                      showFlagDialog: true,
+                                      textStyle:  TextStyle(color: black, fontSize: 13.5.sp),
+                                      // optional. Shows only country name and flag when popup is closed.
+                                      showOnlyCountryWhenClosed: false,
+                                      // optional. aligns the flag and the Text left
+                                      alignLeft: true,
+                                    ),
+                                  ), ),
+                              ),
 
                               citychosen != null ?
                               citychosen == false ? Padding(
